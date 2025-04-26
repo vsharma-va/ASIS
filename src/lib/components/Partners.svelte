@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
-	import gsap from 'gsap';
-	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { gsap } from 'gsap/dist/gsap';
+	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { TextPlugin } from 'gsap/dist/TextPlugin';
 
 	const watchImages = import.meta.glob('$lib/assets/images/watchFaces/*.webp', { eager: true });
