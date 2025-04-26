@@ -1,3 +1,58 @@
 @import 'tailwindcss';
+@import "lenis/dist/lenis.css";
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+@font-face {
+    font-family: 'Garamond';
+    src: url('./lib/assets/fonts/EBGaramond-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'Azeret';
+    src: url('./lib/assets/fonts/AzeretMono-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'Franchise';
+    src: url("./lib/assets/fonts/Franchise-Free-Bold.ttf");
+}
+
+@font-face {
+    font-family: 'Chunk-Regular';
+    src: url("./lib/assets/fonts/ChunkFive-Regular.ttf");
+}
+
+.primary-font {
+    font-family: 'Garamond', serif;
+}
+
+.secondary-font {
+    font-family: 'Azeret', monospace;
+}
+
+.footer-font {
+    font-family: 'Franchise', serif;
+}
+
+.footer-font-alt {
+    font-family: 'Chunk-Regular', 'ui-sans-serif';
+}
+
+body {
+    background: linear-gradient(
+            90deg,
+            #E2D9DC 0%,
+            #DED5D8 50%,
+            #B9B0B3 100%
+    );
+}
+
+.bg-gradient {
+    background: linear-gradient(
+            90deg,
+            #E2D9DC 0%,
+            #DED5D8 50%,
+            #B9B0B3 100%
+    );
+}
