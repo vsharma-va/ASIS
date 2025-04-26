@@ -1,13 +1,13 @@
 <script>
-	import { onMount } from 'svelte';
-	import { gsap } from 'gsap/dist/gsap';
-	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-	import { TextPlugin } from 'gsap/dist/TextPlugin';
+	import { onMount, onDestroy } from 'svelte';
+	import gsap from 'gsap'; // Changed import path
+	import { ScrollTrigger } from 'gsap/ScrollTrigger'; // Changed import path
 
 	const watchImages = import.meta.glob('$lib/assets/images/watchFaces/*.webp', { eager: true });
 	let watchImageArray = Object.values(watchImages).map(module => module.default);
 	let leftColumnImages = watchImageArray.slice(0, 9);
 	let rightColumnImages = watchImageArray.slice(9, 18);
+	let ctx;
 
 
 	let textList = [
@@ -26,139 +26,176 @@
 	];
 
 	onMount(() => {
-		gsap.registerPlugin(ScrollTrigger, TextPlugin);
+		gsap.registerPlugin(ScrollTrigger);
 
-		gsap.fromTo('.left-watch-column .watch-item',
-			{
-				y: (i) => i * 100 + 200,
-				opacity: 0
-			},
-			{
-				y: 0,
-				opacity: 1,
-				stagger: 0.2,
-				duration: 1,
-				ease: 'power2.out',
-				scrollTrigger: {
-					trigger: '.collection-section',
-					start: 'top 30%',
-					end: 'center center',
-					scrub: 0.5
+		// Create a GSAP context for proper cleanup
+		ctx = gsap.context(() => {
+			// Refresh ScrollTrigger to ensure proper initialization
+			ScrollTrigger.refresh();
+
+			// Left column animation
+			gsap.fromTo('.left-watch-column .watch-item',
+				{
+					y: (i) => i * 100 + 200,
+					opacity: 0
+				},
+				{
+					y: 0,
+					opacity: 1,
+					stagger: 0.2,
+					duration: 1,
+					ease: 'power2.out',
+					scrollTrigger: {
+						trigger: '.collection-section',
+						start: 'top 30%',
+						end: 'center center',
+						scrub: 0.5,
+						// Add markers for debugging
+						// markers: true,
+						// Add invalidateOnRefresh for better responsiveness
+						invalidateOnRefresh: true
+					}
+				}
+			);
+
+			// Right column animation (same changes as left)
+			gsap.fromTo('.right-watch-column .watch-item',
+				{
+					y: (i) => i * 100 + 200,
+					opacity: 0
+				},
+				{
+					y: 0,
+					opacity: 1,
+					stagger: 0.2,
+					duration: 1,
+					ease: 'power2.out',
+					scrollTrigger: {
+						trigger: '.collection-section',
+						start: 'top 30%',
+						end: 'center center',
+						scrub: 0.5,
+						invalidateOnRefresh: true
+					}
+				}
+			);
+
+			// Center text animation
+			gsap.fromTo('.collection-center-text',
+				{
+					opacity: 0,
+					y: 30
+				},
+				{
+					opacity: 1,
+					y: 0,
+					duration: 1,
+					ease: 'power2.out',
+					scrollTrigger: {
+						trigger: '.collection-section',
+						start: 'top 60%',
+						invalidateOnRefresh: true
+					}
+				}
+			);
+
+			// Text changing logic
+			const titleElem = document.querySelector('.changingTextElemTitle');
+			const paraElem = document.querySelector('.changingTextElemPara');
+
+			if (titleElem && paraElem) {
+				gsap.set(titleElem, { opacity: 1, y: 0 });
+				gsap.set(paraElem, { opacity: 1, y: 0 });
+				titleElem.textContent = textList[0].title;
+				paraElem.textContent = textList[0].para;
+
+				let currentIndex = 0;
+				const updateTextContent = (index) => {
+					if (index === currentIndex) return;
+
+					const direction = index > currentIndex ? 1 : -1;
+					currentIndex = index;
+
+					const titleTL = gsap.timeline();
+					const paraTL = gsap.timeline();
+
+					titleTL.to(titleElem, {
+						y: -20 * direction,
+						opacity: 0,
+						duration: 0.5,
+						ease: 'power2.inOut'
+					});
+
+					paraTL.to(paraElem, {
+						y: -20 * direction,
+						opacity: 0,
+						duration: 0.5,
+						ease: 'power2.inOut',
+						delay: 0.1
+					});
+
+					titleTL.add(() => {
+						titleElem.textContent = textList[index].title;
+						gsap.set(titleElem, { y: 20 * direction });
+					});
+
+					paraTL.add(() => {
+						paraElem.textContent = textList[index].para;
+						gsap.set(paraElem, { y: 20 * direction });
+					});
+
+					titleTL.to(titleElem, {
+						y: 0,
+						opacity: 1,
+						duration: 0.5,
+						ease: 'power2.out'
+					});
+
+					paraTL.to(paraElem, {
+						y: 0,
+						opacity: 1,
+						duration: 0.5,
+						ease: 'power2.out',
+						delay: 0.1
+					});
+				};
+
+				// Use a resize observer to handle responsive behavior
+				const resizeObserver = new ResizeObserver(() => {
+					ScrollTrigger.refresh();
+				});
+				resizeObserver.observe(document.querySelector('.collection-section'));
+
+				// Create text change triggers
+				const sectionHeight = document.querySelector('.collection-section').offsetHeight;
+				const triggerPoints = textList.length;
+				const triggerStep = (sectionHeight / triggerPoints) - 200;
+
+				for (let i = 1; i < textList.length; i++) {
+					const triggerPosition = triggerStep * i;
+
+					ScrollTrigger.create({
+						trigger: '.collection-section',
+						start: `top+=${triggerPosition} top`,
+						onEnter: () => updateTextContent(i),
+						onLeaveBack: () => updateTextContent(i - 1),
+						id: `text-trigger-${i}`,
+						invalidateOnRefresh: true
+					});
 				}
 			}
-		);
+		});
 
-		gsap.fromTo('.right-watch-column .watch-item',
-			{
-				y: (i) => i * 100 + 200,
-				opacity: 0
-			},
-			{
-				y: 0,
-				opacity: 1,
-				stagger: 0.2,
-				duration: 1,
-				ease: 'power2.out',
-				scrollTrigger: {
-					trigger: '.collection-section',
-					start: 'top 30%',
-					end: 'center center',
-					scrub: 0.5
-				}
-			}
-		);
+		// Force a refresh after a short delay to ensure everything is properly initialized
+		setTimeout(() => {
+			ScrollTrigger.refresh();
+		}, 100);
+	});
 
-		gsap.fromTo('.collection-center-text',
-			{
-				opacity: 0,
-				y: 30
-			},
-			{
-				opacity: 1,
-				y: 0,
-				duration: 1,
-				ease: 'power2.out',
-				scrollTrigger: {
-					trigger: '.collection-section',
-					start: 'top 60%'
-				}
-			}
-		);
-
-		const titleElem = document.querySelector('.changingTextElemTitle');
-		const paraElem = document.querySelector('.changingTextElemPara');
-
-		gsap.set(titleElem, { opacity: 1, y: 0 });
-		gsap.set(paraElem, { opacity: 1, y: 0 });
-		titleElem.textContent = textList[0].title;
-		paraElem.textContent = textList[0].para;
-
-		let currentIndex = 0;
-		const updateTextContent = (index) => {
-			if (index === currentIndex) return;
-
-			const direction = index > currentIndex ? 1 : -1;
-			currentIndex = index;
-
-			const titleTL = gsap.timeline();
-			const paraTL = gsap.timeline();
-
-			titleTL.to(titleElem, {
-				y: -20 * direction,
-				opacity: 0,
-				duration: 0.5,
-				ease: 'power2.inOut'
-			});
-
-			paraTL.to(paraElem, {
-				y: -20 * direction,
-				opacity: 0,
-				duration: 0.5,
-				ease: 'power2.inOut',
-				delay: 0.1
-			});
-
-			titleTL.add(() => {
-				titleElem.textContent = textList[index].title;
-				gsap.set(titleElem, { y: 20 * direction });
-			});
-
-			paraTL.add(() => {
-				paraElem.textContent = textList[index].para;
-				gsap.set(paraElem, { y: 20 * direction });
-			});
-
-			titleTL.to(titleElem, {
-				y: 0,
-				opacity: 1,
-				duration: 0.5,
-				ease: 'power2.out'
-			});
-
-			paraTL.to(paraElem, {
-				y: 0,
-				opacity: 1,
-				duration: 0.5,
-				ease: 'power2.out',
-				delay: 0.1
-			});
-		};
-
-		const sectionHeight = document.querySelector('.collection-section').offsetHeight;
-		const triggerPoints = textList.length;
-		const triggerStep = (sectionHeight / triggerPoints) - 200;
-
-		for (let i = 1; i < textList.length; i++) {
-			const triggerPosition = triggerStep * i;
-			// console.log(triggerPosition);
-			// console.log(sectionHeight);
-
-			ScrollTrigger.create({
-				trigger: '.collection-section',
-				start: `top+=${triggerPosition} top`,
-				onEnter: () => updateTextContent(i),
-				onLeaveBack: () => updateTextContent(i - 1)
-			});
+	// Clean up all animations and ScrollTriggers when component is destroyed
+	onDestroy(() => {
+		if (ctx) {
+			ctx.revert(); // This will kill all animations and ScrollTriggers created in this context
 		}
 	});
 </script>
@@ -219,7 +256,7 @@
     .changingTextElemTitle,
     .changingTextElemPara,
     .watch-item,
-		.collection-center-text {
+    .collection-center-text {
         will-change: transform, opacity;
     }
 </style>

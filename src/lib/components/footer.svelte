@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { gsap } from 'gsap';
+	import { gsap } from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
 	gsap.registerPlugin(ScrollTrigger);
@@ -19,7 +19,7 @@
 				scrollTrigger: {
 					trigger: '.footer-container',
 					start: 'top 80%',
-					toggleActions: 'play pause resume reset'
+					toggleActions: 'play none none none'
 				}
 			});
 		});
@@ -31,7 +31,7 @@
 			scrollTrigger: {
 				trigger: '.footer-container',
 				start: 'top 70%',
-				toggleActions: 'play pause resume reset'
+				toggleActions: 'play none none none'
 			}
 		});
 

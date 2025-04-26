@@ -3,12 +3,12 @@
 	import { onMount } from 'svelte';
 	import { gsap } from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-	import { TextPlugin } from 'gsap/dist/TextPlugin';
 	import FirstWatchImage from '$lib/assets/images/FirstwatchImage.webp';
 	import WatchDetailImage from '$lib/assets/images/FirstWatchImageCloseUP.webp';
 
 	let imagesLoaded = false;
 	let animationsInitialized = false;
+	gsap.registerPlugin(ScrollTrigger);
 
 	onMount(() => {
 		gsap.set('.LandingTextElem', { opacity: 0, y: 30 });
@@ -71,7 +71,6 @@
 	});
 
 	function initScrollAnimations() {
-		gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 		let firstSectionParallaxTimeline = gsap.timeline({
 			scrollTrigger: {
