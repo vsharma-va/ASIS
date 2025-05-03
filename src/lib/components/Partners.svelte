@@ -1,7 +1,7 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
-	import gsap from 'gsap'; // Changed import path
-	import { ScrollTrigger } from 'gsap/ScrollTrigger'; // Changed import path
+	import { gsap } from 'gsap/dist/gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 	const watchImages = import.meta.glob('$lib/assets/images/watchFaces/*.webp', { eager: true });
 	let watchImageArray = Object.values(watchImages).map(module => module.default);
@@ -28,12 +28,9 @@
 	onMount(() => {
 		gsap.registerPlugin(ScrollTrigger);
 
-		// Create a GSAP context for proper cleanup
 		ctx = gsap.context(() => {
-			// Refresh ScrollTrigger to ensure proper initialization
 			ScrollTrigger.refresh();
 
-			// Left column animation
 			gsap.fromTo('.left-watch-column .watch-item',
 				{
 					y: (i) => i * 100 + 200,
@@ -50,15 +47,12 @@
 						start: 'top 30%',
 						end: 'center center',
 						scrub: 0.5,
-						// Add markers for debugging
 						// markers: true,
-						// Add invalidateOnRefresh for better responsiveness
 						invalidateOnRefresh: true
 					}
 				}
 			);
 
-			// Right column animation (same changes as left)
 			gsap.fromTo('.right-watch-column .watch-item',
 				{
 					y: (i) => i * 100 + 200,
@@ -80,7 +74,6 @@
 				}
 			);
 
-			// Center text animation
 			gsap.fromTo('.collection-center-text',
 				{
 					opacity: 0,
@@ -99,7 +92,6 @@
 				}
 			);
 
-			// Text changing logic
 			const titleElem = document.querySelector('.changingTextElemTitle');
 			const paraElem = document.querySelector('.changingTextElemPara');
 
@@ -160,13 +152,11 @@
 					});
 				};
 
-				// Use a resize observer to handle responsive behavior
 				const resizeObserver = new ResizeObserver(() => {
 					ScrollTrigger.refresh();
 				});
 				resizeObserver.observe(document.querySelector('.collection-section'));
 
-				// Create text change triggers
 				const sectionHeight = document.querySelector('.collection-section').offsetHeight;
 				const triggerPoints = textList.length;
 				const triggerStep = (sectionHeight / triggerPoints) - 200;
@@ -186,16 +176,14 @@
 			}
 		});
 
-		// Force a refresh after a short delay to ensure everything is properly initialized
 		setTimeout(() => {
 			ScrollTrigger.refresh();
 		}, 100);
 	});
 
-	// Clean up all animations and ScrollTriggers when component is destroyed
 	onDestroy(() => {
 		if (ctx) {
-			ctx.revert(); // This will kill all animations and ScrollTriggers created in this context
+			ctx.revert();
 		}
 	});
 </script>

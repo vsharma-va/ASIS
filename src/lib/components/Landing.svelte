@@ -205,7 +205,6 @@
 					<div class="text-xs uppercase secondary-font">Case Design</div>
 					<div class="text-sm font-bold secondary-font">Stainless Steel</div>
 					<div class="mt-2 flex justify-end items-center border-2">
-						<!-- Use data-src for lazy loading -->
 						<img data-src="{WatchDetailImage}" alt="Watch case detail"
 								 class="detail-image w-full h-full object-cover"
 								 use:lazyLoadImage>
