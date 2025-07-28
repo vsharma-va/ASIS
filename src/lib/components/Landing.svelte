@@ -34,13 +34,72 @@
 		imagesLoaded = true;
 	};
 
+	let container1;
+	let scaleValues = { video1: 1 };
+
+	// Video aspect ratios
+	const desktopVideoRatio = 16 / 9;
+	const mobileVideoRatio = 9 / 16;
+
+	// Video URLs - you'll need to replace the mobile URL with your actual mobile video URL
+	const desktopVideoUrl = 'https://player.vimeo.com/video/1105203718?h=fa003380ac&amp;background=1&amp;loop=1&amp;transparent=0&amp;byline=0&amp;title=0&amp;portrait=0';
+	const mobileVideoUrl = 'https://player.vimeo.com/video/YOUR_MOBILE_VIDEO_ID?h=YOUR_HASH&amp;background=1&amp;loop=1&amp;transparent=0&amp;byline=0&amp;title=0&amp;portrait=0'; // Replace with your mobile video URL
+
+	// Reactive variable for current video URL
+	$: currentVideoUrl = isMobile ? mobileVideoUrl : desktopVideoUrl;
+	$: currentVideoRatio = isMobile ? mobileVideoRatio : desktopVideoRatio;
+
+	const calculateVideoScale = (containerWidth, containerHeight, videoRatio) => {
+		if (!containerWidth || !containerHeight) return 1;
+
+		const containerRatio = containerWidth / containerHeight;
+
+		// Scale to cover the entire container (no black bars)
+		// Always use the larger scale factor to ensure full coverage
+		const scaleX = containerWidth / (containerHeight * videoRatio);
+		const scaleY = containerHeight / (containerWidth / videoRatio);
+
+		return Math.max(scaleX, scaleY);
+	};
+
 	onMount(() => {
 		isMobile = window.innerWidth < 768;
 
 		const handleResize = () => {
+			const wasMobile = isMobile;
 			isMobile = window.innerWidth < 768;
+
+			// If mobile state changed, trigger a recalculation
+			if (wasMobile !== isMobile && container1) {
+				updateVideoScale();
+			}
 		};
+
+		const updateVideoScale = () => {
+			if (container1) {
+				const rect = container1.getBoundingClientRect();
+				const scale = calculateVideoScale(rect.width, rect.height, currentVideoRatio);
+				scaleValues = { ...scaleValues, video1: scale };
+			}
+		};
+
 		window.addEventListener('resize', handleResize, { passive: true });
+
+		const observer = new ResizeObserver(entries => {
+			for (const entry of entries) {
+				if (entry.target === container1) {
+					const { width, height } = entry.contentRect;
+					const scale = calculateVideoScale(width, height, currentVideoRatio);
+					scaleValues = { ...scaleValues, video1: scale };
+				}
+			}
+		});
+
+		if (container1) {
+			observer.observe(container1);
+			// Initial scale calculation
+			updateVideoScale();
+		}
 
 		ctx = gsap.context(() => {
 			gsap.set(['.LandingBG', '.LandingTextElem', '.watch-image', '.detail-text', '.detail-image', '.detail-text-second', '.detail-image-second'], {
@@ -96,7 +155,10 @@
 			});
 		});
 
-		return () => window.removeEventListener('resize', handleResize);
+		return () => {
+			window.removeEventListener('resize', handleResize);
+			observer.disconnect();
+		};
 	});
 
 	function setupScrollAnimations() {
@@ -232,16 +294,43 @@
 	</div>
 </div>
 
-<div class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient">
-	<img src="{LandingBg}" alt="Background img" loading="eager"
-			 class="LandingBG absolute top-0 left-0 h-screen w-full object-cover z-0">
+<div
+	class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient">
+	<div
+		bind:this={container1}
+		class="w-full h-full absolute top-0 left-0 overflow-hidden"
+	>
+		{#if !isMobile}
+			<iframe
+				class="absolute top-1/2 left-1/2 w-full h-full object-cover z-0 pointer-events-none"
+				style="transform: translate(-50%, -50%) scale({scaleValues.video1});"
+				src="https://player.vimeo.com/video/1105203718?h=fa003380ac&amp;background=1&amp;loop=1&amp;transparent=0&amp;byline=0&amp;title=0&amp;portrait=0"
+				title="YIF Video"
+				frameborder="0"
+				allow="autoplay; fullscreen; encrypted-media; gyroscope; picture-in-picture"
+				allowfullscreen
+			></iframe>
+		{:else}
+			<iframe
+				class="absolute top-1/2 left-1/2 w-full h-full object-cover z-0 pointer-events-none"
+				style="transform: translate(-50%, -50%) scale({scaleValues.video1});"
+				src="https://player.vimeo.com/video/1105203517?h=fa003380ac&amp;background=1&amp;loop=1&amp;transparent=0&amp;byline=0&amp;title=0&amp;portrait=0"
+				title="YIF Video"
+				frameborder="0"
+				allow="autoplay; fullscreen; encrypted-media; gyroscope; picture-in-picture"
+				allowfullscreen
+			></iframe>
+		{/if}
 
-	<div class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[10rem]">
+	</div>
+
+	<div
+		class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[10rem]">
 		<div class="LandingTextElem h-fit w-full sm:w-2/4 text-center sm:text-left uppercase secondary-font text-xs sm:text-sm mb-2 sm:mb-0
          sm:-ml-[15rem]">
 			Meet
 		</div>
-		<div class="LandingTextElem h-fit w-full text-center text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-[5.5rem]
+		<div class="LandingTextElem h-fit w-full text-center text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-[5.5rem]
          primary-font font-[600] mb-2 sm:mb-0 leading-[0.8] capitalize">
 			The Exclusive Jewelry Watch
 		</div>
@@ -255,7 +344,8 @@
 <!-- Increased height but the pin will handle the scroll behavior -->
 <div class="AfterLandingSection h-screen w-full relative flex justify-center items-center bg-gradient overflow-hidden">
 	<div class="w-full h-full flex flex-col lg:flex-row items-center justify-center relative px-4 lg:px-0">
-		<div class="watch-container relative h-full lg:h-full w-full lg:w-3/4 flex justify-center items-center overflow-hidden">
+		<div
+			class="watch-container relative h-full lg:h-full w-full lg:w-3/4 flex justify-center items-center overflow-hidden">
 			<img src="{FirstWatchImage}" alt="ASIS Luxury Watch"
 					 class="watch-image w-full h-full object-cover lg:object-contain"
 					 loading="eager">
@@ -293,7 +383,8 @@
 			</div>
 
 			<!-- Desktop details - First Set -->
-			<div class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-1">
+			<div
+				class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-1">
 				<div class="flex items-center justify-center">
 					<div class="detail-text mr-2 text-right w-3/4 tracking-tight">
 						<div class="text-xs uppercase secondary-font">GEMSTONES</div>
@@ -324,11 +415,12 @@
 			</div>
 
 			<!-- Desktop details - Second Set -->
-			<div class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-2">
+			<div
+				class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-2">
 				<div class="flex items-center justify-center">
 					<div class="detail-text-second mr-2 text-right w-3/4 tracking-tight">
 						<div class="text-xs uppercase secondary-font">STRAP</div>
-						<div class="text-sm font-bold secondary-font">Genuine Alligator Leather / Vegan Leather	</div>
+						<div class="text-sm font-bold secondary-font">Genuine Alligator Leather / Vegan Leather</div>
 						<div class="mt-2 flex justify-end items-center border-2">
 							<img src="{WatchDetailImage2}" alt="Watch craftsmanship detail"
 									 class="detail-image-second w-full h-full object-cover"
@@ -343,14 +435,14 @@
 				<div class="detail-line-second h-px bg-black origin-right w-12"></div>
 				<div class="detail-text-second ml-2 w-1/2 secondary-font">
 					<div class="text-xs uppercase">GLASS</div>
-					<div class="text-sm font-bold">Sapphire Crystal	</div>
+					<div class="text-sm font-bold">Sapphire Crystal</div>
 				</div>
 			</div>
 			<div class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-2/3 items-center detail-set-2">
 				<div class="detail-line-second h-px bg-black origin-right w-12"></div>
 				<div class="detail-text-second ml-2 w-1/2 secondary-font">
 					<div class="text-xs uppercase">WARRANTY</div>
-					<div class="text-sm font-bold">2 International Warranty	</div>
+					<div class="text-sm font-bold">2 International Warranty</div>
 				</div>
 			</div>
 		</div>
@@ -439,15 +531,33 @@
     }
 
     @keyframes swing {
-        0% { transform: rotate(0deg); animation-timing-function: ease-out; }
-        25% { transform: rotate(70deg); animation-timing-function: ease-in; }
-        50% { transform: rotate(0deg); animation-timing-function: linear; }
+        0% {
+            transform: rotate(0deg);
+            animation-timing-function: ease-out;
+        }
+        25% {
+            transform: rotate(70deg);
+            animation-timing-function: ease-in;
+        }
+        50% {
+            transform: rotate(0deg);
+            animation-timing-function: linear;
+        }
     }
 
     @keyframes swing2 {
-        0% { transform: rotate(0deg); animation-timing-function: linear; }
-        50% { transform: rotate(0deg); animation-timing-function: ease-out; }
-        75% { transform: rotate(-70deg); animation-timing-function: ease-in; }
+        0% {
+            transform: rotate(0deg);
+            animation-timing-function: linear;
+        }
+        50% {
+            transform: rotate(0deg);
+            animation-timing-function: ease-out;
+        }
+        75% {
+            transform: rotate(-70deg);
+            animation-timing-function: ease-in;
+        }
     }
 
     @media (max-width: 768px) {

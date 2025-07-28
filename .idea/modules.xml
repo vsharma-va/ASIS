@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ASIS_website.iml" filepath="$PROJECT_DIR$/.idea/ASIS_website.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pptv_website/.idea/PPTV.iml" filepath="$PROJECT_DIR$/../pptv_website/.idea/PPTV.iml" />
     </modules>
   </component>
 </project>
