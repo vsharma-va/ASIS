@@ -54,11 +54,6 @@
 				nextEl: '.swiper-button-next',
 				prevEl: '.swiper-button-prev',
 			},
-			on: {
-				slideChange: (swiper) => {
-					currentIndex = swiper.realIndex;
-				},
-			},
 		});
 
 		animateInfoIn();
@@ -111,11 +106,6 @@
 				<button class="swiper-button-prev p-3 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-colors duration-300">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
 				</button>
-				<div class="secondary-font text-base text-zinc-500">
-					<span>{currentIndex + 1}</span>
-					<span class="text-zinc-500 mx-2">/</span>
-					<span>{String(galleryData.slides.length).padStart(2, '0')}</span>
-				</div>
 				<button class="swiper-button-next p-3 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-colors duration-300">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
 				</button>
@@ -163,11 +153,6 @@
 					<button class="swiper-button-next p-3 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-colors duration-300">
 						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
 					</button>
-					<div class="secondary-font text-base text-zinc-500">
-						<span>{String(currentIndex + 1).padStart(2, '0')}</span>
-						<span class="text-zinc-300 mx-2">/</span>
-						<span>{String(galleryData.slides.length).padStart(2, '0')}</span>
-					</div>
 				</div>
 			{/if}
 		</div>
