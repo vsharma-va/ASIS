@@ -279,16 +279,16 @@
 			<!-- Mobile details - Second Set -->
 			<div class="lg:hidden absolute top-4 left-4 right-4 flex flex-col gap-4 detail-set-2">
 				<div class="detail-text-second bg-white/10 backdrop-blur-sm rounded-lg p-4 text-black">
-					<div class="text-xs uppercase secondary-font">Water Resistance</div>
-					<div class="text-sm font-bold secondary-font">100M Professional</div>
+					<div class="text-xs uppercase secondary-font">STRAP</div>
+					<div class="text-sm font-bold secondary-font">Genuine Alligator Leather / Vegan Leather	</div>
 				</div>
 				<div class="detail-text-second bg-white/10 backdrop-blur-sm rounded-lg p-4 text-black">
-					<div class="text-xs uppercase secondary-font">Crystal</div>
+					<div class="text-xs uppercase secondary-font">GLASS</div>
 					<div class="text-sm font-bold secondary-font">Sapphire Glass</div>
 				</div>
 				<div class="detail-text-second bg-white/10 backdrop-blur-sm rounded-lg p-4 text-black">
-					<div class="text-xs uppercase secondary-font">Limited Edition</div>
-					<div class="text-sm font-bold secondary-font">Only 500 Pieces</div>
+					<div class="text-xs uppercase secondary-font">WARRANTY</div>
+					<div class="text-sm font-bold secondary-font">2 Year International Warranty	</div>
 				</div>
 			</div>
 
@@ -350,7 +350,7 @@
 				<div class="detail-line-second h-px bg-black origin-right w-12"></div>
 				<div class="detail-text-second ml-2 w-1/2 secondary-font">
 					<div class="text-xs uppercase">WARRANTY</div>
-					<div class="text-sm font-bold">2 International Warranty	</div>
+					<div class="text-sm font-bold">2 Year International Warranty	</div>
 				</div>
 			</div>
 		</div>
