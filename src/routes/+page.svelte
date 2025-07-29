@@ -78,6 +78,21 @@
 		slides: petiteImageSlides
 	};
 
+	let grandeGalleryData = {
+		collection: "Grande",
+		subCollection: "The Invisible",
+		title: "A Gemstone Symphony",
+		watchDescription: "A Gemstone Symphony Crafted in the Art of Invisible Setting Watch",
+		specs: [
+			{ label: "Model NO", value: "M1835S" },
+			{ label: "Case Size", value: "40 MM" },
+			{ label: "Leather Options", value: "Alligator / Vegan" },
+			{ label: "Variants", value: "9 Variants" }
+		],
+		gemstones: ["Diamond", "Colored Sapphire", "Tsavorite", "Iolite", "Amethyst", "Ruby", "Emerald", "Topaz"],
+		slides: petiteImageSlides
+	};
+
 	let doubleRainbowGalleryData = {
 		collection: "The Twin-Rainbow",
 		subCollection: "The Twin-Rainbow",
@@ -121,6 +136,7 @@
 <Landing />
 <Collections/>
 <Gallery galleryData="{petiteGalleryData}"/>
+<Gallery galleryData="{grandeGalleryData}"/>
 <Gallery galleryData="{doubleRainbowGalleryData}"/>
 <Gallery galleryData="{blackPantherGalleryData}"/>
 <Partners />
