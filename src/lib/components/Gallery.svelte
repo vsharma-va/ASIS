@@ -47,8 +47,9 @@
 
 		swiperInstance = new Swiper('.swiper-container', {
 			modules: [Navigation, EffectFade, Controller],
+			loop: true,
 			effect: 'fade',
-			fadeEffect: { crossFade: false },
+			fadeEffect: { crossFade: true },
 			speed: 1200,
 			navigation: {
 				nextEl: '.swiper-button-next',
