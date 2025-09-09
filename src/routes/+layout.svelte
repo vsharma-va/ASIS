@@ -1,24 +1,28 @@
 <script>
 	import '../app.css';
 	import { gsap } from 'gsap/dist/gsap';
-	import Lenis from 'lenis';
+	import { ScrollSmoother } from 'gsap/dist/ScrollSmoother';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
+	let smoother;
+
+	if(typeof window !== 'undefined') {
+		gsap.registerPlugin(ScrollTrigger,ScrollSmoother);
+	}
 
 	onMount(() => {
-		gsap.registerPlugin(ScrollTrigger);
-		const lenis = new Lenis({
-			autoRaf: true,
-			lerp: 0.05
-		});
-		lenis.on('scroll', ScrollTrigger.update);
-		gsap.ticker.add((time) => {
-			lenis.raf(time * 1000);
-		});
-		gsap.ticker.lagSmoothing(0);
+		smoother = ScrollSmoother.create({
+			// speed: 0.9,
+			smooth: 2,
+			smoothTouch: 0.5,
+			ease: "power",
+			effects: true,
+		})
 	});
+	console.log(smoother);
 </script>
-
+<div id="smooth-content">
 {@render children()}
+</div>

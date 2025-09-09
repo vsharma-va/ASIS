@@ -20,8 +20,8 @@
 
 			ScrollTrigger.create({
 				trigger: footerContainer,
-				start: 'top+=270% top',
-				end: 'bottom+=280% 15%',
+				start: 'top-=10% top',
+				end: 'bottom bottom',
 				markers: false,
 				onEnter: () => {
 					const tl = gsap.timeline();
@@ -31,7 +31,7 @@
 						y: 0,
 						opacity: 1,
 						duration: 0.8,
-						ease: 'power2.out',
+						ease: 'power2.inOut',
 						stagger: 0.2,
 						force3D: true
 					});
@@ -41,7 +41,7 @@
 						y: 0,
 						opacity: 1,
 						duration: 1,
-						ease: 'power2.out',
+						ease: 'power2.inOut',
 						force3D: true
 					}, 0.3);
 
@@ -50,7 +50,7 @@
 						y: 0,
 						opacity: 1,
 						duration: 0.8,
-						ease: 'power2.out',
+						ease: 'power2.inOut',
 						stagger: 0.1,
 						force3D: true
 					}, 0.8);
