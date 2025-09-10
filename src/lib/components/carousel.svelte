@@ -39,6 +39,9 @@
 	let nextBtn;
 	let prevBtn;
 
+	// A proxy object to represent the carousel's continuous progress
+	let progress = { value: 0 };
+
 	let currentIndex = 0;
 	let isAnimating = false;
 	let draggableInstance;
@@ -53,52 +56,50 @@
 	});
 
 	onDestroy(() => {
-		// Clean up GSAP instances and timers
 		if (draggableInstance) draggableInstance.kill();
 		if (autoRotateTimer) clearInterval(autoRotateTimer);
-		gsap.killTweensOf(cards);
+		gsap.killTweensOf([cards, progress]);
 	});
 
 	// --- FUNCTIONS ---
 	function initializeCarousel() {
-		updateCarouselState(0, 0);
+		updateCarouselState(0);
 
-		const handleNext = () => gotoCard((currentIndex + 1) % images.length);
-		const handlePrev = () => gotoCard((currentIndex - 1 + images.length) % images.length);
+		const handleNext = () => gotoCard(Math.round(progress.value + 1));
+		const handlePrev = () => gotoCard(Math.round(progress.value - 1));
 
 		nextBtn.addEventListener('click', handleNext);
 		prevBtn.addEventListener('click', handlePrev);
 
-		// CHANGE 1: Draggable with inertia
+		// The new, real-time draggable implementation
 		draggableInstance = Draggable.create(dragProxy, {
 			type: "x",
 			trigger: cardsContainer,
 			inertia: true,
-			onDragStart: () => {
-				stopAutoRotate(); // Pause rotation on user interaction
+			onPress() {
+				stopAutoRotate();
+				// Kill any ongoing animations and sync the progress value
+				gsap.killTweensOf(progress);
+				this.startProgress = progress.value;
 			},
-			onDragEnd: function() {
-				startAutoRotate();
-				const velocity = InertiaPlugin.getVelocity(this.target,"x") / 10
-				const threshold = 250; // Velocity needed for a "flick"
-				let change = 0;
-				console.log(velocity);
-				if (Math.abs(velocity) > threshold) {
-					// Faster flick moves more cards
-					change = Math.round(velocity / 8);
-				} else {
-					// Slow drag moves just one card
-					const dragDistance = this.endX - this.startX;
-					if (Math.abs(dragDistance) > 50) { // Drag threshold
-						change = dragDistance < 0 ? 1 : -1;
-					}
-				}
+			onDrag() {
+				// Calculate the new progress value based on drag distance
+				const sensitivity = 0.005; // Adjust this for drag "speed"
+				progress.value = this.startProgress - (this.x - this.startX) * sensitivity;
+				// Update the carousel visuals in real-time
+				updateCarouselState(progress.value);
+			},
+			onDragEnd() {
+				// Use inertia to project the final landing position
+				const velocity = InertiaPlugin.getVelocity(this.target, "x");
+				const projectedProgress = progress.value - (velocity * 0.0002); // Inertia sensitivity
 
-				if (change !== 0) {
-					let newIndex = currentIndex + change;
-					// Wrap index around
-					gotoCard((newIndex % images.length + images.length) % images.length);
-				}
+				// Snap to the nearest whole number (the closest card)
+				let finalIndex = Math.round(projectedProgress);
+
+				// Animate smoothly to the final snapped position
+				gotoCard(finalIndex);
+				startAutoRotate();
 			}
 		})[0];
 
@@ -110,49 +111,56 @@
 		});
 	}
 
-	function updateCarouselState(newIndex, duration = 0.6) {
-		if (isAnimating && duration > 0) return;
-		if (duration > 0) isAnimating = true;
-
-		currentIndex = newIndex;
+	/**
+	 * This function is now the "renderer". It positions cards based on a
+	 * continuous progress value, which can be a fraction for in-between states.
+	 */
+	function updateCarouselState(newProgressValue) {
 		const numCards = images.length;
 		const half = numCards / 2;
 
+		// Update the reactive currentIndex for the progress dots
+		currentIndex = Math.round(newProgressValue) % numCards;
+		if (currentIndex < 0) currentIndex += numCards;
+
 		cards.forEach((card, i) => {
-			let offset = i - currentIndex;
+			let offset = i - newProgressValue;
 			if (offset > half) offset -= numCards;
 			if (offset < -half) offset += numCards;
 			const absOffset = Math.abs(offset);
 
 			const properties = {
-				// CHANGE 4: Increased spacing multiplier to 100
 				xPercent: offset * 100,
 				scale: 1 - absOffset * 0.2,
 				rotationY: -offset * 20,
 				zIndex: numCards - absOffset,
-				opacity: absOffset > 2 ? 0 : 1,
-				duration: duration,
-				ease: "power2.inOut",
-				overwrite: "auto",
+				opacity: absOffset > 2.5 ? 0 : 1, // Hide cards a bit further away
+				duration: 0.5, // No duration for instant updates
 			};
-			gsap.to(card, properties);
+			gsap.set(card, properties); // Use gsap.set for better performance on rapid updates
 		});
-
-		if (duration > 0) {
-			gsap.delayedCall(duration, () => { isAnimating = false; });
-		}
 	}
 
+	/**
+	 * This function handles discrete jumps, like clicking a button or snapping
+	 * after a drag. It smoothly animates the progress value.
+	 */
 	function gotoCard(index) {
-		if (index === currentIndex && isAnimating) return;
-		// stopAutoRotate();
-		updateCarouselState(index);
+		// Wrap index for infinite loop
+		const wrappedIndex = (index % images.length + images.length) % images.length;
+
+		gsap.to(progress, {
+			value: wrappedIndex,
+			duration: 0.8,
+			ease: "power2.inOut",
+			onUpdate: () => updateCarouselState(progress.value), // The onUpdate call renders the animation
+		});
 	}
 
 	function startAutoRotate() {
-		// stopAutoRotate();
+		stopAutoRotate();
 		autoRotateTimer = setInterval(() => {
-			gotoCard((currentIndex + 1) % images.length);
+			gotoCard(Math.round(progress.value + 1));
 		}, 3000);
 	}
 
