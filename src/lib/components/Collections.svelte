@@ -2,7 +2,7 @@
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { gsap } from 'gsap';
-
+	import ImageCarousel from '$lib/components/carousel.svelte';
 
 	// --- PROPS ---
 	export let introData = {
@@ -27,9 +27,14 @@
 	});
 </script>
 
-<div class="intro-section min-h-screen flex items-center justify-center" transition:fade>
+<div class="intro-section h-fit flex items-center justify-center" transition:fade>
 	<div bind:this={introContainer} class="text-center max-w-3xl mx-auto px-6">
 		<h1 class="primary-font text-6xl md:text-8xl text-zinc-900 mb-6">{introData.title}</h1>
 		<p class="secondary-font text-zinc-600 leading-relaxed text-base md:text-lg mb-10">{introData.description}</p>
 	</div>
+</div>
+
+<!-- Carousel Section -->
+<div class="carousel-section">
+	<ImageCarousel />
 </div>
