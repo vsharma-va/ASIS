@@ -35,6 +35,6 @@
 </div>
 
 <!-- Carousel Section -->
-<div class="carousel-section">
-	<ImageCarousel />
-</div>
+<!--<div class="carousel-section">-->
+<!--	<ImageCarousel />-->
+<!--</div>-->
