@@ -73,7 +73,7 @@
 							scale: 1,
 							opacity: 1,
 							duration: 1.2,
-							ease: 'power2.out',
+							ease: 'power2.inOut',
 							delay: 0.1
 						})
 							.to('.LandingTextElem', {
@@ -81,13 +81,13 @@
 								y: 0,
 								stagger: isMobile ? 0.05 : 0.1,
 								duration: 0.8,
-								ease: 'power2.out'
+								ease: 'power2.inOut'
 							}, '-=0.6')
 							.to('.watch-image', {
 								opacity: 0.8,
 								scale: isMobile ? 1.1 : 1.2,
 								duration: 1,
-								ease: 'power2.out'
+								ease: 'power2.inOut'
 							}, '-=0.4');
 
 						tl.call(setupScrollAnimations);
@@ -126,6 +126,19 @@
 				ease: 'none',
 				duration: 1
 			}, 0)
+			.fromTo('.sloganText',
+				{
+					y:0,
+					opacity: 1,
+					scale: 1,
+				},
+				{
+					y: `${isMobile ? -15 : -25}%`,
+					opacity: 0,
+					scale: isMobile ? 1.05 : 1.1,
+					ease: 'none',
+					duration: 1
+				},0)
 
 			// Watch image scaling
 			.fromTo('.watch-image',
@@ -153,14 +166,14 @@
 				y: 0,
 				stagger: 0.1,
 				duration: 0.4,
-				ease: 'power2.out'
+				ease: 'power2.inOut'
 			}, 0.4)
 
 			.to('.detail-image', {
 				opacity: 1,
 				scale: 1,
 				duration: 0.4,
-				ease: 'power2.out'
+				ease: 'power2.inOut'
 			}, 0.5)
 
 			// Hold first details for a moment
@@ -204,14 +217,14 @@
 				y: 0,
 				stagger: 0.1,
 				duration: 0.4,
-				ease: 'power2.out'
+				ease: 'power2.inOut'
 			}, 2.0)
 
 			.to('.detail-image-second', {
 				opacity: 1,
 				scale: 1,
 				duration: 0.4,
-				ease: 'power2.out'
+				ease: 'power2.inOut'
 			}, 2.1)
 
 			// Hold second details until the end
@@ -232,11 +245,13 @@
 	</div>
 </div>
 
-<div class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient">
+<div
+	class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient">
 	<img src="{LandingBg}" alt="Background img" loading="eager"
-			 class="LandingBG absolute top-0 left-0 h-screen w-full object-cover z-0">
+		 class="LandingBG absolute top-0 left-0 h-screen w-full object-cover z-0">
 
-	<div class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[10rem]">
+	<div
+		class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[10rem]">
 		<div class="LandingTextElem h-fit w-full sm:w-2/4 text-center sm:text-left uppercase secondary-font text-xs sm:text-sm mb-2 sm:mb-0
          sm:-ml-[15rem]">
 			Meet
@@ -255,10 +270,16 @@
 <!-- Increased height but the pin will handle the scroll behavior -->
 <div class="AfterLandingSection h-screen w-full relative flex justify-center items-center bg-gradient overflow-hidden">
 	<div class="w-full h-full flex flex-col lg:flex-row items-center justify-center relative px-4 lg:px-0">
-		<div class="watch-container relative h-full lg:h-full w-full lg:w-3/4 flex justify-center items-center overflow-hidden">
+		<div
+			class="watch-container relative h-full lg:h-full w-full lg:w-3/4 flex justify-center items-center overflow-hidden">
 			<img src="{FirstWatchImage}" alt="ASIS Luxury Watch"
-					 class="watch-image w-full h-full object-cover lg:object-contain"
-					 loading="eager">
+				 class="watch-image w-full h-full object-cover lg:object-contain"
+				 loading="eager">
+			<div class="sloganText h-fit w-full text-center text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-[5.5rem]
+         				primary-font font-[600] mb-2 sm:mb-0 leading-[0.8] capitalize text-white/90
+						absolute top-[35%] left-1/2 transform-3d -translate-1/2">
+				You are unique as is
+			</div>
 
 			<!-- Mobile details - First Set -->
 			<div class="lg:hidden absolute top-4 left-4 right-4 flex flex-col gap-4 detail-set-1">
@@ -280,7 +301,7 @@
 			<div class="lg:hidden absolute top-4 left-4 right-4 flex flex-col gap-4 detail-set-2">
 				<div class="detail-text-second bg-white/10 backdrop-blur-sm rounded-lg p-4 text-black">
 					<div class="text-xs uppercase font-bold secondary-font">STRAP</div>
-					<div class="text-sm uppercase secondary-font">Genuine Alligator Leather / Vegan Leather	</div>
+					<div class="text-sm uppercase secondary-font">Genuine Alligator Leather / Vegan Leather</div>
 				</div>
 				<div class="detail-text-second bg-white/10 backdrop-blur-sm rounded-lg p-4 text-black">
 					<div class="text-xs uppercase font-bold secondary-font">GLASS</div>
@@ -288,20 +309,21 @@
 				</div>
 				<div class="detail-text-second bg-white/10 backdrop-blur-sm rounded-lg p-4 text-black">
 					<div class="text-xs uppercase font-bold secondary-font">WARRANTY</div>
-					<div class="text-sm uppercase secondary-font">2 Year International Warranty	</div>
+					<div class="text-sm uppercase secondary-font">2 Year International Warranty</div>
 				</div>
 			</div>
 
 			<!-- Desktop details - First Set -->
-			<div class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-1">
+			<div
+				class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-1">
 				<div class="flex items-center justify-center">
 					<div class="detail-text mr-2 text-right w-3/4 tracking-tight">
 						<div class="text-xs uppercase font-bold secondary-font">GEMSTONES</div>
 						<div class="text-sm uppercase secondary-font">Natural Diamonds & Colorstones</div>
 						<div class="mt-2 flex justify-end items-center border-2">
 							<img src="{WatchDetailImage}" alt="Watch case detail"
-									 class="detail-image w-full h-full object-cover"
-									 loading="eager">
+								 class="detail-image w-full h-full object-cover"
+								 loading="eager">
 						</div>
 					</div>
 					<div class="detail-line h-px bg-black origin-left w-12"></div>
@@ -324,15 +346,16 @@
 			</div>
 
 			<!-- Desktop details - Second Set -->
-			<div class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-2">
+			<div
+				class="hidden lg:block absolute w-[250px] xl:w-[300px] left-1/5 top-1/4 transform -translate-1/2 detail-set-2">
 				<div class="flex items-center justify-center">
 					<div class="detail-text-second mr-2 text-right w-3/4 tracking-tight">
 						<div class="text-xs uppercase font-bold secondary-font">STRAP</div>
-						<div class="text-sm uppercase secondary-font">Genuine Alligator Leather / Vegan Leather	</div>
+						<div class="text-sm uppercase secondary-font">Genuine Alligator Leather / Vegan Leather</div>
 						<div class="mt-2 flex justify-end items-center border-2">
 							<img src="{WatchDetailImage2}" alt="Watch craftsmanship detail"
-									 class="detail-image-second w-full h-full object-cover"
-									 loading="eager">
+								 class="detail-image-second w-full h-full object-cover"
+								 loading="eager">
 						</div>
 					</div>
 					<div class="detail-line-second h-px bg-black origin-left w-12"></div>
@@ -343,14 +366,14 @@
 				<div class="detail-line-second h-px bg-black origin-right w-12"></div>
 				<div class="detail-text-second ml-2 w-1/2 secondary-font">
 					<div class="text-xs uppercase font-bold">GLASS</div>
-					<div class="text-sm uppercase">Sapphire Crystal	</div>
+					<div class="text-sm uppercase">Sapphire Crystal</div>
 				</div>
 			</div>
 			<div class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-2/3 items-center detail-set-2">
 				<div class="detail-line-second h-px bg-black origin-right w-12"></div>
 				<div class="detail-text-second ml-2 w-1/2 secondary-font">
 					<div class="text-xs uppercase font-bold">WARRANTY</div>
-					<div class="text-sm uppercase">2 Year International Warranty	</div>
+					<div class="text-sm uppercase">2 Year International Warranty</div>
 				</div>
 			</div>
 		</div>
@@ -358,101 +381,119 @@
 </div>
 
 <style>
-    .LandingBG, .LandingTextElem, .watch-image, .detail-line, .detail-text, .detail-image,
-    .detail-line-second, .detail-text-second, .detail-image-second {
-        will-change: transform;
-    }
+	.LandingBG, .LandingTextElem, .watch-image, .detail-line, .detail-text, .detail-image,
+	.detail-line-second, .detail-text-second, .detail-image-second {
+		will-change: transform;
+	}
 
-    .detail-set-1, .detail-set-2 {
-        pointer-events: none;
-    }
+	.detail-set-1, .detail-set-2 {
+		pointer-events: none;
+	}
 
-    .detail-set-2 {
-        z-index: 1;
-    }
+	.detail-set-2 {
+		z-index: 1;
+	}
 
-    .detail-set-1 {
-        z-index: 2;
-    }
+	.detail-set-1 {
+		z-index: 2;
+	}
 
-    .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
-    }
+	.loading-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: white;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 9999;
+		transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+	}
 
-    .loading-overlay.hidden {
-        opacity: 0;
-        visibility: hidden;
-    }
+	.loading-overlay.hidden {
+		opacity: 0;
+		visibility: hidden;
+	}
 
-    .newtons-cradle {
-        --uib-size: 40px;
-        --uib-speed: 1.2s;
-        --uib-color: #474554;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: var(--uib-size);
-        height: var(--uib-size);
-    }
+	.newtons-cradle {
+		--uib-size: 40px;
+		--uib-speed: 1.2s;
+		--uib-color: #474554;
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--uib-size);
+		height: var(--uib-size);
+	}
 
-    @media (min-width: 640px) {
-        .newtons-cradle {
-            --uib-size: 50px;
-        }
-    }
+	@media (min-width: 640px) {
+		.newtons-cradle {
+			--uib-size: 50px;
+		}
+	}
 
-    .newtons-cradle__dot {
-        position: relative;
-        display: flex;
-        align-items: center;
-        height: 100%;
-        width: 25%;
-        transform-origin: center top;
-    }
+	.newtons-cradle__dot {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 100%;
+		width: 25%;
+		transform-origin: center top;
+	}
 
-    .newtons-cradle__dot::after {
-        content: '';
-        display: block;
-        width: 100%;
-        height: 25%;
-        border-radius: 50%;
-        background-color: var(--uib-color);
-    }
+	.newtons-cradle__dot::after {
+		content: '';
+		display: block;
+		width: 100%;
+		height: 25%;
+		border-radius: 50%;
+		background-color: var(--uib-color);
+	}
 
-    .newtons-cradle__dot:first-child {
-        animation: swing var(--uib-speed) linear infinite;
-    }
+	.newtons-cradle__dot:first-child {
+		animation: swing var(--uib-speed) linear infinite;
+	}
 
-    .newtons-cradle__dot:last-child {
-        animation: swing2 var(--uib-speed) linear infinite;
-    }
+	.newtons-cradle__dot:last-child {
+		animation: swing2 var(--uib-speed) linear infinite;
+	}
 
-    @keyframes swing {
-        0% { transform: rotate(0deg); animation-timing-function: ease-out; }
-        25% { transform: rotate(70deg); animation-timing-function: ease-in; }
-        50% { transform: rotate(0deg); animation-timing-function: linear; }
-    }
+	@keyframes swing {
+		0% {
+			transform: rotate(0deg);
+			animation-timing-function: ease-out;
+		}
+		25% {
+			transform: rotate(70deg);
+			animation-timing-function: ease-in;
+		}
+		50% {
+			transform: rotate(0deg);
+			animation-timing-function: linear;
+		}
+	}
 
-    @keyframes swing2 {
-        0% { transform: rotate(0deg); animation-timing-function: linear; }
-        50% { transform: rotate(0deg); animation-timing-function: ease-out; }
-        75% { transform: rotate(-70deg); animation-timing-function: ease-in; }
-    }
+	@keyframes swing2 {
+		0% {
+			transform: rotate(0deg);
+			animation-timing-function: linear;
+		}
+		50% {
+			transform: rotate(0deg);
+			animation-timing-function: ease-out;
+		}
+		75% {
+			transform: rotate(-70deg);
+			animation-timing-function: ease-in;
+		}
+	}
 
-    @media (max-width: 768px) {
-        .watch-container {
-            padding: 1rem 0;
-        }
-    }
+	@media (max-width: 768px) {
+		.watch-container {
+			padding: 1rem 0;
+		}
+	}
 </style>

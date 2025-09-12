@@ -8,24 +8,24 @@
 		let timeline = gsap.timeline({
 			scrollTrigger: {
 				trigger: '.collection-section',
-				start: 'top+=260% top+=20%',
-				end: 'center+=260% center',
-				scrub: true,
+				start: 'top center',
+				end: 'bottom bottom+=25%',
+				scrub: 2,
 				markers: false
 			}
 		});
 		timeline.to('.animate-title', {
 			y: 0,
 			opacity: 1,
-			ease: 'power2.out',
+			ease: 'power2.inOut',
 			stagger: 0.2,
-			duration: 1
+			duration: 2
 		})
 			.to('.animate-paragraph', {
 				y: 0,
 				opacity: 1,
-				ease: 'power2.out',
-				duration: 1
+				ease: 'power2.inOut',
+				duration: 2
 			});
 	});
 </script>
