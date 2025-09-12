@@ -185,8 +185,7 @@
 				images: [
 					'https://images.unsplash.com/photo-1594736797933-d05ba2fe65?w=1000&h=1000&fit=crop&q=80',
 					'https://images.unsplash.com/photo-1585123334904-845d607b29?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1615655406736-b37c4fab
-923?w=1000&h=1000&fit=crop&q=80',
+					'https://images.unsplash.com/photo-1615655406736-b37c4fab923?w=1000&h=1000&fit=crop&q=80',
 					'https://images.unsplash.com/photo-1611930021592-a8cfd59ceb?w=1000&h=1000&fit=crop&q=80'
 				]
 			}
