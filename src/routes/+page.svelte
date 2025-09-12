@@ -83,10 +83,10 @@
 					color: '#E2E8F0',
 					accent: '#F8FAFC',
 					images: [
-						'https://images.unsplash.com/photo-1523170335258-f5c544bc1f?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1547996160-81dfa695aa?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1508057198894-247b23fade?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=1000&h=1000&fit=crop&q=80'
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com'
 					]
 				},
 				{
@@ -95,10 +95,10 @@
 					color: '#1E40AF',
 					accent: '#3B82F6',
 					images: [
-						'https://images.unsplash.com/photo-1434493789847-2f02dca35d?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1611930022073-b7a4bacccd?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1639006570490-79c0c53f1080?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1614164185128-e4ec99c6d7?w=1000&h=1000&fit=crop&q=80'
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com'
 					]
 				},
 				{
@@ -107,10 +107,10 @@
 					color: '#065F46',
 					accent: '#10B981',
 					images: [
-						'https://images.unsplash.com/photo-1522312346375-d1a52e29b3?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1609587312208-cea54be9e7?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1606760227091-3dd870df1d?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1618221118493-9cfa1a1c0da?w=1000&h=1000&fit=crop&q=80'
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com'
 					]
 				},
 				{
@@ -119,10 +119,10 @@
 					color: '#991B1B',
 					accent: '#F87171',
 					images: [
-						'https://images.unsplash.com/photo-1594736797933-d0501bfe65?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1585123334904-845d60eb29?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1615655406736-b37c4fa923?w=1000&h=1000&fit=crop&q=80',
-						'https://images.unsplash.com/photo-1611930021592-a8cfd531eb?w=1000&h=1000&fit=crop&q=80'
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com',
+						'https://images.unsplash.com'
 					]
 				}
 			]
