@@ -2,7 +2,7 @@
 	import { onMount, afterUpdate } from 'svelte';
 	import { gsap } from 'gsap';
 
-	export let galleryData
+	export let galleryData;
 
 	let selectedVariantIndex = 0;
 	let selectedImageIndex = 0;
@@ -131,7 +131,7 @@
 <div class="font-sans min-h-screen bg-gradient text-zinc-800">
 	<main class="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
 
-		<div class="lg:col-span-1 h-[65vh] lg:h-screen flex flex-col p-4 sm:p-6 lg:p-8 lg:sticky lg:top-0">
+		<div class="lg:col-span-1 h-[65vh] lg:h-screen flex flex-col p-4 sm:p-6 lg:p-8 lg:sticky lg:top-0 mt-[4rem]">
 			{#key selectedVariantIndex}
 				<div
 					class="main-image-wrapper relative flex-1 w-full bg-slate-100 rounded-2xl overflow-hidden"
@@ -151,7 +151,8 @@
 						</div>
 					{/key}
 
-					<div class="absolute top-5 left-5 bg-white/70 backdrop-blur-sm text-zinc-700 px-3 py-1 rounded-full text-sm font-medium">
+					<div
+						class="absolute top-5 left-5 bg-white/70 backdrop-blur-sm text-zinc-700 px-3 py-1 rounded-full text-sm font-medium">
 						{selectedImageIndex + 1} / {currentVariant.images.length}
 					</div>
 				</div>
@@ -168,7 +169,7 @@
 								class:hover:scale-105={selectedImageIndex !== index}
 								on:click={() => selectImage(index)}
 							>
-								<img src={image} alt="Thumbnail {index + 1}" class="w-20 h-20 object-cover"/>
+								<img src={image} alt="Thumbnail {index + 1}" class="w-20 h-20 object-cover" />
 							</button>
 						{/each}
 					</div>
@@ -177,9 +178,10 @@
 		</div>
 
 		<div class="lg:col-span-1 flex items-center">
-			<div class="p-8 sm:p-12 lg:p-16 w-full product-info space-y-10">
+			<div class="p-8 sm:p-12 lg:p-16 w-full product-info space-y-8">
 				<header class="space-y-3">
-					<span class="text-sm font-medium text-zinc-500 tracking-wider uppercase">{galleryData.collection}</span>
+					<span
+						class="text-sm font-medium text-zinc-500 tracking-wider uppercase">{galleryData.collection}</span>
 					<h1 class="text-4xl lg:text-5xl font-light tracking-tight text-zinc-900">
 						{galleryData.title}
 					</h1>
@@ -189,23 +191,24 @@
 				</header>
 
 				<section class="space-y-5">
-					<h3 class="text-base font-semibold text-zinc-900">Select Gemstone: <span class="font-medium text-zinc-600">{currentVariant.name}</span></h3>
-					<div class="flex flex-wrap gap-4">
+					<h3 class="text-base font-semibold text-zinc-900">Select Gemstone: <span
+						class="font-medium text-zinc-600">{currentVariant.name}</span></h3>
+					<div class="flex flex-wrap gap-1">
 						{#each galleryData.variants as variant, index}
 							<button
 								on:click={() => selectVariant(index)}
-								class="group relative flex items-center space-x-3 p-2 pr-4 rounded-full transition-colors duration-200"
+								class="group relative flex items-center space-x-3 p-2 rounded-full transition-colors duration-200"
 								class:bg-slate-100={selectedVariantIndex === index}
 								class:hover:bg-slate-100={selectedVariantIndex !== index}
 								title={variant.name}
 							>
 								<div
-									class="w-8 h-8 rounded-full shadow-inner border border-black/5 transition-transform duration-300 ease-out"
+									class="w-8 h-8 m-0 rounded-full shadow-inner border border-black/5 transition-transform duration-300 ease-out"
 									class:scale-110={selectedVariantIndex === index}
 									class:group-hover:scale-110={selectedVariantIndex !== index}
 									style="background: linear-gradient(135deg, {variant.color}, {variant.accent})"
 								></div>
-								<span class="text-sm font-medium">{variant.name}</span>
+								<!--								<span class="text-sm font-medium">{variant.name}</span>-->
 								{#if selectedVariantIndex === index}
 									<div class="absolute inset-0 rounded-full ring-2 ring-zinc-300"></div>
 								{/if}
@@ -218,7 +221,8 @@
 					<h3 class="text-base font-semibold text-zinc-900">Technical Specifications</h3>
 					<div class="border border-zinc-200 rounded-xl p-2">
 						{#each galleryData.specs as spec, index}
-							<div class="flex justify-between items-center p-3" class:border-t={index > 0} class:border-zinc-200={index > 0}>
+							<div class="flex justify-between items-center p-3" class:border-t={index > 0}
+								 class:border-zinc-200={index > 0}>
 								<span class="text-sm text-zinc-600">{spec.label}</span>
 								<span class="text-sm font-semibold text-zinc-900">{spec.value}</span>
 							</div>
@@ -230,7 +234,8 @@
 					<h3 class="text-base font-semibold text-zinc-900">Available Gemstones</h3>
 					<div class="flex flex-wrap gap-3">
 						{#each galleryData.gemstones as gemstone}
-                            <span class="bg-slate-100 text-zinc-700 px-4 py-2 rounded-full text-sm font-medium border border-zinc-200">
+                            <span
+								class="bg-slate-100 text-zinc-700 px-4 py-2 rounded-full text-sm font-medium border border-zinc-200">
                                 {gemstone}
                             </span>
 						{/each}

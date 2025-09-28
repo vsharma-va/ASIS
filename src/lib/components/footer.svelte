@@ -20,7 +20,7 @@
 
 			ScrollTrigger.create({
 				trigger: footerContainer,
-				start: 'top-=10% top',
+				start: 'top-=10% center',
 				end: 'bottom bottom',
 				markers: false,
 				onEnter: () => {

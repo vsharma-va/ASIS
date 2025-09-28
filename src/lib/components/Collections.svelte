@@ -7,7 +7,7 @@
 	// --- PROPS ---
 	export let introData = {
 		title: "Collections",
-		description: "At AS-IS, we present a diverse range of curated collections highlighting our unique designs and craftsmanship. Each collection features stylish and unique timepieces, meticulously crafted with handpicked gemstones and exceptional artistry, ensuring that every piece stands out as a true expression of elegance and sophistication."
+		description: "At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch."
 	};
 
 	// --- STATE & ANIMATION ---
@@ -35,6 +35,6 @@
 </div>
 
 <!-- Carousel Section -->
-<!--<div class="carousel-section">-->
-<!--	<ImageCarousel />-->
-<!--</div>-->
+<div class="carousel-section">
+	<ImageCarousel />
+</div>

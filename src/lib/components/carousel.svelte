@@ -3,6 +3,8 @@
 	import { gsap } from 'gsap/dist/gsap';
 	import { Draggable } from 'gsap/dist/Draggable';
 	import { InertiaPlugin } from "gsap/dist/InertiaPlugin";
+	import { goto } from '$app/navigation';
+	import { getAllWatchIds } from '$lib/stores/watchData.js';
 
 	// Register GSAP plugins
 	gsap.registerPlugin(InertiaPlugin,Draggable);
@@ -47,6 +49,22 @@
 	let draggableInstance;
 	let autoRotateTimer;
 	let cards;
+
+	// Get watch IDs for navigation
+	const watchIds = getAllWatchIds();
+
+	// --- CLICK HANDLER FOR WATCH NAVIGATION ---
+	function handleWatchClick(index) {
+		// Only navigate if we're not currently dragging
+		if (!draggableInstance || !draggableInstance.isDragging) {
+			console.log(watchIds);
+			console.log(index);
+			const watchId = watchIds[index];
+			if (watchId) {
+				goto(`/watches/${watchId}`);
+			}
+		}
+	}
 
 	// --- LIFECYCLE ---
 	onMount(() => {
@@ -181,10 +199,19 @@
 			bind:this={cardsContainer}
 			class="carousel-cards absolute w-72 h-[28rem] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
 		>
-			{#each images as image}
+			{#each images as image,index}
 				<li
 					class="carousel-card list-none p-0 m-0 w-full h-full absolute top-0 left-0 rounded-xl bg-cover bg-no-repeat bg-center"
 					style="background-image: url({image})"
+					on:click={() => handleWatchClick(index)}
+					on:keydown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							handleWatchClick(index);
+					}}}
+					role="button"
+					tabindex="0"
+					aria-label="View Details for watch {index + 1}"
 				></li>
 			{/each}
 		</ul>
