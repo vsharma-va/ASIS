@@ -8,7 +8,7 @@
 		let timeline = gsap.timeline({
 			scrollTrigger: {
 				trigger: '.collection-section',
-				start: 'top center-=25%',
+				start: 'top-=45% center',
 				end: 'bottom bottom+=25%',
 				scrub: 2,
 				markers: false
@@ -50,9 +50,12 @@
 				<p
 					class="animate-paragraph w-full text-sm sm:text-base lg:text-lg tracking-normal secondary-font
 								leading-relaxed translate-y-[110%] opacity-0">
-					Join us in celebrating individuality and craftsmanship by partnering with ASIS Watches as a wholesaler or
-					distributor. Our exquisite timepieces are not just watches; they are wearable art, meticulously crafted to
-					resonate with style and sophistication.By becoming a part of our network, you’ll offer your customers unique,
+					Join us in celebrating individuality and craftsmanship by partnering with ASIS Watches as a
+					wholesaler or
+					distributor. Our exquisite timepieces are not just watches; they are wearable art, meticulously
+					crafted to
+					resonate with style and sophistication.By becoming a part of our network, you’ll offer your
+					customers unique,
 					high-quality products while benefiting from our after sales support.
 				</p>
 			</div>
