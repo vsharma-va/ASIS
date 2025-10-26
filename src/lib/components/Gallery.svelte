@@ -1,6 +1,10 @@
 <script>
-	import { onMount, afterUpdate } from 'svelte';
+	import { onMount, afterUpdate, onDestroy } from 'svelte';
 	import { gsap } from 'gsap';
+	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
+
+	// Register this component immediately when script runs
+	registerComponent('gallery');
 
 	export let galleryData;
 
@@ -28,8 +32,24 @@
 		animateCarouselIn();
 		gsap.fromTo('.product-info > *',
 			{ y: 30, opacity: 0 },
-			{ duration: 0.8, y: 0, opacity: 1, stagger: 0.08, ease: 'power3.out', delay: 0.2 }
+			{
+				duration: 0.8,
+				y: 0,
+				opacity: 1,
+				stagger: 0.08,
+				ease: 'power3.out',
+				delay: 0.2,
+				onComplete: () => {
+					// Report Gallery component as ready after all animations complete
+					setComponentReady('gallery', true);
+				}
+			}
 		);
+	});
+
+	onDestroy(() => {
+		// Unregister component when destroyed
+		unregisterComponent('gallery');
 	});
 
 	afterUpdate(() => {

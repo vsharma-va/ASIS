@@ -8,7 +8,7 @@
 		let timeline = gsap.timeline({
 			scrollTrigger: {
 				trigger: '.collection-section',
-				start: 'top center',
+				start: 'top center-=25%',
 				end: 'bottom bottom+=25%',
 				scrub: 2,
 				markers: false

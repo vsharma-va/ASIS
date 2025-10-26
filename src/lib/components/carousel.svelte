@@ -2,37 +2,20 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap/dist/gsap';
 	import { Draggable } from 'gsap/dist/Draggable';
-	import { InertiaPlugin } from "gsap/dist/InertiaPlugin";
+	import { InertiaPlugin } from 'gsap/dist/InertiaPlugin';
 	import { goto } from '$app/navigation';
-	import { getAllWatchIds } from '$lib/stores/watchData.js';
+	import { getAllWatches, getAllWatchIds } from '$lib/stores/watchData.js';
+	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
+
+	// Register this component immediately when script runs
+	registerComponent('carousel');
 
 	// Register GSAP plugins
-	gsap.registerPlugin(InertiaPlugin,Draggable);
-
-	// --- PROPS ---
-	export let images = [
-		'https://assets.codepen.io/16327/portrait-number-01.png',
-		'https://assets.codepen.io/16327/portrait-number-02.png',
-		'https://assets.codepen.io/16327/portrait-number-03.png',
-		'https://assets.codepen.io/16327/portrait-number-04.png',
-		'https://assets.codepen.io/16327/portrait-number-05.png',
-		'https://assets.codepen.io/16327/portrait-number-06.png',
-		'https://assets.codepen.io/16327/portrait-number-07.png',
-		'https://assets.codepen.io/16327/portrait-number-01.png',
-		'https://assets.codepen.io/16327/portrait-number-02.png',
-		'https://assets.codepen.io/16327/portrait-number-03.png',
-		'https://assets.codepen.io/16327/portrait-number-04.png',
-		'https://assets.codepen.io/16327/portrait-number-05.png',
-		'https://assets.codepen.io/16327/portrait-number-06.png',
-		'https://assets.codepen.io/16327/portrait-number-07.png',
-		'https://assets.codepen.io/16327/portrait-number-01.png',
-		'https://assets.codepen.io/16327/portrait-number-02.png',
-		'https://assets.codepen.io/16327/portrait-number-03.png',
-		'https://assets.codepen.io/16327/portrait-number-04.png',
-		'https://assets.codepen.io/16327/portrait-number-05.png',
-		'https://assets.codepen.io/16327/portrait-number-06.png',
-		'https://assets.codepen.io/16327/portrait-number-07.png',
-	];
+	gsap.registerPlugin(InertiaPlugin, Draggable);
+	const allWatches = getAllWatches();
+	const displayWatches = $derived(allWatches.filter((watch) => watch.isEnabled !== false));
+	let images = $derived(displayWatches.map(watch => watch.landingImage));
+	let watchIds = $derived(displayWatches.map(watch => watch.id));
 
 	// --- STATE ---
 	let galleryContainer;
@@ -51,14 +34,11 @@
 	let cards;
 
 	// Get watch IDs for navigation
-	const watchIds = getAllWatchIds();
 
 	// --- CLICK HANDLER FOR WATCH NAVIGATION ---
 	function handleWatchClick(index) {
 		// Only navigate if we're not currently dragging
 		if (!draggableInstance || !draggableInstance.isDragging) {
-			console.log(watchIds);
-			console.log(index);
 			const watchId = watchIds[index];
 			if (watchId) {
 				goto(`/watches/${watchId}`);
@@ -68,15 +48,24 @@
 
 	// --- LIFECYCLE ---
 	onMount(() => {
-		if (!galleryContainer || !cardsContainer) return;
+		if (!galleryContainer || !cardsContainer) {
+			console.error('Gallery container or cards container not found');
+			setComponentReady('carousel', true);
+			return;
+		}
+		;
 		cards = gsap.utils.toArray('.carousel-card');
 		initializeCarousel();
+		// Report carousel as ready after initialization
+		setComponentReady('carousel', true);
 	});
 
 	onDestroy(() => {
 		if (draggableInstance) draggableInstance.kill();
 		if (autoRotateTimer) clearInterval(autoRotateTimer);
 		gsap.killTweensOf([cards, progress]);
+		// Unregister component when destroyed
+		unregisterComponent('carousel');
 	});
 
 	// --- FUNCTIONS ---
@@ -91,7 +80,7 @@
 
 		// The new, real-time draggable implementation
 		draggableInstance = Draggable.create(dragProxy, {
-			type: "x",
+			type: 'x',
 			trigger: cardsContainer,
 			inertia: true,
 			onPress() {
@@ -109,7 +98,7 @@
 			},
 			onDragEnd() {
 				// Use inertia to project the final landing position
-				const velocity = InertiaPlugin.getVelocity(this.target, "x");
+				const velocity = InertiaPlugin.getVelocity(this.target, 'x');
 				const projectedProgress = progress.value - (velocity * 0.0002); // Inertia sensitivity
 
 				// Snap to the nearest whole number (the closest card)
@@ -153,7 +142,7 @@
 				rotationY: -offset * 20,
 				zIndex: numCards - absOffset,
 				opacity: absOffset > 2.5 ? 0 : 1, // Hide cards a bit further away
-				duration: 0.5, // No duration for instant updates
+				duration: 0.5 // No duration for instant updates
 			};
 			gsap.set(card, properties); // Use gsap.set for better performance on rapid updates
 		});
@@ -170,8 +159,8 @@
 		gsap.to(progress, {
 			value: wrappedIndex,
 			duration: 0.8,
-			ease: "power2.inOut",
-			onUpdate: () => updateCarouselState(progress.value), // The onUpdate call renders the animation
+			ease: 'power2.inOut',
+			onUpdate: () => updateCarouselState(progress.value) // The onUpdate call renders the animation
 		});
 	}
 
@@ -254,16 +243,19 @@
 		contain: layout style paint;
 		touch-action: pan-y;
 	}
+
 	.carousel-cards {
 		perspective: 1500px; /* Increased perspective for larger size */
 		transform-style: preserve-3d;
 		will-change: transform;
 	}
+
 	.carousel-card {
 		transform-style: preserve-3d;
 		will-change: transform, opacity;
 		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); /* Enhanced shadow for depth */
 	}
+
 	.drag-proxy:active {
 		cursor: grabbing;
 	}
@@ -286,10 +278,12 @@
 		transition: background-color 0.3s ease, transform 0.3s ease;
 		border: 1px solid rgba(255, 255, 255, 0.2);
 	}
+
 	.arrow-btn:hover {
 		background-color: rgba(255, 255, 255, 0.2);
 		transform: translateY(-50%) scale(1.05);
 	}
+
 	.arrow-btn svg {
 		width: 1.75rem; /* 28px */
 		height: 1.75rem; /* 28px */

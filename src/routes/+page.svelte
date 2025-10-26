@@ -3,12 +3,14 @@
 	import Landing from '$lib/components/Landing.svelte';
 	import Partners from '$lib/components/Partners.svelte';
 	import logoImg from '$lib/assets/images/AS IS.png';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap/dist/gsap';
-	import Gallery from '$lib/components/Gallery.svelte';
 	import Collections from '$lib/components/Collections.svelte';
 
 	onMount(() => {
+		// The carousel will register itself and report ready
+		// No need to register the page separately since carousel handles it
+
 		gsap.config({
 			force3D: true,
 			nullTargetWarn: false
@@ -39,236 +41,9 @@
 		}
 	});
 
-	const petiteImageModules = import.meta.glob('$lib/assets/images/watchFaces/invisible_petite*.{jpg,jpeg,png,webp}', {
-		eager: true
+	onDestroy(() => {
+		// Cleanup handled by carousel
 	});
-	const petiteImageSlides = Object.entries(petiteImageModules).map(([path, module]) => ({
-		id: path, // Use the file path as a unique ID
-		imageUrl: module.default
-	}));
-
-	const doubleRainbowImageModules = import.meta.glob('$lib/assets/images/watchFaces/twin_rainbow*.{jpg,jpeg,png,webp}', {
-		eager: true
-	});
-	const doubleRainbowSlides = Object.entries(doubleRainbowImageModules).map(([path, module]) => ({
-		id: path,
-		imageUrl: module.default
-	}));
-
-	const blackPantherImageModules = import.meta.glob('$lib/assets/images/watchFaces/black_panther*.{jpg,jpeg,png,webp}', {
-		eager: true
-	});
-	const blackPantherSlides = Object.entries(blackPantherImageModules).map(([path, module]) => ({
-		id: path,
-		imageUrl: module.default
-	}));
-
-	let petiteGalleryData =
-		{
-			collection: 'Petite',
-			subCollection: 'The Invisible',
-			title: 'A Gemstone Symphony',
-			watchDescription: 'Crafted in the art of invisible setting, this timepiece is a testament to meticulous design and horological excellence.',
-			specs: [
-				{ label: 'Model NO', value: 'M1881S' },
-				{ label: 'Case Size', value: '33 MM' },
-				{ label: 'Leather Options', value: 'Alligator / Vegan' },
-				{ label: 'Variants', value: '9 Variants' }
-			],
-			gemstones: ['Diamond', 'Colored Sapphire', 'Tsavorite', 'Iolite', 'Amethyst', 'Ruby', 'Emerald', 'Topaz'],
-			variants: [
-				{
-					id: 'diamond',
-					name: 'Diamond',
-					color: '#E2E8F0',
-					accent: '#F8FAFC',
-					images: [
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com'
-					]
-				},
-				{
-					id: 'sapphire',
-					name: 'Sapphire',
-					color: '#1E40AF',
-					accent: '#3B82F6',
-					images: [
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com'
-					]
-				},
-				{
-					id: 'emerald',
-					name: 'Emerald',
-					color: '#065F46',
-					accent: '#10B981',
-					images: [
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com'
-					]
-				},
-				{
-					id: 'ruby',
-					name: 'Ruby',
-					color: '#991B1B',
-					accent: '#F87171',
-					images: [
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com',
-						'https://images.unsplash.com'
-					]
-				}
-			]
-		};
-
-	let grandeGalleryData = {
-		collection: 'Grande',
-		subCollection: 'The Invisible',
-		title: 'A Gemstone Symphony',
-		watchDescription: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Watch',
-		specs: [
-			{ label: 'Model NO', value: 'M1835S' },
-			{ label: 'Case Size', value: '40 MM' },
-			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '9 Variants' }
-		],
-		gemstones: ['Diamond', 'Colored Sapphire', 'Tsavorite', 'Iolite', 'Amethyst', 'Ruby', 'Emerald', 'Topaz'],
-		variants: [
-			{
-				id: 'diamond',
-				name: 'Diamond',
-				color: '#E2E8F0',
-				accent: '#F8FAFC',
-				images: [
-					'https://images.unsplash.com/photo-1523170335258-f5c544bc1f?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1547996160-81dfa635aa?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1508057198894-247b2e5ade?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1524592094714-0f06e20314?w=1000&h=1000&fit=crop&q=80'
-				]
-			},
-			{
-				id: 'sapphire',
-				name: 'Sapphire',
-				color: '#1E40AF',
-				accent: '#3B82F6',
-				images: [
-					'https://images.unsplash.com/photo-1434493789847-2f02dca35d?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1611930022073-b7a4bacccd?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1639006570490-79c53f1080?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1614164185128-e4ec99c4d7?w=1000&h=1000&fit=crop&q=80'
-				]
-			},
-			{
-				id: 'emerald',
-				name: 'Emerald',
-				color: '#065F46',
-				accent: '#10B981',
-				images: [
-					'https://images.unsplash.com/photo-1522312346375-d1a52e29b3?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1609587312208-cea54be9e7?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1606760227091-3dd8707f1d?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1618221118493-9cfa1a00da?w=1000&h=1000&fit=crop&q=80'
-				]
-			},
-			{
-				id: 'ruby',
-				name: 'Ruby',
-				color: '#991B1B',
-				accent: '#F87171',
-				images: [
-					'https://images.unsplash.com/photo-1594736797933-d05ba2fe65?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1585123334904-845d607b29?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1615655406736-b37c4fab923?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1611930021592-a8cfd59ceb?w=1000&h=1000&fit=crop&q=80'
-				]
-			}
-		]
-	};
-
-	let doubleRainbowGalleryData = {
-		collection: 'The Twin-Rainbow',
-		subCollection: 'The Twin-Rainbow',
-		title: 'A Gemstone Symphony',
-		watchDescription: 'A Colorful Spectrum Capturing the Rare Essence of a Twin Rainbow Watch',
-		specs: [
-			{ label: 'Model NO', value: 'M1308S Rainbow' },
-			{ label: 'Case Size', value: '38 MM' },
-			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '7 Variants' }
-		],
-		variants: [
-			{
-				id: 'diamond',
-				name: 'Diamond',
-				color: '#E2E8F0',
-				accent: '#F8FAFC',
-				images: [
-					'https://images.unsplash.com/photo-1523170335258-f5c573bc1f?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1547996160-81dfa635aa?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1508057198894-247b2e5ade?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1524592094714-0f06540314?w=1000&h=1000&fit=crop&q=80'
-				]
-			},
-			{
-				id: 'sapphire',
-				name: 'Sapphire',
-				color: '#1E40AF',
-				accent: '#3B82F6',
-				images: [
-					'https://images.unsplash.com/photo-1434493789847-2f02dca35d?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1611930022073-b7a4ba5fcd?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1639006570490-79c53f1080?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1614164185128-e4ec9936d7?w=1000&h=1000&fit=crop&q=80'
-				]
-			},
-		]
-	};
-
-	let blackPantherGalleryData = {
-		collection: 'Petite',
-		subCollection: 'The Black Panther',
-		title: 'A Gemstone Symphony',
-		watchDescription: 'A Spirit of the Wild Manifested in a Black Panther Watch',
-		specs: [
-			{ label: 'Model NO', value: 'M1308S Black Panther' },
-			{ label: 'Case Size', value: '38 MM' },
-			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '2 Variants' }
-		],
-		gemstones: ['Diamond', 'Tsavorite'],
-		variants: [
-			{
-				id: 'diamond-panther',
-				name: 'Diamond',
-				color: '#E2E8F0',
-				accent: '#F8FAFC',
-				images: [
-					'https://images.unsplash.com/photo-1523170335258-f5c544bc1f?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1547996160-81dfa595aa?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1508057198894-247b235ade?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1524592094714-0f06520314?w=1000&h=1000&fit=crop&q=80'
-				]
-			},
-			{
-				id: 'tsavorite-panther',
-				name: 'Tsavorite',
-				color: '#1E40AF',
-				accent: '#3B82F6',
-				images: [
-					'https://images.unsplash.com/photo-1434493789847-2f02dca35d?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1611930022073-b7a4ba5ccd?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1639006570490-79c0c53080?w=1000&h=1000&fit=crop&q=80',
-					'https://images.unsplash.com/photo-1614164185128-e4ec99c6d7?w=1000&h=1000&fit=crop&q=80'
-				]
-			},
-		]	};
 
 </script>
 
@@ -280,14 +55,18 @@
 	/>
 </div>
 
-<Landing />
-<Collections/>
-<Gallery galleryData="{petiteGalleryData}" />
-<Gallery galleryData="{grandeGalleryData}"/>
-<Gallery galleryData="{doubleRainbowGalleryData}"/>
-<Gallery galleryData="{blackPantherGalleryData}"/>
+<div id="landing">
+
+	<Landing />
+</div>
+<div id="collections">
+	<Collections />
+</div>
 <Partners />
-<Footer />
+<div id="footer">
+
+	<Footer />
+</div>
 
 <style>
 	/* Global performance optimizations */
@@ -438,5 +217,3 @@
 		}
 	}
 </style>
-
-

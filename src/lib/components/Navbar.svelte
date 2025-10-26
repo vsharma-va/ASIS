@@ -1,6 +1,9 @@
 <script>
 	import { onMount } from 'svelte';
-	import gsap from 'gsap';
+	import { gsap } from 'gsap/dist/gsap';
+	import { goto } from '$app/navigation';
+	import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin';
+	import { page } from '$app/stores';
 
 	// Variables to hold element references
 	let navElement;
@@ -8,6 +11,7 @@
 	let timeline;
 
 	onMount(() => {
+		gsap.registerPlugin(ScrollToPlugin);
 		// Initialize the GSAP timeline once the component is mounted
 		// It's paused and reversed by default, ready for the first open click
 		timeline = gsap.timeline({
@@ -29,6 +33,24 @@
 	// Functions to control the timeline
 	const openNav = () => timeline?.play();
 	const closeNav = () => timeline?.reverse();
+	const handleClick = (targetPage, divID) => {
+		closeNav();
+
+		// Determine the scroll target: 0 for top, or the specific ID
+		const scrollToTarget = divID === '#' ? 0 : `#${divID}`; // <--- CHANGE HERE
+
+		if ($page.url.pathname === targetPage) {
+			// Already on the page, just scroll
+			gsap.to(window, { duration: 1, scrollTo: scrollToTarget }); // <--- CHANGE HERE
+		} else {
+			// Navigate first, then scroll
+			goto(targetPage).then(() => {
+				requestAnimationFrame(() => {
+					gsap.to(window, { duration: 1, scrollTo: scrollToTarget }); // <--- CHANGE HERE
+				});
+			});
+		}
+	};
 </script>
 
 <div
@@ -66,7 +88,7 @@
 
 	<ul class="list-none text-center">
 		<li class="my-12">
-			<a href="#"
+			<a on:click|preventDefault={() => {handleClick("/","landing")}}
 			   class="nav-link pointer-events-none relative text-2xl font-medium text-gray-50
 			   		  no-underline opacity-0 primary-font uppercase
 			   		  after:absolute after:-bottom-2.5 after:left-0 after:h-[3px] after:w-full
@@ -75,20 +97,14 @@
 				Home
 			</a>
 		</li>
-<!--		<li class="my-12">-->
-<!--			<a href="#"-->
-<!--			   class="nav-link primary-font uppercase pointer-events-none relative text-2xl font-medium text-gray-50 no-underline opacity-0 after:absolute after:-bottom-2.5 after:left-0 after:h-[3px] after:w-full after:origin-left after:scale-x-0 after:rounded-md after:bg-white after:transition-transform after:duration-500 after:ease-in-out after:content-[''] hover:after:scale-x-100">-->
-<!--				About-->
-<!--			</a>-->
-<!--		</li>-->
 		<li class="my-12">
-			<a href="#"
+			<a on:click|preventDefault={() => {handleClick("/","collections")}}
 			   class="nav-link primary-font uppercase pointer-events-none relative text-2xl font-medium text-gray-50 no-underline opacity-0 after:absolute after:-bottom-2.5 after:left-0 after:h-[3px] after:w-full after:origin-left after:scale-x-0 after:rounded-md after:bg-white after:transition-transform after:duration-500 after:ease-in-out after:content-[''] hover:after:scale-x-100">
 				Collections
 			</a>
 		</li>
 		<li class="my-12">
-			<a href="#"
+			<a on:click|preventDefault={() => {handleClick("/","footer")}}
 			   class="nav-link primary-font uppercase pointer-events-none relative text-2xl font-medium text-gray-50 no-underline opacity-0 after:absolute after:-bottom-2.5 after:left-0 after:h-[3px] after:w-full after:origin-left after:scale-x-0 after:rounded-md after:bg-white after:transition-transform after:duration-500 after:ease-in-out after:content-[''] hover:after:scale-x-100">
 				Contact
 			</a>

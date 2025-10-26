@@ -4,6 +4,10 @@
 	import { gsap } from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import Gallery from '$lib/components/Gallery.svelte';
+	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
+
+	// Register this component immediately when script runs
+	registerComponent('watchDetail');
 
 	let { data } = $props();
 	let watchData = data.watch;
@@ -19,7 +23,11 @@
 		gemstones: watchData.gemstones,
 		variants: watchData.variants
 	};
+
 	onMount(() => {
+		// DO NOT call resetLoading() here - it breaks the loading state!
+		// The loading store is already managed by the layout and PageTransition
+
 		gsap.registerPlugin(ScrollTrigger);
 
 		if (!watchData) {
@@ -61,7 +69,11 @@
 					y: 0,
 					stagger: isMobile ? 0.05 : 0.1,
 					duration: 0.8,
-					ease: 'power2.inOut'
+					ease: 'power2.inOut',
+					onComplete: () => {
+						// Report watch detail section as ready
+						setComponentReady('watchDetail', true);
+					}
 				}, '-=0.6');
 		});
 
@@ -80,6 +92,9 @@
 
 		// Kill ScrollTrigger instances
 		ScrollTrigger.killAll();
+
+		// Unregister component when destroyed
+		unregisterComponent('watchDetail');
 	});
 </script>
 
@@ -95,7 +110,7 @@
 			src="{watchData.landingImage}"
 			alt="Background img"
 			loading="eager"
-			class="LandingBG absolute top-0 left-0 h-screen w-full object-cover z-0"
+			class="LandingBG absolute top-0 left-0 h-screen w-full object-contain z-0"
 		>
 
 		<div

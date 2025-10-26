@@ -7,12 +7,16 @@
 	import WatchDetailImage from '$lib/assets/images/FirstWatchImageCloseUP.webp';
 	// Placeholder for second detail image
 	import WatchDetailImage2 from '$lib/assets/images/FirstWatchImageCloseUP.webp';
+	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
 
 	let imagesLoaded = false;
 	let ctx;
 	let isMobile = false;
 
 	gsap.registerPlugin(ScrollTrigger);
+
+	// Register this component immediately when script runs
+	registerComponent('landing');
 
 	const preloadImages = async () => {
 		const images = [LandingBg, FirstWatchImage, WatchDetailImage, WatchDetailImage2];
@@ -90,7 +94,11 @@
 								ease: 'power2.inOut'
 							}, '-=0.4');
 
-						tl.call(setupScrollAnimations);
+						tl.call(() => {
+							setupScrollAnimations();
+							// Report Landing component as ready after animations are set up
+							setComponentReady('landing', true);
+						});
 					});
 				});
 			});
@@ -233,17 +241,10 @@
 
 	onDestroy(() => {
 		ctx?.revert();
+		// Unregister component when destroyed
+		unregisterComponent('landing');
 	});
 </script>
-
-<div class="loading-overlay" class:hidden={imagesLoaded}>
-	<div class="newtons-cradle">
-		<div class="newtons-cradle__dot"></div>
-		<div class="newtons-cradle__dot"></div>
-		<div class="newtons-cradle__dot"></div>
-		<div class="newtons-cradle__dot"></div>
-	</div>
-</div>
 
 <div
 	class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient">
@@ -396,99 +397,6 @@
 
 	.detail-set-1 {
 		z-index: 2;
-	}
-
-	.loading-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: white;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		z-index: 9999;
-		transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
-	}
-
-	.loading-overlay.hidden {
-		opacity: 0;
-		visibility: hidden;
-	}
-
-	.newtons-cradle {
-		--uib-size: 40px;
-		--uib-speed: 1.2s;
-		--uib-color: #474554;
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: var(--uib-size);
-		height: var(--uib-size);
-	}
-
-	@media (min-width: 640px) {
-		.newtons-cradle {
-			--uib-size: 50px;
-		}
-	}
-
-	.newtons-cradle__dot {
-		position: relative;
-		display: flex;
-		align-items: center;
-		height: 100%;
-		width: 25%;
-		transform-origin: center top;
-	}
-
-	.newtons-cradle__dot::after {
-		content: '';
-		display: block;
-		width: 100%;
-		height: 25%;
-		border-radius: 50%;
-		background-color: var(--uib-color);
-	}
-
-	.newtons-cradle__dot:first-child {
-		animation: swing var(--uib-speed) linear infinite;
-	}
-
-	.newtons-cradle__dot:last-child {
-		animation: swing2 var(--uib-speed) linear infinite;
-	}
-
-	@keyframes swing {
-		0% {
-			transform: rotate(0deg);
-			animation-timing-function: ease-out;
-		}
-		25% {
-			transform: rotate(70deg);
-			animation-timing-function: ease-in;
-		}
-		50% {
-			transform: rotate(0deg);
-			animation-timing-function: linear;
-		}
-	}
-
-	@keyframes swing2 {
-		0% {
-			transform: rotate(0deg);
-			animation-timing-function: linear;
-		}
-		50% {
-			transform: rotate(0deg);
-			animation-timing-function: ease-out;
-		}
-		75% {
-			transform: rotate(-70deg);
-			animation-timing-function: ease-in;
-		}
 	}
 
 	@media (max-width: 768px) {

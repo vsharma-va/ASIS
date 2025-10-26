@@ -1,8 +1,12 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { gsap } from 'gsap';
 	import ImageCarousel from '$lib/components/carousel.svelte';
+	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
+
+	// Register this component immediately when script runs
+	registerComponent('collections');
 
 	// --- PROPS ---
 	export let introData = {
@@ -21,9 +25,18 @@
 				opacity: 0,
 				stagger: 0.15,
 				ease: 'power4.out',
-				delay: 0.2
+				delay: 0.2,
+				onComplete: () => {
+					// Report Collections component as ready after animation completes
+					setComponentReady('collections', true);
+				}
 			});
 		}
+	});
+
+	onDestroy(() => {
+		// Unregister component when destroyed
+		unregisterComponent('collections');
 	});
 </script>
 
