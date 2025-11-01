@@ -306,7 +306,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: white;
+		color: black;
 		z-index: 200;
 		transition: background-color 0.3s ease, transform 0.3s ease;
 		border: 1px solid rgba(255, 255, 255, 0.2);
