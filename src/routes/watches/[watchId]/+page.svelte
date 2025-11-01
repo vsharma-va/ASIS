@@ -105,16 +105,16 @@
 
 {#if watchData}
 	<div
-		class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient">
-		<img
-			src="{watchData.landingImage}"
-			alt="Background img"
-			loading="eager"
-			class="LandingBG absolute top-0 left-0 h-screen w-full object-contain z-0"
-		>
+		class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient -mb-[80vh]">
+		<!--		<img-->
+		<!--			src="{watchData.landingImage}"-->
+		<!--			alt="Background img"-->
+		<!--			loading="eager"-->
+		<!--			class="LandingBG absolute top-0 left-0 h-screen w-full object-contain z-0"-->
+		<!--		>-->
 
 		<div
-			class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[10rem]">
+			class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[20rem]">
 			<div
 				class="LandingTextElem h-fit w-full sm:w-2/4 text-center sm:text-left uppercase secondary-font text-xs sm:text-sm mb-2 sm:mb-0 sm:-ml-[5rem]">
 				Meet

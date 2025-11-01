@@ -1,15 +1,48 @@
 // lib/stores/watchData.js
+
+// Import old images (backward compatibility)
 const generalImages = import.meta.glob('$lib/assets/images/*.{png,jpg,jpeg,webp}', {
 	eager: true,
 	query: '?url',
 	import: 'default'
 });
+
 const watchFaces = import.meta.glob('$lib/assets/images/watchFaces/*.{png,jpg,jpeg,webp}', {
 	eager: true,
 	query: '?url',
 	import: 'default'
 });
 
+// Import new nested structure images
+const nestedWatchFaces = import.meta.glob(
+	'$lib/assets/images/watchFaces/**/*.{png,jpg,jpeg,webp}',
+	{
+		eager: true,
+		query: '?url',
+		import: 'default'
+	}
+);
+
+// Collection to abbreviation mapping
+const COLLECTION_ABBREVIATIONS = {
+	'the-invisible-round-petite': 'IP',
+	'the-invisible-round-grande': 'IG',
+	'the-mosaic': 'MOS',
+	'the-single-rainbow': 'SRB',
+	'the-twin-rainbow': 'DRB',
+	'the-turning-humming-bird': 'HB',
+	'the-turning-butterfly': 'BTF',
+	'the-black-panther-petite': 'BPP',
+	'the-black-panther-grande': 'BPG',
+	'the-leopard-petite': 'LP',
+	'the-leopard-grande': 'LG',
+	'my-light-dancing': 'MLD',
+	'invisible-square-petite': 'ISP'
+};
+
+/**
+ * Get image by filename (old format - backward compatibility)
+ */
 function getImageByID(filename) {
 	const generalPath = `/src/lib/assets/images/${filename}`;
 	const watchFacePath = `/src/lib/assets/images/watchFaces/${filename}`;
@@ -22,661 +55,62 @@ function getImageByID(filename) {
 		return watchFaces[watchFacePath];
 	} else {
 		console.error('Image not found:', filename);
-		console.log('Available general images:', Object.keys(generalImages));
-		console.log('Available watch faces:', Object.keys(watchFaces));
 		return null;
 	}
 }
 
-// export const watchData = {
-// 	'the-invisible-round-petite': {
-// 		id: 'the-invisible-round-petite',
-// 		collection: 'The Invisible Round',
-// 		subCollection: 'Petite',
-// 		title: 'A Gemstone Symphony',
-// 		watchDescription: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'M1881S' },
-// 			{ label: 'Case Size', value: '33 MM' },
-// 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-// 			{ label: 'Variants', value: '10 Variants' }
-// 		],
-// 		gemstones: [
-// 			'Diamond',
-// 			'Colored Sapphire',
-// 			'Tsavorite',
-// 			'Iolite',
-// 			'Amethyst',
-// 			'Ruby',
-// 			'Emerald',
-// 			'Topaz'
-// 		],
-// 		landingImage: getImageByID('invisible_petite_1.webp'),
-// 		variants: [
-// 			{
-// 				id: 'diamond',
-// 				name: 'Diamond',
-// 				color: '#E2E8F0',
-// 				accent: '#F8FAFC',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'sapphire',
-// 				name: 'Colored Sapphire',
-// 				color: '#1E40AF',
-// 				accent: '#3B82F6',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'tsavorite',
-// 				name: 'Tsavorite',
-// 				color: '#065F46',
-// 				accent: '#10B981',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'iolite',
-// 				name: 'Iolite',
-// 				color: '#71379a',
-// 				accent: '#9264a7',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'amethyst',
-// 				name: 'Amethyst',
-// 				color: '#9966CC',
-// 				accent: '#CC66CC',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'ruby',
-// 				name: 'Ruby',
-// 				color: '#991B1B',
-// 				accent: '#F87171',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'emerald',
-// 				name: 'Emerald',
-// 				color: '#50C878',
-// 				accent: '#B9E9C9',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'topaz',
-// 				name: 'Topaz',
-// 				color: '#F59E0B',
-// 				accent: '#FCD34D',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'the-invisible-round-grande': {
-// 		id: 'the-invisible-round-grande',
-// 		collection: 'The Invisible Round',
-// 		subCollection: 'Grande',
-// 		title: 'A Gemstone Symphony',
-// 		watchDescription: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'M1835S' },
-// 			{ label: 'Case Size', value: '40 MM' },
-// 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-// 			{ label: 'Variants', value: '10 Variants' }
-// 		],
-// 		gemstones: [
-// 			'Diamond',
-// 			'Colored Sapphire',
-// 			'Tsavorite',
-// 			'Iolite',
-// 			'Amethyst',
-// 			'Ruby',
-// 			'Emerald',
-// 			'Topaz'
-// 		],
-// 		landingImage: getImageByID('invisible_petite_1.webp'),
-// 		variants: [
-// 			{
-// 				id: 'diamond',
-// 				name: 'Diamond',
-// 				color: '#E2E8F0',
-// 				accent: '#F8FAFC',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'sapphire',
-// 				name: 'Colored Sapphire',
-// 				color: '#1E40AF',
-// 				accent: '#3B82F6',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'tsavorite',
-// 				name: 'Tsavorite',
-// 				color: '#065F46',
-// 				accent: '#10B981',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'iolite',
-// 				name: 'Iolite',
-// 				color: '#71379a',
-// 				accent: '#9264a7',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'amethyst',
-// 				name: 'Amethyst',
-// 				color: '#9966CC',
-// 				accent: '#CC66CC',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'ruby',
-// 				name: 'Ruby',
-// 				color: '#991B1B',
-// 				accent: '#F87171',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'emerald',
-// 				name: 'Emerald',
-// 				color: '#50C878',
-// 				accent: '#B9E9C9',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			},
-// 			{
-// 				id: 'topaz',
-// 				name: 'Topaz',
-// 				color: '#F59E0B',
-// 				accent: '#FCD34D',
-// 				images: [
-// 					getImageByID('invisible_petite_1.webp'),
-// 					getImageByID('invisible_petite_2.webp'),
-// 					getImageByID('invisible_petite_3.webp'),
-// 					getImageByID('invisible_petite_4.webp'),
-// 					getImageByID('invisible_petite_5.webp'),
-// 					getImageByID('invisible_petite_6.webp')
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'the-mosaic': {
-// 		id: 'the-mosaic',
-// 		collection: 'The Mosaic Collection',
-// 		subCollection: 'Artistic Series',
-// 		title: 'A Vivid Arrangement of Colors',
-// 		watchDescription:
-// 			'A stunning mosaic art piece that captures the essence of color harmony in a sophisticated rectangular timepiece.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'M1832S' },
-// 			{ label: 'Case Size', value: '49 X 28 MM' },
-// 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-// 			{ label: 'Variants', value: '3 Variants' }
-// 		],
-// 		gemstones: ['Diamonds', 'Sapphires', 'Tsavorite'],
-// 		variants: [
-// 			{
-// 				id: 'classic',
-// 				name: 'Classic Mosaic',
-// 				color: '#6B46C1',
-// 				accent: '#A78BFA',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-03.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'rainbow',
-// 				name: 'Rainbow Mosaic',
-// 				color: '#EC4899',
-// 				accent: '#F472B6',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-03.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'earth-tones',
-// 				name: 'Earth Tones',
-// 				color: '#92400E',
-// 				accent: '#D97706',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-03.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png'
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'the-single-rainbow': {
-// 		id: 'the-single-rainbow',
-// 		collection: 'Rainbow Collection',
-// 		subCollection: 'Single Ring',
-// 		title: 'Spectrum of Excellence',
-// 		watchDescription:
-// 			'A colorful spectrum capturing the rare essence of a single rainbow watch, representing hope and beauty in timepiece form.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'M1841S Single Ring' },
-// 			{ label: 'Case Size', value: '40 MM' },
-// 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-// 			{ label: 'Variants', value: '1 Variant' }
-// 		],
-// 		gemstones: [
-// 			'Diamond',
-// 			'Colored Sapphires',
-// 			'Tsavorite',
-// 			'Iolite',
-// 			'Amethyst',
-// 			'Ruby',
-// 			'Emerald',
-// 			'Topaz'
-// 		],
-// 		variants: [
-// 			{
-// 				id: 'single-rainbow',
-// 				name: 'Single Rainbow',
-// 				color: '#EF4444',
-// 				accent: '#FCA5A5',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-07.png'
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'the-twin-rainbow': {
-// 		id: 'the-twin-rainbow',
-// 		collection: 'Rainbow Collection',
-// 		subCollection: 'Twin Ring',
-// 		title: 'Double Spectrum Majesty',
-// 		watchDescription:
-// 			'A rare and captivating twin rainbow design that showcases the extraordinary beauty of dual color spectrums in perfect harmony.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'M1308S Rainbow' },
-// 			{ label: 'Case Size', value: '38 MM' },
-// 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-// 			{ label: 'Variants', value: '7 Variants' }
-// 		],
-// 		gemstones: ['Diamonds', 'Colored Sapphires'],
-// 		variants: [
-// 			{
-// 				id: 'primary-spectrum',
-// 				name: 'Primary Spectrum',
-// 				color: '#DC2626',
-// 				accent: '#FCA5A5',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'cool-spectrum',
-// 				name: 'Cool Spectrum',
-// 				color: '#2563EB',
-// 				accent: '#93C5FD',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'warm-spectrum',
-// 				name: 'Warm Spectrum',
-// 				color: '#EA580C',
-// 				accent: '#FB923C',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png'
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'the-turning-butterfly': {
-// 		id: 'the-turning-butterfly',
-// 		collection: 'Nature Collection',
-// 		subCollection: 'Kinetic Series',
-// 		title: 'Natural Motion Artistry',
-// 		watchDescription:
-// 			'A mesmerizing timepiece featuring a butterfly that revolves naturally within the watch, symbolizing transformation and grace.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'Excluding USA' },
-// 			{ label: 'Case Size', value: '42 MM' },
-// 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-// 			{ label: 'Variants', value: '7 Variants' }
-// 		],
-// 		gemstones: ['Natural Diamonds', 'Colored Gems', 'Precious Stones'],
-// 		variants: [
-// 			{
-// 				id: 'monarch',
-// 				name: 'Monarch',
-// 				color: '#F97316',
-// 				accent: '#FED7AA',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-02.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'blue-morpho',
-// 				name: 'Blue Morpho',
-// 				color: '#1D4ED8',
-// 				accent: '#93C5FD',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-02.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'emerald-swallowtail',
-// 				name: 'Emerald Swallowtail',
-// 				color: '#059669',
-// 				accent: '#6EE7B7',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-02.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-07.png'
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	// Add placeholders for the remaining watches with proper structure
-// 	'luxury-classic-gold': {
-// 		id: 'luxury-classic-gold',
-// 		collection: 'Classic Collection',
-// 		subCollection: 'Gold Series',
-// 		title: 'Timeless Elegance',
-// 		watchDescription:
-// 			'A classic timepiece that embodies traditional luxury watchmaking with contemporary refinement.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'LC001G' },
-// 			{ label: 'Case Size', value: '40 MM' },
-// 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-// 			{ label: 'Variants', value: '4 Variants' }
-// 		],
-// 		gemstones: ['Diamond', 'Gold', 'Mother of Pearl'],
-// 		variants: [
-// 			{
-// 				id: 'rose-gold',
-// 				name: 'Rose Gold',
-// 				color: '#E91E63',
-// 				accent: '#F8BBD9',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-02.png',
-// 					'https://assets.codepen.io/16327/portrait-number-03.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'white-gold',
-// 				name: 'White Gold',
-// 				color: '#F5F5F5',
-// 				accent: '#FFFFFF',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-02.png',
-// 					'https://assets.codepen.io/16327/portrait-number-03.png',
-// 					'https://assets.codepen.io/16327/portrait-number-07.png'
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'sport-titanium': {
-// 		id: 'sport-titanium',
-// 		collection: 'Sport Collection',
-// 		subCollection: 'Titanium Series',
-// 		title: 'Athletic Precision',
-// 		watchDescription:
-// 			'A robust sports timepiece designed for active lifestyles, combining durability with sophisticated aesthetics.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'ST002T' },
-// 			{ label: 'Case Size', value: '44 MM' },
-// 			{ label: 'Leather Options', value: 'Rubber / Titanium Bracelet' },
-// 			{ label: 'Variants', value: '3 Variants' }
-// 		],
-// 		gemstones: ['Titanium', 'Ceramic', 'Carbon Fiber'],
-// 		variants: [
-// 			{
-// 				id: 'black-titanium',
-// 				name: 'Black Titanium',
-// 				color: '#1F2937',
-// 				accent: '#4B5563',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-02.png',
-// 					'https://assets.codepen.io/16327/portrait-number-03.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-01.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'blue-titanium',
-// 				name: 'Blue Titanium',
-// 				color: '#1E3A8A',
-// 				accent: '#60A5FA',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-03.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-02.png'
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'vintage-heritage': {
-// 		id: 'vintage-heritage',
-// 		collection: 'Heritage Collection',
-// 		subCollection: 'Vintage Series',
-// 		title: 'Historical Reverence',
-// 		watchDescription:
-// 			'A tribute to vintage watchmaking traditions, featuring classic design elements with modern precision.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'VH003H' },
-// 			{ label: 'Case Size', value: '38 MM' },
-// 			{ label: 'Leather Options', value: 'Vintage Leather / Alligator' },
-// 			{ label: 'Variants', value: '5 Variants' }
-// 		],
-// 		gemstones: ['Bronze', 'Silver', 'Vintage Patina'],
-// 		variants: [
-// 			{
-// 				id: 'bronze',
-// 				name: 'Bronze',
-// 				color: '#CD7F32',
-// 				accent: '#DEB887',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-04.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-03.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'silver',
-// 				name: 'Silver',
-// 				color: '#C0C0C0',
-// 				accent: '#E5E5E5',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-03.png',
-// 					'https://assets.codepen.io/16327/portrait-number-04.png'
-// 				]
-// 			}
-// 		]
-// 	},
-//
-// 	'limited-edition-platinum': {
-// 		id: 'limited-edition-platinum',
-// 		collection: 'Limited Edition',
-// 		subCollection: 'Platinum Series',
-// 		title: 'Exclusive Masterpiece',
-// 		watchDescription:
-// 			'An extremely rare and exclusive timepiece crafted from the finest platinum, representing the pinnacle of luxury.',
-// 		specs: [
-// 			{ label: 'Model NO', value: 'LE004P' },
-// 			{ label: 'Case Size', value: '42 MM' },
-// 			{ label: 'Leather Options', value: 'Platinum Bracelet / Crocodile' },
-// 			{ label: 'Variants', value: '2 Variants' }
-// 		],
-// 		gemstones: ['Platinum', 'Rare Diamonds', 'Precious Stones'],
-// 		variants: [
-// 			{
-// 				id: 'platinum-diamond',
-// 				name: 'Platinum Diamond',
-// 				color: '#E5E4E2',
-// 				accent: '#FFFFFF',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-06.png',
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png'
-// 				]
-// 			},
-// 			{
-// 				id: 'platinum-black',
-// 				name: 'Platinum Black',
-// 				color: '#2C2C2C',
-// 				accent: '#808080',
-// 				images: [
-// 					'https://assets.codepen.io/16327/portrait-number-07.png',
-// 					'https://assets.codepen.io/16327/portrait-number-01.png',
-// 					'https://assets.codepen.io/16327/portrait-number-05.png',
-// 					'https://assets.codepen.io/16327/portrait-number-06.png'
-// 				]
-// 			}
-// 		]
-// 	}
-// };
+/**
+ * Get images from new nested structure
+ * @param {string} watchId - The watch ID (e.g., 'the-invisible-round-petite')
+ * @param {string} variantId - The variant ID (e.g., 'diamond', 'sapphire')
+ * @returns {string[]} Array of image URLs for the variant
+ */
+function getVariantImages(watchId, variantId) {
+	const abbreviation = COLLECTION_ABBREVIATIONS[watchId];
+
+	if (!abbreviation) {
+		console.warn(`No abbreviation found for watch: ${watchId}`);
+		return [];
+	}
+
+	// Build the path pattern to search for
+	const pathPattern = `/src/lib/assets/images/watchFaces/${abbreviation}/${variantId}/edit/`;
+
+	// Find all images matching this path pattern
+	const matchingImages = Object.entries(nestedWatchFaces)
+		.filter(([path]) => path.includes(pathPattern))
+		.map(([, url]) => url)
+		.sort(); // Sort to maintain consistent order
+
+	if (matchingImages.length === 0) {
+		console.warn(`No images found for ${watchId} - ${variantId} at pattern: ${pathPattern}`);
+	}
+
+	return matchingImages;
+}
+
+/**
+ * Get landing image for a watch
+ * Tries new structure first, falls back to old structure
+ */
+function getLandingImage(watchId, fallbackFilename) {
+	const abbreviation = COLLECTION_ABBREVIATIONS[watchId];
+
+	if (abbreviation) {
+		// Try to find any image in the new structure for this watch
+		const pathPattern = `/src/lib/assets/images/watchFaces/${abbreviation}/`;
+		const firstImage = Object.entries(nestedWatchFaces).find(([path]) =>
+			path.includes(pathPattern)
+		);
+
+		if (firstImage) {
+			return firstImage[1];
+		}
+	}
+
+	// Fall back to old structure
+	return getImageByID(fallbackFilename);
+}
 
 export const watchData = {
 	'the-invisible-round-petite': {
@@ -690,7 +124,7 @@ export const watchData = {
 			{ label: 'Model NO', value: 'M1881S' },
 			{ label: 'Case Size', value: '33 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '10 Variants' }
+			{ label: 'Variants', value: '9 Variants' }
 		],
 		gemstones: [
 			'Diamond',
@@ -702,119 +136,160 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getImageByID('invisible_petite_1.webp'),
+		landingImage: getLandingImage('the-invisible-round-petite', 'invisible_petite_1.webp'),
 		variants: [
 			{
-				id: 'diamond',
+				id: 'multi',
 				name: 'Diamond',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-multi').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-multi')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'sapphire',
+				id: 'sky-blue',
+				name: 'Sky Blue Topaz',
+				color: '#00FFF0',
+				accent: '#82C8E5',
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-sky-blue').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-sky-blue')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
+			},
+			{
+				id: 'blue',
 				name: 'Colored Sapphire',
 				color: '#1E40AF',
 				accent: '#3B82F6',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-blue').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-blue')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'tsavorite',
-				name: 'Tsavorite',
+				id: 'green',
+				name: 'Emerald',
 				color: '#065F46',
 				accent: '#10B981',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-green').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-green')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'iolite',
+				id: 'purple',
 				name: 'Iolite',
 				color: '#71379a',
 				accent: '#9264a7',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-purple').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-purple')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'amethyst',
-				name: 'Amethyst',
+				id: 'pink',
+				name: 'Sapphire',
 				color: '#9966CC',
 				accent: '#CC66CC',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-pink').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-pink')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'ruby',
+				id: 'red',
 				name: 'Ruby',
 				color: '#991B1B',
 				accent: '#F87171',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-red').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-red')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'emerald',
-				name: 'Emerald',
-				color: '#50C878',
-				accent: '#B9E9C9',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				id: 'violet',
+				name: 'Amethyst',
+				color: '#2f184b',
+				accent: '#532b88',
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-violet').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-violet')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'topaz',
+				id: 'yellow',
 				name: 'Topaz',
 				color: '#F59E0B',
 				accent: '#FCD34D',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-yellow').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-yellow')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			}
 		]
 	},
@@ -827,10 +302,10 @@ export const watchData = {
 		title: 'A Gemstone Symphony',
 		watchDescription: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
 		specs: [
-			{ label: 'Model NO', value: 'M1835S' },
-			{ label: 'Case Size', value: '40 MM' },
+			{ label: 'Model NO', value: 'M1881S' },
+			{ label: 'Case Size', value: '33 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '10 Variants' }
+			{ label: 'Variants', value: '9 Variants' }
 		],
 		gemstones: [
 			'Diamond',
@@ -842,125 +317,166 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getImageByID('invisible_petite_2.webp'),
+		landingImage: getLandingImage('the-invisible-round-grande', 'invisible_grande_1.webp'),
 		variants: [
 			{
-				id: 'diamond',
+				id: 'multi',
 				name: 'Diamond',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-multi').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-multi')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'sapphire',
+				id: 'sky-blue',
+				name: 'Sky Blue Topaz',
+				color: '#00FFF0',
+				accent: '#82C8E5',
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-sky-blue').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-sky-blue')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
+			},
+			{
+				id: 'blue',
 				name: 'Colored Sapphire',
 				color: '#1E40AF',
 				accent: '#3B82F6',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-blue').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-blue')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'tsavorite',
-				name: 'Tsavorite',
+				id: 'green',
+				name: 'Emerald',
 				color: '#065F46',
 				accent: '#10B981',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-green').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-green')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'iolite',
+				id: 'purple',
 				name: 'Iolite',
 				color: '#71379a',
 				accent: '#9264a7',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-purple').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-purple')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'amethyst',
-				name: 'Amethyst',
+				id: 'pink',
+				name: 'Sapphire',
 				color: '#9966CC',
 				accent: '#CC66CC',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-pink').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-pink')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'ruby',
+				id: 'red',
 				name: 'Ruby',
 				color: '#991B1B',
 				accent: '#F87171',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-red').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-red')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'emerald',
-				name: 'Emerald',
-				color: '#50C878',
-				accent: '#B9E9C9',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				id: 'violet',
+				name: 'Amethyst',
+				color: '#2f184b',
+				accent: '#532b88',
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-violet').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-violet')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			},
 			{
-				id: 'topaz',
+				id: 'yellow',
 				name: 'Topaz',
 				color: '#F59E0B',
 				accent: '#FCD34D',
-				images: [
-					getImageByID('invisible_petite_1.webp'),
-					getImageByID('invisible_petite_2.webp'),
-					getImageByID('invisible_petite_3.webp'),
-					getImageByID('invisible_petite_4.webp'),
-					getImageByID('invisible_petite_5.webp'),
-					getImageByID('invisible_petite_6.webp')
-				]
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-yellow').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-yellow')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
 			}
 		]
 	},
 
 	'the-mosaic': {
-		isEnabled: false,
+		isEnabled: true,
 		id: 'the-mosaic',
 		collection: 'The Mosaic',
 		subCollection: '',
@@ -970,21 +486,52 @@ export const watchData = {
 			{ label: 'Model NO', value: 'M1832S' },
 			{ label: 'Case Size', value: '49 X 28 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '9 Variants' }
+			{ label: 'Variants', value: '3 Variants' }
 		],
 		gemstones: ['Diamonds', 'Sapphires', 'Tsavorite'],
-		landingImage: getImageByID('mosaic_1.webp'),
+		landingImage: getLandingImage('the-mosaic', 'mosaic_1.webp'),
 		variants: [
 			{
-				id: 'classic-mosaic',
-				name: 'Classic Mosaic',
-				color: '#6B46C1',
-				accent: '#A78BFA',
-				images: [
-					getImageByID('mosaic_1.webp'),
-					getImageByID('mosaic_2.webp'),
-					getImageByID('mosaic_3.webp')
-				]
+				id: 'blue',
+				name: 'Sapphire',
+				color: '#1E40AF',
+				accent: '#3B82F6',
+				images:
+					getVariantImages('the-mosaic', 'mos-blue').length > 0
+						? getVariantImages('the-mosaic', 'mos-blue')
+						: [
+								getImageByID('mosaic_1.webp'),
+								getImageByID('mosaic_2.webp'),
+								getImageByID('mosaic_3.webp')
+							]
+			},
+			{
+				id: 'multi',
+				name: 'Diamond',
+				color: '#E2E8F0',
+				accent: '#F8FAFC',
+				images:
+					getVariantImages('the-mosaic', 'mos-multi').length > 0
+						? getVariantImages('the-mosaic', 'mos-multi')
+						: [
+								getImageByID('mosaic_1.webp'),
+								getImageByID('mosaic_2.webp'),
+								getImageByID('mosaic_3.webp')
+							]
+			},
+			{
+				id: 'pink',
+				name: 'Tsavorite',
+				color: '#9966CC',
+				accent: '#CC66CC',
+				images:
+					getVariantImages('the-mosaic', 'mos-pink').length > 0
+						? getVariantImages('the-mosaic', 'mos-pink')
+						: [
+								getImageByID('mosaic_1.webp'),
+								getImageByID('mosaic_2.webp'),
+								getImageByID('mosaic_3.webp')
+							]
 			}
 		]
 	},
@@ -1012,14 +559,17 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getImageByID('single_rainbow_1.webp'),
+		landingImage: getLandingImage('the-single-rainbow', 'single_rainbow_1.webp'),
 		variants: [
 			{
-				id: 'single-rainbow',
+				id: 'multi',
 				name: 'Single Rainbow',
 				color: '#EF4444',
 				accent: '#FCA5A5',
-				images: [getImageByID('single_rainbow_1.webp'), getImageByID('single_rainbow_2.webp')]
+				images:
+					getVariantImages('the-single-rainbow', 'multi').length > 0
+						? getVariantImages('the-single-rainbow', 'multi')
+						: [getImageByID('single_rainbow_1.webp'), getImageByID('single_rainbow_2.webp')]
 			}
 		]
 	},
@@ -1035,29 +585,32 @@ export const watchData = {
 			{ label: 'Model NO', value: 'M1308S Rainbow' },
 			{ label: 'Case Size', value: '38 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '2 Variants' }
+			{ label: 'Variants', value: '1 Variant' }
 		],
 		gemstones: ['Diamonds', 'Colored Sapphires'],
-		landingImage: getImageByID('twin_rainbow_1.webp'),
+		landingImage: getLandingImage('the-twin-rainbow', 'twin_rainbow_1.webp'),
 		variants: [
 			{
-				id: 'primary-spectrum',
-				name: 'Primary Spectrum',
-				color: '#DC2626',
-				accent: '#FCA5A5',
-				images: [
-					getImageByID('twin_rainbow_1.webp'),
-					getImageByID('twin_rainbow_1.webp'),
-					getImageByID('twin_rainbow_1.webp'),
-					getImageByID('twin_rainbow_1.webp'),
-					getImageByID('twin_rainbow_1.webp')
-				]
+				id: 'white',
+				name: 'Double Rainbow',
+				color: '#E2E8F0',
+				accent: '#F8FAFC',
+				images:
+					getVariantImages('the-twin-rainbow', 'DRB-white').length > 0
+						? getVariantImages('the-twin-rainbow', 'DRB-white')
+						: [
+								getImageByID('twin_rainbow_1.webp'),
+								getImageByID('twin_rainbow_1.webp'),
+								getImageByID('twin_rainbow_1.webp'),
+								getImageByID('twin_rainbow_1.webp'),
+								getImageByID('twin_rainbow_1.webp')
+							]
 			}
 		]
 	},
 
 	'the-turning-humming-bird': {
-		isEnabled: false,
+		isEnabled: true,
 		id: 'the-turning-humming-bird',
 		collection: 'The Turning Humming Bird',
 		subCollection: '',
@@ -1067,7 +620,7 @@ export const watchData = {
 			{ label: 'Model NO', value: 'M1841S Bird' },
 			{ label: 'Case Size', value: '40 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '7 Variants' }
+			{ label: 'Variants', value: '3 Variants' }
 		],
 		gemstones: [
 			'Diamond',
@@ -1079,14 +632,37 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getImageByID('humming_bird_1.webp'),
+		landingImage: getLandingImage('the-turning-humming-bird', 'humming_bird_1.webp'),
 		variants: [
 			{
-				id: 'humming-bird-variant-1',
-				name: 'Humming Bird',
-				color: '#059669',
-				accent: '#6EE7B7',
-				images: [getImageByID('humming_bird_1.webp'), getImageByID('humming_bird_2.webp')]
+				id: 'white',
+				name: 'Diamond',
+				color: '#E2E8F0',
+				accent: '#F8FAFC',
+				images:
+					getVariantImages('the-turning-humming-bird', 'HB-white').length > 0
+						? getVariantImages('the-turning-humming-bird', 'HB-white')
+						: [getImageByID('humming_bird_1.webp'), getImageByID('humming_bird_2.webp')]
+			},
+			{
+				id: 'blue',
+				name: 'Sapphire',
+				color: '#1E40AF',
+				accent: '#3B82F6',
+				images:
+					getVariantImages('the-turning-humming-bird', 'HB-blue').length > 0
+						? getVariantImages('the-turning-humming-bird', 'HB-blue')
+						: [getImageByID('humming_bird_1.webp'), getImageByID('humming_bird_2.webp')]
+			},
+			{
+				id: 'pink',
+				name: 'Iolite',
+				color: '#9966CC',
+				accent: '#CC66CC',
+				images:
+					getVariantImages('the-turning-humming-bird', 'HB-pink').length > 0
+						? getVariantImages('the-turning-humming-bird', 'HB-pink')
+						: [getImageByID('humming_bird_1.webp'), getImageByID('humming_bird_2.webp')]
 			}
 		]
 	},
@@ -1114,14 +690,17 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getImageByID('humming_bird_1.webp'),
+		landingImage: getLandingImage('the-turning-butterfly', 'humming_bird_1.webp'),
 		variants: [
 			{
-				id: 'humming-bird-variant-1',
+				id: 'multi',
 				name: 'Humming Bird',
 				color: '#059669',
 				accent: '#6EE7B7',
-				images: [getImageByID('humming_bird_1.webp'), getImageByID('humming_bird_2.webp')]
+				images:
+					getVariantImages('the-turning-butterfly', 'multi').length > 0
+						? getVariantImages('the-turning-butterfly', 'multi')
+						: [getImageByID('humming_bird_1.webp'), getImageByID('humming_bird_2.webp')]
 			}
 		]
 	},
@@ -1140,17 +719,20 @@ export const watchData = {
 			{ label: 'Variants', value: '2 Variants' }
 		],
 		gemstones: ['Diamonds', 'Tsavorite'],
-		landingImage: getImageByID('black_panther_petite_1.webp'),
+		landingImage: getLandingImage('the-black-panther-petite', 'black_panther_petite_1.webp'),
 		variants: [
 			{
-				id: 'black-panther-petite-1',
+				id: 'black',
 				name: 'Black Panther Petite',
 				color: '#1F2937',
 				accent: '#4B5563',
-				images: [
-					getImageByID('black_panther_petite_1.webp'),
-					getImageByID('black_panther_petite_2.webp')
-				]
+				images:
+					getVariantImages('the-black-panther-petite', 'black').length > 0
+						? getVariantImages('the-black-panther-petite', 'black')
+						: [
+								getImageByID('black_panther_petite_1.webp'),
+								getImageByID('black_panther_petite_2.webp')
+							]
 			}
 		]
 	},
@@ -1166,20 +748,20 @@ export const watchData = {
 			{ label: 'Model NO', value: 'M1219S Black Panther' },
 			{ label: 'Case Size', value: '44 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '2 Variants' }
+			{ label: 'Variants', value: '1 Variant' }
 		],
 		gemstones: ['Diamonds', 'Tsavorite'],
-		landingImage: getImageByID('black_panther_1.webp'),
+		landingImage: getLandingImage('the-black-panther-grande', 'black_panther_1.webp'),
 		variants: [
 			{
-				id: 'black-panther-grande-1',
-				name: 'Black Panther Grande',
+				id: 'black',
+				name: 'Diamonds and Tsavorite',
 				color: '#111827',
 				accent: '#374151',
-				images: [
-					getImageByID('black_panther_1.webp'),
-					getImageByID('black_panther_1.webp')
-				]
+				images:
+					getVariantImages('the-black-panther-grande', 'BP-black').length > 0
+						? getVariantImages('the-black-panther-grande', 'BP-black')
+						: [getImageByID('black_panther_1.webp'), getImageByID('black_panther_1.webp')]
 			}
 		]
 	},
@@ -1198,20 +780,23 @@ export const watchData = {
 			{ label: 'Variants', value: '2 Variants' }
 		],
 		gemstones: ['Diamonds', 'Tsavorite'],
-		landingImage: getImageByID('leopard_petite_1.webp'),
+		landingImage: getLandingImage('the-leopard-petite', 'leopard_petite_1.webp'),
 		variants: [
 			{
-				id: 'leopard-petite-1',
+				id: 'gold',
 				name: 'Leopard Petite',
 				color: '#D97706',
 				accent: '#FBBF24',
-				images: [getImageByID('leopard_petite_1.webp'), getImageByID('leopard_petite_2.webp')]
+				images:
+					getVariantImages('the-leopard-petite', 'gold').length > 0
+						? getVariantImages('the-leopard-petite', 'gold')
+						: [getImageByID('leopard_petite_1.webp'), getImageByID('leopard_petite_2.webp')]
 			}
 		]
 	},
 
 	'the-leopard-grande': {
-		isEnabled: false,
+		isEnabled: true,
 		id: 'the-leopard-grande',
 		collection: 'The Leopard',
 		subCollection: 'Grande',
@@ -1224,20 +809,33 @@ export const watchData = {
 			{ label: 'Variants', value: '2 Variants' }
 		],
 		gemstones: ['Diamonds', 'Tsavorite'],
-		landingImage: getImageByID('leopard_grande_1.webp'),
+		landingImage: getLandingImage('the-leopard-grande', 'leopard_grande_1.webp'),
 		variants: [
 			{
-				id: 'leopard-grande-1',
-				name: 'Leopard Grande',
-				color: '#B45309',
-				accent: '#F59E0B',
-				images: [getImageByID('leopard_grande_1.webp'), getImageByID('leopard_grande_2.webp')]
+				id: 'black',
+				name: 'Black',
+				color: '#111827',
+				accent: '#374151',
+				images:
+					getVariantImages('the-leopard-grande', 'LG-black').length > 0
+						? getVariantImages('the-leopard-grande', 'LG-black')
+						: [getImageByID('leopard_grande_1.webp'), getImageByID('leopard_grande_2.webp')]
+			},
+			{
+				id: 'white',
+				name: 'white',
+				color: '#E2E8F0',
+				accent: '#F8FAFC',
+				images:
+					getVariantImages('the-leopard-grande', 'LG-white').length > 0
+						? getVariantImages('the-leopard-grande', 'LG-white')
+						: [getImageByID('leopard_grande_1.webp'), getImageByID('leopard_grande_2.webp')]
 			}
 		]
 	},
 
 	'my-light-dancing': {
-		isEnabled: false,
+		isEnabled: true,
 		id: 'my-light-dancing',
 		collection: 'My Light Dancing',
 		subCollection: '',
@@ -1247,17 +845,30 @@ export const watchData = {
 			{ label: 'Model NO', value: 'M1890 S' },
 			{ label: 'Case Size', value: '38 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
-			{ label: 'Variants', value: '4 Variants' }
+			{ label: 'Variants', value: '2 Variants' }
 		],
-		gemstones: ['Diamonds', 'sapphires', 'tsavorite'],
-		landingImage: getImageByID('my_light_dancing_1.webp'),
+		gemstones: ['Diamonds', 'sapphires', 'Tsavorite'],
+		landingImage: getLandingImage('my-light-dancing', 'my_light_dancing_1.webp'),
 		variants: [
 			{
-				id: 'my-light-dancing-1',
-				name: 'My Light Dancing',
+				id: 'pink',
+				name: 'Diamond',
 				color: '#BE185D',
 				accent: '#F472B6',
-				images: [getImageByID('my_light_dancing_1.webp'), getImageByID('my_light_dancing_2.webp')]
+				images:
+					getVariantImages('my-light-dancing', 'MLD-pink').length > 0
+						? getVariantImages('my-light-dancing', 'MLD-pink')
+						: [getImageByID('my_light_dancing_1.webp'), getImageByID('my_light_dancing_2.webp')]
+			},
+			{
+				id: 'blue',
+				name: 'Sapphire',
+				color: '#1E40AF',
+				accent: '#3B82F6',
+				images:
+					getVariantImages('my-light-dancing', 'MLD-blue').length > 0
+						? getVariantImages('my-light-dancing', 'MLD-blue')
+						: [getImageByID('my_light_dancing_1.webp'), getImageByID('my_light_dancing_2.webp')]
 			}
 		]
 	},
@@ -1285,21 +896,25 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getImageByID('invisible_square_petite_1.webp'),
+		landingImage: getLandingImage('invisible-square-petite', 'invisible_square_petite_1.webp'),
 		variants: [
 			{
-				id: 'invisible-square-diamond',
+				id: 'diamond',
 				name: 'Diamond',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
-				images: [
-					getImageByID('invisible_square_petite_1.webp'),
-					getImageByID('invisible_square_petite_2.webp')
-				]
+				images:
+					getVariantImages('invisible-square-petite', 'diamond').length > 0
+						? getVariantImages('invisible-square-petite', 'diamond')
+						: [
+								getImageByID('invisible_square_petite_1.webp'),
+								getImageByID('invisible_square_petite_2.webp')
+							]
 			}
 		]
 	}
 };
+
 // Helper function to get watch by ID
 export function getWatchById(id) {
 	return watchData[id] || null;
@@ -1313,4 +928,21 @@ export function getAllWatchIds() {
 // Helper function to get all watches
 export function getAllWatches() {
 	return Object.values(watchData);
+}
+
+// Helper to get available variant folders for a watch (useful for debugging)
+export function getAvailableVariants(watchId) {
+	const abbreviation = COLLECTION_ABBREVIATIONS[watchId];
+	if (!abbreviation) return [];
+
+	const pathPattern = `/src/lib/assets/images/watchFaces/${abbreviation}/`;
+	const variantPaths = Object.keys(nestedWatchFaces)
+		.filter((path) => path.includes(pathPattern))
+		.map((path) => {
+			const match = path.match(new RegExp(`${abbreviation}-(\\w+)/edit/`));
+			return match ? match[1] : null;
+		})
+		.filter((v, i, arr) => v && arr.indexOf(v) === i); // unique values only
+
+	return variantPaths;
 }

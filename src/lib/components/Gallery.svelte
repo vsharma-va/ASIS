@@ -154,19 +154,19 @@
 		<div class="lg:col-span-1 h-[65vh] lg:h-screen flex flex-col p-4 sm:p-6 lg:p-8 lg:sticky lg:top-0 mt-[4rem]">
 			{#key selectedVariantIndex}
 				<div
-					class="main-image-wrapper relative flex-1 w-full bg-slate-100 rounded-2xl overflow-hidden"
+					class="main-image-wrapper relative flex-1 w-full bg-white rounded-2xl overflow-hidden"
 					on:mousemove={handleImageMouseMove}
 				>
 					{#key currentVariant.images[selectedImageIndex]}
 						<div
-							class="absolute flex items-center justify-center {isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}"
+							class="w-full h-full absolute flex items-center justify-center {isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}"
 							on:click={toggleZoom}
 						>
 							<img
 								bind:this={mainImageEl}
 								src={currentVariant.images[selectedImageIndex]}
 								alt={`${galleryData.title} - ${currentVariant.name}`}
-								class="w-full h-full rounded-lg object-fit will-change-transform"
+								class="w-full h-full rounded-lg object-contain will-change-transform"
 							/>
 						</div>
 					{/key}

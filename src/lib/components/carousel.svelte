@@ -1,10 +1,11 @@
+<!-- Carousel component with GSAP and Draggable.js -->
 <script>
 	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap/dist/gsap';
 	import { Draggable } from 'gsap/dist/Draggable';
 	import { InertiaPlugin } from 'gsap/dist/InertiaPlugin';
 	import { goto } from '$app/navigation';
-	import { getAllWatches, getAllWatchIds } from '$lib/stores/watchData.js';
+	import { getAllWatches } from '$lib/stores/watchData.js';
 	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
 
 	// Register this component immediately when script runs
@@ -27,7 +28,7 @@
 	// A proxy object to represent the carousel's continuous progress
 	let progress = { value: 0 };
 
-	let currentIndex = 0;
+	let currentIndex = $state(0);
 	let isAnimating = false;
 	let draggableInstance;
 	let autoRotateTimer;
@@ -190,8 +191,7 @@
 		>
 			{#each images as image,index}
 				<li
-					class="carousel-card list-none p-0 m-0 w-full h-full absolute top-0 left-0 rounded-xl bg-cover bg-no-repeat bg-center"
-					style="background-image: url({image})"
+					class="carousel-card list-none p-0 m-0 w-full h-full absolute top-0 left-0 rounded-xl"
 					on:click={() => handleWatchClick(index)}
 					on:keydown={(e) => {
 						if (e.key === "Enter" || e.key === " ") {
@@ -201,7 +201,10 @@
 					role="button"
 					tabindex="0"
 					aria-label="View Details for watch {index + 1}"
-				></li>
+				>
+					<div class="carousel-card-inner w-full h-full rounded-xl"
+						 style="background-image: url({image})"></div>
+				</li>
 			{/each}
 		</ul>
 	</div>
@@ -245,7 +248,7 @@
 	}
 
 	.carousel-cards {
-		perspective: 1500px; /* Increased perspective for larger size */
+		perspective: 1500px;
 		transform-style: preserve-3d;
 		will-change: transform;
 	}
@@ -253,21 +256,51 @@
 	.carousel-card {
 		transform-style: preserve-3d;
 		will-change: transform, opacity;
-		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); /* Enhanced shadow for depth */
+		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+		overflow: hidden;
+	}
+
+	.carousel-card-inner {
+		/* * We remove 'w-full', 'h-full', and 'inset: 0' and
+		 * set explicit swapped dimensions.
+		 * The parent card is w-72 (18rem) by h-[28rem].
+		 * We make this element w-[28rem] by h-[18rem] (h-72).
+		*/
+		position: absolute;
+		width: 28rem;
+		height: 18rem; /* 18rem is 72px, or h-72 in Tailwind */
+
+		/* Center this new landscape element inside its portrait parent */
+		top: 50%;
+		left: 50%;
+
+		/* * Now we center AND rotate.
+		 * The 'scale(1.4)' is removed because it was fighting the
+		 * old, incorrect layout. It's no longer needed to "fit" the image.
+		*/
+		transform: translate(-50%, -50%) rotate(-90deg);
+
+		/* These background properties will now work perfectly */
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+
+		/* Keep the styles from your original rule */
+		border-radius: 0.75rem;
+		will-change: transform;
 	}
 
 	.drag-proxy:active {
 		cursor: grabbing;
 	}
 
-	/* CHANGE 2: Styling for new arrow buttons */
 	.arrow-btn {
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
-		width: 3rem; /* 48px */
-		height: 3rem; /* 48px */
-		border-radius: 9999px; /* rounded-full */
+		width: 3rem;
+		height: 3rem;
+		border-radius: 9999px;
 		background-color: rgba(255, 255, 255, 0.1);
 		backdrop-filter: blur(4px);
 		display: flex;
@@ -285,7 +318,7 @@
 	}
 
 	.arrow-btn svg {
-		width: 1.75rem; /* 28px */
-		height: 1.75rem; /* 28px */
+		width: 1.75rem;
+		height: 1.75rem;
 	}
 </style>
