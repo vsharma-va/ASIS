@@ -12,14 +12,27 @@
 	let selectedImageIndex = 0;
 	let isZoomed = false;
 	let mainImageEl;
+	let hasAnimatedIn = false; // Track if initial animation has run
+	let isAnimating = false; // Prevent concurrent animations
 
 	$: currentVariant = galleryData.variants[selectedVariantIndex];
 
 	// --- Animation Logic ---
 	function animateCarouselIn() {
+		if (isAnimating) return;
+		isAnimating = true;
+
 		gsap.fromTo('.main-image-wrapper',
 			{ scale: 0.95, opacity: 0 },
-			{ duration: 1.2, scale: 1, opacity: 1, ease: 'expo.out' }
+			{
+				duration: 1.2,
+				scale: 1,
+				opacity: 1,
+				ease: 'expo.out',
+				onComplete: () => {
+					isAnimating = false;
+				}
+			}
 		);
 		gsap.fromTo('.thumbnail-item',
 			{ y: 20, opacity: 0 },
@@ -40,7 +53,7 @@
 				ease: 'power3.out',
 				delay: 0.2,
 				onComplete: () => {
-					// Report Gallery component as ready after all animations complete
+					hasAnimatedIn = true;
 					setComponentReady('gallery', true);
 				}
 			}
@@ -48,29 +61,29 @@
 	});
 
 	onDestroy(() => {
-		// Unregister component when destroyed
+		// Kill all GSAP animations for this component
+		gsap.killTweensOf('.main-image-wrapper');
+		gsap.killTweensOf('.thumbnail-item');
+		gsap.killTweensOf('.product-info > *');
+		gsap.killTweensOf(mainImageEl);
+
 		unregisterComponent('gallery');
 	});
 
-	afterUpdate(() => {
-		if (mainImageEl && mainImageEl.getAttribute('src') !== currentVariant.images[selectedImageIndex]) {
-			if (!mainImageEl.complete) {
-				mainImageEl.onload = () => animateCarouselIn();
-			} else {
-				animateCarouselIn();
-			}
-		}
-	});
+	// FIXED: Remove afterUpdate completely - it was causing scroll lag
+	// The image preloading is handled differently now
 
 	// --- State Handlers ---
 	function selectVariant(index) {
-		if (index === selectedVariantIndex) return;
+		if (index === selectedVariantIndex || isAnimating) return;
+		isAnimating = true;
 
 		const tl = gsap.timeline({
 			onComplete: () => {
 				selectedVariantIndex = index;
 				selectedImageIndex = 0;
 				isZoomed = false;
+				isAnimating = false;
 			}
 		});
 
@@ -83,16 +96,19 @@
 	}
 
 	/**
-	 * ## IMPROVED ANIMATION ##
-	 * This function now uses a smoother fade and scale transition
-	 * for a more elegant and less abrupt image change.
+	 * IMPROVED: Smoother animation with better performance
 	 */
 	function selectImage(index) {
-		if (index === selectedImageIndex) return;
+		if (index === selectedImageIndex || isAnimating) return;
+		isAnimating = true;
 
-		const tl = gsap.timeline();
+		const tl = gsap.timeline({
+			onComplete: () => {
+				isAnimating = false;
+			}
+		});
 
-		// Animate out the current image (fade and subtle scale down)
+		// Animate out the current image
 		tl.to(mainImageEl, {
 			duration: 0.4,
 			opacity: 0,
@@ -100,7 +116,7 @@
 			ease: 'expo.in'
 		});
 
-		// Update the state after the out-animation
+		// Update the state
 		tl.call(() => {
 			selectedImageIndex = index;
 			if (isZoomed) {
@@ -109,21 +125,17 @@
 			}
 		});
 
-		// Let Svelte update the DOM
-		// tl.add(() => {}, '+=0.01');
-
-		// Animate in the new image (fade in and scale up to normal)
-		tl.fromTo(mainImageEl,
-			{
-				duration: 0.6,
-				opacity: 1,
-				scale: 1,
-				ease: 'expo.out'
-			}
-		);
+		// Animate in the new image
+		tl.to(mainImageEl, {
+			duration: 0.6,
+			opacity: 1,
+			scale: 1,
+			ease: 'expo.out'
+		});
 	}
 
 	function toggleZoom() {
+		if (isAnimating) return;
 		isZoomed = !isZoomed;
 		if (isZoomed) {
 			gsap.to(mainImageEl, { duration: 0.5, scale: 1.5, ease: 'power3.inOut' });
@@ -156,17 +168,24 @@
 				<div
 					class="main-image-wrapper relative flex-1 w-full bg-white rounded-2xl overflow-hidden"
 					on:mousemove={handleImageMouseMove}
+					role="img"
+					aria-label="Product image viewer"
 				>
 					{#key currentVariant.images[selectedImageIndex]}
 						<div
 							class="w-full h-full absolute flex items-center justify-center {isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}"
 							on:click={toggleZoom}
+							role="button"
+							tabindex="0"
+							on:keydown={(e) => e.key === 'Enter' && toggleZoom()}
 						>
 							<img
 								bind:this={mainImageEl}
 								src={currentVariant.images[selectedImageIndex]}
 								alt={`${galleryData.title} - ${currentVariant.name}`}
 								class="w-full h-full rounded-lg object-contain will-change-transform"
+								loading="eager"
+								decoding="async"
 							/>
 						</div>
 					{/key}
@@ -188,8 +207,10 @@
 								class:hover:opacity-100={selectedImageIndex !== index}
 								class:hover:scale-105={selectedImageIndex !== index}
 								on:click={() => selectImage(index)}
+								aria-label={`View image ${index + 1}`}
 							>
-								<img src={image} alt="Thumbnail {index + 1}" class="w-20 h-20 object-cover" />
+								<img src={image} alt="Thumbnail {index + 1}" class="w-20 h-20 object-cover"
+									 loading="eager" />
 							</button>
 						{/each}
 					</div>
@@ -221,6 +242,7 @@
 								class:bg-slate-100={selectedVariantIndex === index}
 								class:hover:bg-slate-100={selectedVariantIndex !== index}
 								title={variant.name}
+								aria-label={`Select ${variant.name}`}
 							>
 								<div
 									class="w-8 h-8 m-0 rounded-full shadow-inner border border-black/5 transition-transform duration-300 ease-out"
@@ -228,7 +250,6 @@
 									class:group-hover:scale-110={selectedVariantIndex !== index}
 									style="background: linear-gradient(135deg, {variant.color}, {variant.accent})"
 								></div>
-								<!--								<span class="text-sm font-medium">{variant.name}</span>-->
 								{#if selectedVariantIndex === index}
 									<div class="absolute inset-0 rounded-full ring-2 ring-zinc-300"></div>
 								{/if}

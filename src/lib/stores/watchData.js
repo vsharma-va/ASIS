@@ -851,16 +851,6 @@ export const watchData = {
 		landingImage: getLandingImage('my-light-dancing', 'my_light_dancing_1.webp'),
 		variants: [
 			{
-				id: 'pink',
-				name: 'Diamond',
-				color: '#BE185D',
-				accent: '#F472B6',
-				images:
-					getVariantImages('my-light-dancing', 'MLD-pink').length > 0
-						? getVariantImages('my-light-dancing', 'MLD-pink')
-						: [getImageByID('my_light_dancing_1.webp'), getImageByID('my_light_dancing_2.webp')]
-			},
-			{
 				id: 'blue',
 				name: 'Sapphire',
 				color: '#1E40AF',
@@ -868,6 +858,16 @@ export const watchData = {
 				images:
 					getVariantImages('my-light-dancing', 'MLD-blue').length > 0
 						? getVariantImages('my-light-dancing', 'MLD-blue')
+						: [getImageByID('my_light_dancing_1.webp'), getImageByID('my_light_dancing_2.webp')]
+			},
+			{
+				id: 'pink',
+				name: 'Diamond',
+				color: '#BE185D',
+				accent: '#F472B6',
+				images:
+					getVariantImages('my-light-dancing', 'MLD-pink').length > 0
+						? getVariantImages('my-light-dancing', 'MLD-pink')
 						: [getImageByID('my_light_dancing_1.webp'), getImageByID('my_light_dancing_2.webp')]
 			}
 		]

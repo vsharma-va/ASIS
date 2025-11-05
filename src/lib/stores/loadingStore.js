@@ -9,10 +9,23 @@ const componentStates = writable({});
 // Track navigation state to prevent premature loading completion
 const isNavigating = writable(false);
 
+// Track when loading started for safety timeout
+const loadingStartTime = writable(null);
+
+// Maximum loading time before forcing completion (safety mechanism)
+const MAX_LOADING_TIME = 10000; // 10 seconds
+
 // Derived store - only ready when ALL EXPECTED components are ready AND not navigating
 export const isLoading = derived(
-	[componentStates, expectedComponents, isNavigating],
-	([$states, $expected, $navigating]) => {
+	[componentStates, expectedComponents, isNavigating, loadingStartTime],
+	([$states, $expected, $navigating, $startTime]) => {
+		// Safety timeout: Force loading to complete after MAX_LOADING_TIME
+		if ($startTime && Date.now() - $startTime > MAX_LOADING_TIME) {
+			console.warn('Loading timeout exceeded, forcing completion');
+			completeNavigation();
+			return false;
+		}
+
 		// If we're actively navigating, always show loading
 		if ($navigating) return true;
 
@@ -38,6 +51,9 @@ export function registerComponent(componentName) {
 		newSet.add(componentName);
 		return newSet;
 	});
+
+	// Start timer if this is the first component
+	loadingStartTime.update(time => time || Date.now());
 }
 
 // Unregister a component (when it's destroyed)
@@ -65,6 +81,23 @@ export function setComponentReady(componentName, ready = true) {
 		...states,
 		[componentName]: ready
 	}));
+
+	// Check if all components are ready
+	let allReady = true;
+	componentStates.subscribe(states => {
+		expectedComponents.subscribe(expected => {
+			for (const component of expected) {
+				if (!states[component]) {
+					allReady = false;
+				}
+			}
+		})();
+	})();
+
+	// If all ready, reset start time
+	if (allReady) {
+		loadingStartTime.set(null);
+	}
 }
 
 // Function to reset all components (useful for page navigation)
@@ -72,16 +105,30 @@ export function resetLoading() {
 	componentStates.set({});
 	expectedComponents.set(new Set());
 	isNavigating.set(false);
+	loadingStartTime.set(null);
 }
 
 // Signal that navigation is starting
 export function startNavigation() {
 	isNavigating.set(true);
+	loadingStartTime.set(Date.now());
 }
 
 // Signal that navigation has completed and page is ready
 export function completeNavigation() {
 	isNavigating.set(false);
+	loadingStartTime.set(null);
+}
+
+// Debug function to check loading state
+export function debugLoadingState() {
+	let debug = {};
+	componentStates.subscribe(states => debug.states = states)();
+	expectedComponents.subscribe(expected => debug.expected = Array.from(expected))();
+	isNavigating.subscribe(nav => debug.navigating = nav)();
+	isLoading.subscribe(loading => debug.isLoading = loading)();
+	console.log('Loading Debug:', debug);
+	return debug;
 }
 
 // Export the component states for debugging if needed

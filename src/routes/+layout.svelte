@@ -28,10 +28,9 @@
 		smoother = ScrollSmoother.create({
 			wrapper: '#smooth-wrapper',
 			content: '#smooth-content',
-			smooth: 2,
-			smoothTouch: 0.5,
-			ease: 'sine',
-			effects: true
+			smooth: 2
+			// smoothTouch: 0.5,
+			// ease: 'sine'
 		});
 
 		return () => {
