@@ -647,8 +647,8 @@ export const watchData = {
 			{
 				id: 'blue',
 				name: 'Sapphire',
-				color: '#1E40AF',
-				accent: '#3B82F6',
+				color: '#00FFF0',
+				accent: '#82C8E5',
 				images:
 					getVariantImages('the-turning-humming-bird', 'HB-blue').length > 0
 						? getVariantImages('the-turning-humming-bird', 'HB-blue')

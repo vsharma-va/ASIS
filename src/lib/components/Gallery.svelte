@@ -209,7 +209,7 @@
 								on:click={() => selectImage(index)}
 								aria-label={`View image ${index + 1}`}
 							>
-								<img src={image} alt="Thumbnail {index + 1}" class="w-20 h-20 object-cover"
+								<img src={image} alt="Thumbnail {index + 1}" class="w-10 h-10 object-cover"
 									 loading="eager" />
 							</button>
 						{/each}

@@ -47,6 +47,10 @@
 
 </script>
 
+<svelte:head>
+	<title>AS-IS Luxury Watches</title>
+</svelte:head>
+
 <!-- Fixed Logo -->
 <div class="fixed-logo">
 	<img
