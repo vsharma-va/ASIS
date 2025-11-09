@@ -49,6 +49,11 @@
 
 <svelte:head>
 	<title>AS-IS Luxury Watches</title>
+	<meta name="description" content="At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch." />
+	<meta name="og:title" content="AS-IS Luxury Watches" />
+	<meta name="og:description" content="At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch." />
+	<meta name="og:site_name" content="AS-IS Luxury Watches" />
+	<meta name="twitter:title" content="AS-IS Luxury Watches" />
 </svelte:head>
 
 <!-- Fixed Logo -->
