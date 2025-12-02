@@ -1,5 +1,5 @@
 <script>
-	import { onMount, afterUpdate, onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap';
 	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
 
@@ -17,12 +17,69 @@
 
 	$: currentVariant = galleryData.variants[selectedVariantIndex];
 
+	/* Robust mapping: normalize strings and try exact / partial matches so
+	   gemstone labels map to variant names reliably (fixes Tsavorite bug). */
+	function normalizeName(s) {
+		return (s || '')
+			.toString()
+			.trim()
+			.toLowerCase()
+			.replace(/[^\w\s]/g, '') // remove punctuation
+			.replace(/\s+/g, ' ');
+	}
+
+	function tokensOf(s) {
+		return normalizeName(s).split(' ').filter(Boolean);
+	}
+
+	function findVariantIndexByGemstone(gemstone) {
+		if (!galleryData || !galleryData.variants) return undefined;
+		const gNorm = normalizeName(gemstone);
+		if (!gNorm) return undefined;
+
+		// 1) exact match
+		for (let i = 0; i < galleryData.variants.length; i++) {
+			const vNorm = normalizeName(galleryData.variants[i].name);
+			if (vNorm === gNorm) return i;
+		}
+
+		// prepare token lists
+		const gTokens = tokensOf(gemstone);
+
+		// 2) whole-token match: any token equals any token in variant name
+		for (let i = 0; i < galleryData.variants.length; i++) {
+			const vTokens = tokensOf(galleryData.variants[i].name);
+			// if any token in gTokens equals any token in vTokens -> match
+			if (gTokens.some(gt => vTokens.includes(gt))) return i;
+		}
+
+		// 3) guarded substring fallback (only for longer names to avoid false positives)
+		if (gNorm.length > 3) {
+			for (let i = 0; i < galleryData.variants.length; i++) {
+				const vNorm = normalizeName(galleryData.variants[i].name);
+				if (vNorm.includes(gNorm) || gNorm.includes(vNorm)) return i;
+			}
+		}
+
+		// no match
+		return undefined;
+	}
+
+	// reactive map: gemstone label -> variant index (or undefined)
+	$: gemstoneToIndex = (galleryData && galleryData.gemstones)
+		? galleryData.gemstones.reduce((acc, g) => {
+			acc[g] = findVariantIndexByGemstone(g);
+			return acc;
+		}, {})
+		: {};
+
 	// --- Animation Logic ---
 	function animateCarouselIn() {
 		if (isAnimating) return;
 		isAnimating = true;
 
-		gsap.fromTo('.main-image-wrapper',
+		gsap.fromTo(
+			'.main-image-wrapper',
 			{ scale: 0.95, opacity: 0 },
 			{
 				duration: 1.2,
@@ -34,16 +91,22 @@
 				}
 			}
 		);
-		gsap.fromTo('.thumbnail-item',
+		gsap.fromTo(
+			'.thumbnail-item',
 			{ y: 20, opacity: 0 },
 			{ duration: 0.6, y: 0, opacity: 1, stagger: 0.07, ease: 'power2.out', delay: 0.4 }
 		);
 	}
 
 	onMount(() => {
-		// Animate everything on initial page load
+		// debug mapping (remove when finished)
+		if (import.meta.env.DEV) {
+			console.log('gemstoneToIndex for', galleryData?.id, gemstoneToIndex);
+		}
+
 		animateCarouselIn();
-		gsap.fromTo('.product-info > *',
+		gsap.fromTo(
+			'.product-info > *',
 			{ y: 30, opacity: 0 },
 			{
 				duration: 0.8,
@@ -61,7 +124,6 @@
 	});
 
 	onDestroy(() => {
-		// Kill all GSAP animations for this component
 		gsap.killTweensOf('.main-image-wrapper');
 		gsap.killTweensOf('.thumbnail-item');
 		gsap.killTweensOf('.product-info > *');
@@ -70,12 +132,9 @@
 		unregisterComponent('gallery');
 	});
 
-	// FIXED: Remove afterUpdate completely - it was causing scroll lag
-	// The image preloading is handled differently now
-
 	// --- State Handlers ---
 	function selectVariant(index) {
-		if (index === selectedVariantIndex || isAnimating) return;
+		if (index === selectedVariantIndex || isAnimating || index == null || index < 0) return;
 		isAnimating = true;
 
 		const tl = gsap.timeline({
@@ -95,9 +154,6 @@
 		});
 	}
 
-	/**
-	 * IMPROVED: Smoother animation with better performance
-	 */
 	function selectImage(index) {
 		if (index === selectedImageIndex || isAnimating) return;
 		isAnimating = true;
@@ -108,7 +164,6 @@
 			}
 		});
 
-		// Animate out the current image
 		tl.to(mainImageEl, {
 			duration: 0.4,
 			opacity: 0,
@@ -116,7 +171,6 @@
 			ease: 'expo.in'
 		});
 
-		// Update the state
 		tl.call(() => {
 			selectedImageIndex = index;
 			if (isZoomed) {
@@ -125,7 +179,6 @@
 			}
 		});
 
-		// Animate in the new image
 		tl.to(mainImageEl, {
 			duration: 0.6,
 			opacity: 1,
@@ -159,10 +212,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </svelte:head>
 
-
-<div class="font-sans min-h-screen bg-gradient text-zinc-800">
+<div class="font-sans min-h-[115vh] bg-gradient text-zinc-800">
 	<main class="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-
 		<div class="lg:col-span-1 h-[65vh] lg:h-screen flex flex-col p-4 sm:p-6 lg:p-8 lg:sticky lg:top-0 mt-[4rem]">
 			{#key selectedVariantIndex}
 				<div
@@ -208,6 +259,7 @@
 								class:hover:scale-105={selectedImageIndex !== index}
 								on:click={() => selectImage(index)}
 								aria-label={`View image ${index + 1}`}
+								type="button"
 							>
 								<img src={image} alt="Thumbnail {index + 1}" class="w-10 h-10 object-cover"
 									 loading="eager" />
@@ -221,8 +273,8 @@
 		<div class="lg:col-span-1 flex items-center">
 			<div class="p-8 sm:p-12 lg:p-16 w-full product-info space-y-8">
 				<header class="space-y-3">
-					<span
-						class="text-sm font-medium text-zinc-500 tracking-wider uppercase">{galleryData.collection}</span>
+					<!--					<span-->
+					<!--						class="text-sm font-medium text-zinc-500 tracking-wider uppercase">{galleryData.collection}</span>-->
 					<h1 class="text-4xl lg:text-5xl font-light tracking-tight text-zinc-900">
 						{galleryData.title}
 					</h1>
@@ -232,8 +284,7 @@
 				</header>
 
 				<section class="space-y-5">
-					<h3 class="text-base font-semibold text-zinc-900">Select Gemstone: <span
-						class="font-medium text-zinc-600">{currentVariant.name}</span></h3>
+
 					<div class="flex flex-wrap gap-1">
 						{#each galleryData.variants as variant, index}
 							<button
@@ -243,6 +294,7 @@
 								class:hover:bg-slate-100={selectedVariantIndex !== index}
 								title={variant.name}
 								aria-label={`Select ${variant.name}`}
+								type="button"
 							>
 								<div
 									class="w-8 h-8 m-0 rounded-full shadow-inner border border-black/5 transition-transform duration-300 ease-out"
@@ -250,12 +302,16 @@
 									class:group-hover:scale-110={selectedVariantIndex !== index}
 									style="background: linear-gradient(135deg, {variant.color}, {variant.accent})"
 								></div>
+
 								{#if selectedVariantIndex === index}
-									<div class="absolute inset-0 rounded-full ring-2 ring-zinc-300"></div>
+									<div
+										class="absolute inset-0 rounded-full ring-2 ring-zinc-300 pointer-events-none"></div>
 								{/if}
 							</button>
 						{/each}
 					</div>
+					<h3 class="text-base font-semibold text-zinc-900">Select Gemstone: <span
+						class="font-medium text-zinc-600">{currentVariant.name}</span></h3>
 				</section>
 
 				<section class="space-y-4">
@@ -270,19 +326,81 @@
 						{/each}
 					</div>
 				</section>
-
 				<section class="space-y-4">
 					<h3 class="text-base font-semibold text-zinc-900">Available Gemstones</h3>
 					<div class="flex flex-wrap gap-3">
 						{#each galleryData.gemstones as gemstone}
-                            <span
-								class="bg-slate-100 text-zinc-700 px-4 py-2 rounded-full text-sm font-medium border border-zinc-200">
-                                {gemstone}
-                            </span>
+							{#if gemstoneToIndex[gemstone] !== undefined}
+								<button
+									type="button"
+									on:click={() => selectVariant(gemstoneToIndex[gemstone])}
+									on:keydown={(e) =>
+						e.key === 'Enter' && selectVariant(gemstoneToIndex[gemstone])
+					}
+									class="relative px-4 py-2 rounded-full text-sm font-medium border transition-all duration-150 focus:outline-none"
+									class:bg-slate-100={selectedVariantIndex === gemstoneToIndex[gemstone]}
+									class:border-zinc-300={selectedVariantIndex === gemstoneToIndex[gemstone]}
+									class:border-zinc-200={selectedVariantIndex !== gemstoneToIndex[gemstone]}
+									aria-pressed={selectedVariantIndex === gemstoneToIndex[gemstone]}
+									aria-label={`Select gemstone ${gemstone}`}
+								>
+									{gemstone}
+
+									{#if selectedVariantIndex === gemstoneToIndex[gemstone]}
+										<!-- same ring overlay used by color circles -->
+										<div
+											class="absolute inset-0 rounded-full ring-2 ring-zinc-300 pointer-events-none"
+										></div>
+									{/if}
+								</button>
+							{:else}
+								<!-- fallback (no matching variant) -->
+								<span
+									class="bg-slate-100 text-zinc-700 px-4 py-2 rounded-full text-sm font-medium border border-zinc-200"
+								> {gemstone}
+								</span>
+							{/if}
 						{/each}
 					</div>
 				</section>
 
+
+				<!--				<section class="space-y-4">-->
+				<!--					<h3 class="text-base font-semibold text-zinc-900">Available Gemstones</h3>-->
+				<!--					<div class="flex flex-wrap gap-3">-->
+				<!--						{#each galleryData.gemstones as gemstone}-->
+				<!--							{#if gemstoneToIndex[gemstone] !== undefined}-->
+				<!--								{ /* index resolved from robust mapping */ }-->
+				<!--								{#let idx = gemstoneToIndex[gemstone]}-->
+				<!--								<button-->
+				<!--									type="button"-->
+				<!--									on:click={() => idx !== undefined && selectVariant(idx)}-->
+				<!--									on:keydown={(e) => e.key === 'Enter' && idx !== undefined && selectVariant(idx)}-->
+				<!--									class="relative px-4 py-2 rounded-full text-sm font-medium border transition-all duration-150 focus:outline-none"-->
+				<!--									class:bg-slate-100={selectedVariantIndex === idx}-->
+				<!--									class:border-zinc-300={selectedVariantIndex === idx}-->
+				<!--									class:border-zinc-200={selectedVariantIndex !== idx}-->
+				<!--									aria-pressed={selectedVariantIndex === idx}-->
+				<!--									aria-label={`Select gemstone ${gemstone}`}-->
+				<!--								>-->
+				<!--									{gemstone}-->
+				<!--									{#if selectedVariantIndex === idx}-->
+				<!--										&lt;!&ndash; same ring overlay used by color circles &ndash;&gt;-->
+				<!--										<div-->
+				<!--											class="absolute inset-0 rounded-full ring-2 ring-zinc-300 pointer-events-none"></div>-->
+				<!--									{/if}-->
+				<!--								</button>-->
+				<!--								{/let}-->
+				<!--							{:else}-->
+				<!--								&lt;!&ndash; fallback (no matching variant) &ndash;&gt;-->
+				<!--								<span-->
+				<!--									class="bg-slate-100 text-zinc-700 px-4 py-2 rounded-full text-sm font-medium border border-zinc-200">-->
+				<!--									{gemstone}-->
+				<!--								</span>-->
+				<!--							{/if}-->
+				<!--						{/each}-->
+				<!--					</div>-->
+				<!--				</section>-->
 			</div>
 		</div>
 	</main>

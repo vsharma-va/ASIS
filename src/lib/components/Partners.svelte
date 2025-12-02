@@ -30,7 +30,7 @@
 	});
 </script>
 
-<div class="collection-section h-[110vh] w-full relative flex justify-center items-center bg-gradient pb-6 sm:pb-10">
+<div class="collection-section h-[90vh] w-full relative flex justify-center items-center bg-gradient pb-6 sm:pb-10">
 	<div class="collection-center-text w-[95%] sm:w-4/5 lg:w-3/5 xl:w-2/4 h-full overflow-hidden
         flex flex-col justify-center items-center text-black text-center px-4 sm:px-0">
 		<!-- Header section -->

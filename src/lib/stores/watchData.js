@@ -93,18 +93,32 @@ function getVariantImages(watchId, variantId) {
  * Get landing image for a watch
  * Tries new structure first, falls back to old structure
  */
-function getLandingImage(watchId, fallbackFilename) {
+function getLandingImage(watchId, fallbackFilename, specific = false, specificFilename = null) {
 	const abbreviation = COLLECTION_ABBREVIATIONS[watchId];
 
 	if (abbreviation) {
-		// Try to find any image in the new structure for this watch
 		const pathPattern = `/src/lib/assets/images/watchFaces/${abbreviation}/`;
-		const firstImage = Object.entries(nestedWatchFaces).find(([path]) =>
-			path.includes(pathPattern)
-		);
 
-		if (firstImage) {
-			return firstImage[1];
+		// 1. SPECIFIC MODE: Look for a specific file within this watch's folder
+		if (specific && specificFilename) {
+			const specificImage = Object.entries(nestedWatchFaces).find(
+				([path]) => path.includes(pathPattern) && path.includes(specificFilename)
+			);
+
+			if (specificImage) {
+				return specificImage[1];
+			}
+			console.warn(
+				`Specific landing image '${specificFilename}' not found for ${watchId} in new structure.`
+			);
+		} else {
+			const firstImage = Object.entries(nestedWatchFaces).find(([path]) =>
+				path.includes(pathPattern)
+			);
+
+			if (firstImage) {
+				return firstImage[1];
+			}
 		}
 	}
 
@@ -129,14 +143,19 @@ export const watchData = {
 		gemstones: [
 			'Diamond',
 			'Colored Sapphire',
-			'Tsavorite',
+			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
 			'Ruby',
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getLandingImage('the-invisible-round-petite', 'invisible_petite_1.webp'),
+		landingImage: getLandingImage(
+			'the-invisible-round-petite',
+			'invisible_petite_1.webp',
+			true,
+			'SON08487.webp'
+		),
 		variants: [
 			{
 				id: 'multi',
@@ -303,21 +322,26 @@ export const watchData = {
 		watchDescription: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
 		specs: [
 			{ label: 'Model NO', value: 'M1881S' },
-			{ label: 'Case Size', value: '33 MM' },
+			{ label: 'Case Size', value: 'GRANDE / 40 MM' },
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
 			{ label: 'Variants', value: '9 Variants' }
 		],
 		gemstones: [
 			'Diamond',
 			'Colored Sapphire',
-			'Tsavorite',
+			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
 			'Ruby',
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getLandingImage('the-invisible-round-grande', 'invisible_grande_1.webp'),
+		landingImage: getLandingImage(
+			'the-invisible-round-grande',
+			'invisible_petite_1.webp',
+			true,
+			'SON08492.webp'
+		),
 		variants: [
 			{
 				id: 'multi',
@@ -488,8 +512,8 @@ export const watchData = {
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
 			{ label: 'Variants', value: '3 Variants' }
 		],
-		gemstones: ['Diamonds', 'Sapphires', 'Tsavorite'],
-		landingImage: getLandingImage('the-mosaic', 'mosaic_1.webp'),
+		gemstones: ['Diamonds', 'Sapphires'],
+		landingImage: getLandingImage('the-mosaic', 'mosaic_1.webp', true, 'SON08502.webp'),
 		variants: [
 			{
 				id: 'blue',
@@ -552,7 +576,7 @@ export const watchData = {
 		gemstones: [
 			'Diamond',
 			'Colored Sapphires',
-			'Tsavorite',
+			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
 			'Ruby',
@@ -588,7 +612,7 @@ export const watchData = {
 			{ label: 'Variants', value: '1 Variant' }
 		],
 		gemstones: ['Diamonds', 'Colored Sapphires'],
-		landingImage: getLandingImage('the-twin-rainbow', 'twin_rainbow_1.webp'),
+		landingImage: getLandingImage('the-twin-rainbow', 'twin_rainbow_1.webp', true, 'SON08537.webp'),
 		variants: [
 			{
 				id: 'white',
@@ -625,14 +649,19 @@ export const watchData = {
 		gemstones: [
 			'Diamond',
 			'Colored Sapphires',
-			'Tsavorite',
+			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
 			'Ruby',
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getLandingImage('the-turning-humming-bird', 'humming_bird_1.webp'),
+		landingImage: getLandingImage(
+			'the-turning-humming-bird',
+			'humming_bird_1.webp',
+			true,
+			'SON08525.webp'
+		),
 		variants: [
 			{
 				id: 'white',
@@ -683,7 +712,7 @@ export const watchData = {
 		gemstones: [
 			'Diamond',
 			'Colored Sapphires',
-			'Tsavorite',
+			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
 			'Ruby',
@@ -751,7 +780,12 @@ export const watchData = {
 			{ label: 'Variants', value: '1 Variant' }
 		],
 		gemstones: ['Diamonds', 'Tsavorite'],
-		landingImage: getLandingImage('the-black-panther-grande', 'black_panther_1.webp'),
+		landingImage: getLandingImage(
+			'the-black-panther-grande',
+			'black_panther_1.webp',
+			true,
+			'SON089001.webp'
+		),
 		variants: [
 			{
 				id: 'black',
@@ -809,7 +843,12 @@ export const watchData = {
 			{ label: 'Variants', value: '2 Variants' }
 		],
 		gemstones: ['Diamonds', 'Tsavorite'],
-		landingImage: getLandingImage('the-leopard-grande', 'leopard_grande_1.webp'),
+		landingImage: getLandingImage(
+			'the-leopard-grande',
+			'leopard_grande_1.webp',
+			true,
+			'SON08522.webp'
+		),
 		variants: [
 			{
 				id: 'black',
@@ -848,7 +887,12 @@ export const watchData = {
 			{ label: 'Variants', value: '2 Variants' }
 		],
 		gemstones: ['Diamonds', 'sapphires', 'Tsavorite'],
-		landingImage: getLandingImage('my-light-dancing', 'my_light_dancing_1.webp'),
+		landingImage: getLandingImage(
+			'my-light-dancing',
+			'my_light_dancing_1.webp',
+			true,
+			'SON08511.webp'
+		),
 		variants: [
 			{
 				id: 'blue',
@@ -889,7 +933,7 @@ export const watchData = {
 		gemstones: [
 			'Diamond',
 			'Colored Sapphire',
-			'Tsavorite',
+			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
 			'Ruby',

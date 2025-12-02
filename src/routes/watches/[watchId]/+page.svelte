@@ -5,6 +5,7 @@
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import Gallery from '$lib/components/Gallery.svelte';
 	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
+	import logoImg from '$lib/assets/images/AS IS.png';
 
 	// Register this component immediately when script runs
 	registerComponent('watchDetail');
@@ -105,27 +106,28 @@
 
 {#if watchData}
 	<div
-		class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient -mb-[80vh]">
-		<!--		<img-->
-		<!--			src="{watchData.landingImage}"-->
-		<!--			alt="Background img"-->
-		<!--			loading="eager"-->
-		<!--			class="LandingBG absolute top-0 left-0 h-screen w-full object-contain z-0"-->
-		<!--		>-->
+		class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient mt-[3rem] -mb-[80vh]">
 
 		<div
 			class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[20rem]">
-			<div
-				class="LandingTextElem h-fit w-full sm:w-2/4 text-center sm:text-left uppercase secondary-font text-xs sm:text-sm mb-2 sm:mb-0 sm:-ml-[5rem]">
-				Meet
-			</div>
-			<div
-				class="LandingTextElem h-fit w-full text-center text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-[6rem] primary-font font-[600] mb-2 sm:mb-0 leading-[0.8] capitalize">
-				{watchData.collection + " " + watchData.subCollection}
-			</div>
-			<div
-				class="LandingTextElem h-fit w-full sm:w-2/4 text-center sm:text-right uppercase secondary-font text-xs sm:text-sm sm:-mr-[5rem]">
-				BY ASIS
+			<div class="flex flex-col w-fit max-w-full">
+
+				<div class="self-start uppercase secondary-font text-xs sm:text-sm mb-2 sm:mb-0">
+					Meet
+				</div>
+
+				<div class="text-center sm:text-left text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-[5.5rem]
+             primary-font font-[600] mb-2 sm:mb-0 leading-[0.8] capitalize whitespace-nowrap">
+					{watchData.collection + " " + watchData.subCollection}
+				</div>
+
+				<div class="self-end uppercase secondary-font text-xs sm:text-sm">
+					<div class="flex items-center justify-end gap-2">
+						<span class="align-text-bottom -mb-[0.6rem]">BY</span>
+						<img src="{logoImg}" alt="ASIS" class="h-6 w-auto object-contain" />
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</div>

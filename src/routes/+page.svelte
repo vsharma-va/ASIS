@@ -2,18 +2,17 @@
 	import Footer from '$lib/components/footer.svelte';
 	import Landing from '$lib/components/Landing.svelte';
 	import Partners from '$lib/components/Partners.svelte';
-	import logoImg from '$lib/assets/images/AS IS.png';
 	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap/dist/gsap';
 	import Collections from '$lib/components/Collections.svelte';
 
 	const ld = {
-		"@context": "https://schema.org",
-		"@type": "Store",
-		"name": "AS-IS Luxury Watches",
-		"url": "https://www.asiswatches.com/",
-		"description": "Explore our exclusive range of luxury watches.",
-		"logo": "https://yourdomain.com/logo.png"
+		'@context': 'https://schema.org',
+		'@type': 'Store',
+		'name': 'AS-IS Luxury Watches',
+		'url': 'https://www.asiswatches.com/',
+		'description': 'Explore our exclusive range of luxury watches.',
+		'logo': 'https://yourdomain.com/logo.png'
 	};
 	const ldJson = JSON.stringify(ld);
 
@@ -58,25 +57,23 @@
 </script>
 
 
-
 <svelte:head>
-	<script type="application/ld+json">{ldJson}</script>
+	<script type="application/ld+json">{
+		ldJson;
+	}
+	</script>
 	<title>AS-IS Luxury Watches</title>
-	<meta name="description" content="At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch." />
+	<meta name="description"
+		  content="At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch." />
 	<meta name="og:title" content="AS-IS Luxury Watches" />
-	<meta name="og:description" content="At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch." />
+	<meta name="og:description"
+		  content="At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch." />
 	<meta name="og:site_name" content="AS-IS Luxury Watches" />
 	<meta name="twitter:title" content="AS-IS Luxury Watches" />
 	<link rel="canonical" href="https://www.asiswatches.com/" />
 </svelte:head>
 
 <!-- Fixed Logo -->
-<div class="fixed-logo">
-	<img
-		alt="ASIS Watches Logo"
-		src={logoImg}
-	/>
-</div>
 
 <div id="landing">
 
@@ -85,9 +82,11 @@
 <div id="collections">
 	<Collections />
 </div>
-<Partners />
-<div id="footer">
 
+<div id="collaboration">
+	<Partners />
+</div>
+<div id="footer">
 	<Footer />
 </div>
 

@@ -4,110 +4,243 @@
 	import { goto } from '$app/navigation';
 	import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin';
 	import { page } from '$app/stores';
+	import logoImg from '$lib/assets/images/AS IS.png';
 
-	// Variables to hold element references
-	let navElement;
-	let closeButton;
-	let timeline;
+	let menuElement;
+	let menuButton;
+	let isMenuOpen = false;
+	let headerElement;
+	let lastScrollY = 0;
 
 	onMount(() => {
 		gsap.registerPlugin(ScrollToPlugin);
-		// Initialize the GSAP timeline once the component is mounted
-		// It's paused and reversed by default, ready for the first open click
-		timeline = gsap.timeline({
-			paused: true,
-			reversed: true,
-			defaults: { duration: 0.5, ease: 'expo.inOut' }
-		});
-
-		// Define the animation sequence
-		timeline
-			.to(navElement, { right: 0 })
-			.to(navElement, { height: '100vh' }, '-=0.1')
-			// Target the nav links, close button, and header by class
-			.to('.nav-link', { opacity: 1, pointerEvents: 'all', stagger: 0.2 }, '-=0.8')
-			.to(closeButton, { opacity: 1, pointerEvents: 'all' }, '-=0.8')
-			.to('.nav-header', { opacity: 1 }, '-=1');
 	});
 
-	// Functions to control the timeline
-	const openNav = () => timeline?.play();
-	const closeNav = () => timeline?.reverse();
-	const handleClick = (targetPage, divID) => {
-		closeNav();
+	const toggleMenu = () => {
+		isMenuOpen = !isMenuOpen;
 
-		// Determine the scroll target: 0 for top, or the specific ID
-		const scrollToTarget = divID === '#' ? 0 : `#${divID}`; // <--- CHANGE HERE
+		if (isMenuOpen) {
+			gsap.timeline()
+				.set(menuElement, { display: 'block', height: 0, overflow: 'hidden' })
+				.to(menuElement, {
+					height: 'auto',
+					duration: 0.5,
+					ease: 'power2.out'
+				})
+				.fromTo('.mobile-nav-item',
+					{ opacity: 0, y: -10 },
+					{ opacity: 1, y: 0, duration: 0.3, stagger: 0.1 },
+					'-=0.3'
+				);
+		} else {
+			gsap.timeline({
+				onComplete: () => gsap.set(menuElement, { display: 'none' })
+			})
+				.to('.mobile-nav-item',
+					{ opacity: 0, y: -10, duration: 0.2 }
+				)
+				.to(menuElement,
+					{ height: 0, duration: 0.4, ease: 'power2.inOut' },
+					'-=0.1'
+				);
+		}
+	};
+
+	const handleClick = (targetPage, divID) => {
+		// Close mobile menu if open
+		if (isMenuOpen) {
+			toggleMenu();
+		}
+
+		const scrollToTarget = divID === '#' ? 0 : `#${divID}`;
 
 		if ($page.url.pathname === targetPage) {
-			// Already on the page, just scroll
-			gsap.to(window, { duration: 1, scrollTo: scrollToTarget }); // <--- CHANGE HERE
+			gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
 		} else {
-			// Navigate first, then scroll
 			goto(targetPage).then(() => {
 				requestAnimationFrame(() => {
-					gsap.to(window, { duration: 1, scrollTo: scrollToTarget }); // <--- CHANGE HERE
+					gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
 				});
 			});
 		}
 	};
+
+	const handleScroll = () => {
+		// Don't hide the navbar if the mobile menu is currently open
+		if (isMenuOpen) return;
+
+		const currentScrollY = window.scrollY;
+		const headerHeight = headerElement?.offsetHeight || 80;
+
+		// If at the very top, always show
+		if (currentScrollY <= 0) {
+			gsap.to(headerElement, { y: 0, duration: 0.3, ease: 'power2.out' });
+			lastScrollY = currentScrollY;
+			return;
+		}
+
+		// Determine direction
+		if (currentScrollY > lastScrollY && currentScrollY > headerHeight) {
+			// Scrolling DOWN -> Hide Header
+			gsap.to(headerElement, { y: '-100%', duration: 0.3, ease: 'power2.out' });
+		} else {
+			// Scrolling UP -> Show Header
+			gsap.to(headerElement, { y: 0, duration: 0.3, ease: 'power2.out' });
+		}
+
+		lastScrollY = currentScrollY;
+	};
 </script>
 
-<div
-	class="fixed left-[2%] top-[2%] z-10 h-[22px] w-[30px] cursor-pointer"
-	on:click={openNav}
-	aria-label="Open navigation menu"
-	role="button"
->
-	<div
-		class="relative top-[9px] h-[4px] w-[30px] bg-black
-           before:absolute before:top-[-9px] before:h-[4px] before:w-[30px] before:bg-black before:content-['']
-           after:absolute after:top-[9px] after:h-[4px] after:w-[30px] after:bg-black after:content-['']"
-	/>
-</div>
+<svelte:window on:scroll={handleScroll} />
 
-<nav
-	bind:this={navElement}
-	class="fixed z-10 flex h-[30px] w-full items-center justify-center bg-black"
-	style="right: -100vw;"
->
-	<div
-		bind:this={closeButton}
-		class="pointer-events-none absolute left-[2%] top-[2%] h-[30px] w-[30px] cursor-pointer opacity-0"
-		on:click={closeNav}
-		aria-label="Close navigation menu"
-		role="button"
-	>
+<header
+	bind:this={headerElement}
+	class="fixed top-0 left-0 w-full z-50">
+	<nav
+		class="flex flex-wrap items-center justify-between min-h-[4rem] w-full py-4 md:py-0 px-4 text-lg text-[#5cc6c9] bg-[#2d6f71] shadow-md
+				relative ">
+
+		<!-- Center: Navigation Links (Desktop) -->
+		<div class="hidden w-full md:flex md:items-center md:justify-center md:flex-1" id="menu">
+			<ul class="text-base secondary-font uppercase font-bold text-white md:flex md:justify-center md:gap-16">
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "landing")}
+					>
+						Home
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "collections")}
+					>
+						Collections
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "collaboration")}
+					>
+						Collaboration
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "footer")}
+					>
+						Contact
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "footer")}
+					>
+						CSR
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Right: Logo -->
 		<div
-			class="relative h-full w-full
-               hover:before:bg-red-600 hover:after:bg-red-600
-               before:absolute before:top-1/2 before:h-[4px] before:w-[30px] before:-translate-y-1/2 before:-rotate-45 before:bg-white before:transition-colors before:duration-500 before:content-['']
-               after:absolute after:top-1/2 after:h-[4px] after:w-[30px] after:-translate-y-1/2 after:rotate-45 after:bg-white after:transition-colors after:duration-500 after:content-['']"
-		/>
-	</div>
+			class="absolute right-2 top-0 transform bg-white h-[4.2rem] w-[4.2rem] rounded-full flex items-center justify-center">
+			<a on:click|preventDefault={() => handleClick("/", "landing")}>
+				<img
+					src="{logoImg}"
+					alt="Logo"
+					class="h-8 w-auto"
+				/>
+			</a>
+		</div>
 
-	<ul class="list-none text-center">
-		<li class="my-12">
-			<a on:click|preventDefault={() => {handleClick("/","landing")}}
-			   class="nav-link pointer-events-none relative text-2xl font-medium text-gray-50
-			   		  no-underline opacity-0 primary-font uppercase
-			   		  after:absolute after:-bottom-2.5 after:left-0 after:h-[3px] after:w-full
-			   		  after:origin-left after:scale-x-0 after:rounded-md after:bg-white after:transition-transform
-			   		  after:duration-500 after:ease-in-out after:content-[''] hover:after:scale-x-100">
-				Home
-			</a>
-		</li>
-		<li class="my-12">
-			<a on:click|preventDefault={() => {handleClick("/","collections")}}
-			   class="nav-link primary-font uppercase pointer-events-none relative text-2xl font-medium text-gray-50 no-underline opacity-0 after:absolute after:-bottom-2.5 after:left-0 after:h-[3px] after:w-full after:origin-left after:scale-x-0 after:rounded-md after:bg-white after:transition-transform after:duration-500 after:ease-in-out after:content-[''] hover:after:scale-x-100">
-				Collections
-			</a>
-		</li>
-		<li class="my-12">
-			<a on:click|preventDefault={() => {handleClick("/","footer")}}
-			   class="nav-link primary-font uppercase pointer-events-none relative text-2xl font-medium text-gray-50 no-underline opacity-0 after:absolute after:-bottom-2.5 after:left-0 after:h-[3px] after:w-full after:origin-left after:scale-x-0 after:rounded-md after:bg-white after:transition-transform after:duration-500 after:ease-in-out after:content-[''] hover:after:scale-x-100">
-				Contact
-			</a>
-		</li>
-	</ul>
-</nav>
+		<!-- Mobile Menu Button -->
+		<button
+			bind:this={menuButton}
+			on:click={toggleMenu}
+			class="h-6 w-6 cursor-pointer md:hidden block order-first"
+			aria-label="Toggle menu"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M4 6h16M4 12h16M4 18h16"
+				/>
+			</svg>
+		</button>
+
+		<!-- Mobile Menu -->
+		<div
+			bind:this={menuElement}
+			class="hidden w-full md:hidden overflow-hidden"
+			id="mobile-menu"
+		>
+			<ul class="pt-4 text-base secondary-font uppercase font-bold text-white">
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "landing")}
+					>
+						Home
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "collections")}
+					>
+						Collections
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "collaboration")}
+					>
+						Collaboration
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "footer")}
+					>
+						Contact
+					</a>
+				</li>
+				<li>
+					<a
+						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
+						on:click|preventDefault={() => handleClick("/", "footer")}
+					>
+						CSR
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</header>
+
+
+<style>
+	.bg-gradient {
+		background: linear-gradient(
+			90deg,
+			#E2D9DC 0%,
+			#DED5D8 50%,
+			#B9B0B3 100%
+		);
+	}
+</style>

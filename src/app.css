@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import "lenis/dist/lenis.css";
+
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
@@ -23,6 +24,11 @@
     src: url("./lib/assets/fonts/ChunkFive-Regular.ttf");
 }
 
+@font-face {
+    font-family: 'helvetica-now';
+    src: url("./lib/assets/fonts/helveticanowtext-bold-demo.ttf");
+}
+
 .primary-font {
     font-family: 'Garamond', serif;
 }
@@ -37,6 +43,10 @@
 
 .footer-font-alt {
     font-family: 'Chunk-Regular', 'ui-sans-serif';
+}
+
+.navbar-font {
+    font-family: 'helvetica-now', sans-serif;
 }
 
 body {
