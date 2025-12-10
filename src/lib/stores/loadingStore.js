@@ -1,4 +1,5 @@
-import { writable, derived } from 'svelte/store';
+// src/lib/stores/loadingStore.js
+import { writable, derived, get } from 'svelte/store';
 
 // Track which components are expected to load on current page
 const expectedComponents = writable(new Set());
@@ -15,7 +16,7 @@ const loadingStartTime = writable(null);
 // Maximum loading time before forcing completion (safety mechanism)
 const MAX_LOADING_TIME = 10000; // 10 seconds
 
-// Derived store - only ready when ALL EXPECTED components are ready AND not navigating
+// Derived store - only "loading" while navigating OR while there are expected components not ready
 export const isLoading = derived(
 	[componentStates, expectedComponents, isNavigating, loadingStartTime],
 	([$states, $expected, $navigating, $startTime]) => {
@@ -26,44 +27,44 @@ export const isLoading = derived(
 			return false;
 		}
 
-		// If we're actively navigating, always show loading
+		// If we're actively navigating, show loading
 		if ($navigating) return true;
 
-		// If no components are expected, we need to wait a bit
-		// This handles the transition period during navigation
-		if ($expected.size === 0) return true;
+		// If no components are expected, *do not* show loader (no work to wait for)
+		if ($expected.size === 0) return false;
 
-		// Check if all expected components are ready
+		// Check if any expected components are still not ready
 		for (const component of $expected) {
 			if (!$states[component]) {
 				return true; // Still loading
 			}
 		}
 
-		return false; // All expected components are ready
+		// All expected components are ready
+		return false;
 	}
 );
 
 // Register a component as expected to load
 export function registerComponent(componentName) {
-	expectedComponents.update(set => {
+	expectedComponents.update((set) => {
 		const newSet = new Set(set);
 		newSet.add(componentName);
 		return newSet;
 	});
 
-	// Start timer if this is the first component
-	loadingStartTime.update(time => time || Date.now());
+	// Start timer if this is the first component registered
+	loadingStartTime.update((time) => time || Date.now());
 }
 
 // Unregister a component (when it's destroyed)
 export function unregisterComponent(componentName) {
-	expectedComponents.update(set => {
+	expectedComponents.update((set) => {
 		const newSet = new Set(set);
 		newSet.delete(componentName);
 		return newSet;
 	});
-	componentStates.update(states => {
+	componentStates.update((states) => {
 		const newStates = { ...states };
 		delete newStates[componentName];
 		return newStates;
@@ -72,31 +73,35 @@ export function unregisterComponent(componentName) {
 
 // Function to mark a component as ready
 export function setComponentReady(componentName, ready = true) {
-	if (ready) {
-		// Register component as expected if not already
-		registerComponent(componentName);
-	}
-
-	componentStates.update(states => ({
+	componentStates.update((states) => ({
 		...states,
 		[componentName]: ready
 	}));
 
-	// Check if all components are ready
-	let allReady = true;
-	componentStates.subscribe(states => {
-		expectedComponents.subscribe(expected => {
-			for (const component of expected) {
-				if (!states[component]) {
-					allReady = false;
-				}
-			}
-		})();
-	})();
+	// Compute readiness synchronously using get()
+	const states = get(componentStates);
+	const expected = get(expectedComponents);
 
-	// If all ready, reset start time
+	// If there are no expected components, nothing to wait for
+	if (expected.size === 0) {
+		// clear timer and ensure navigation flag is off
+		loadingStartTime.set(null);
+		completeNavigation();
+		return;
+	}
+
+	let allReady = true;
+	for (const comp of expected) {
+		if (!states[comp]) {
+			allReady = false;
+			break;
+		}
+	}
+
+	// If all ready, reset start time and mark navigation complete
 	if (allReady) {
 		loadingStartTime.set(null);
+		completeNavigation();
 	}
 }
 
@@ -123,10 +128,10 @@ export function completeNavigation() {
 // Debug function to check loading state
 export function debugLoadingState() {
 	let debug = {};
-	componentStates.subscribe(states => debug.states = states)();
-	expectedComponents.subscribe(expected => debug.expected = Array.from(expected))();
-	isNavigating.subscribe(nav => debug.navigating = nav)();
-	isLoading.subscribe(loading => debug.isLoading = loading)();
+	componentStates.subscribe((states) => (debug.states = states))();
+	expectedComponents.subscribe((expected) => (debug.expected = Array.from(expected)))();
+	isNavigating.subscribe((nav) => (debug.navigating = nav))();
+	isLoading.subscribe((loading) => (debug.isLoading = loading))();
 	console.log('Loading Debug:', debug);
 	return debug;
 }

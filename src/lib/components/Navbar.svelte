@@ -99,10 +99,10 @@
 	class="fixed top-0 left-0 w-full z-50">
 	<nav
 		class="flex flex-wrap items-center justify-between min-h-[4rem] w-full py-4 md:py-0 px-4 text-lg text-[#5cc6c9] bg-[#2d6f71] shadow-md
-				relative ">
+				relative">
 
 		<!-- Center: Navigation Links (Desktop) -->
-		<div class="hidden w-full md:flex md:items-center md:justify-center md:flex-1" id="menu">
+		<div class="hidden w-full md:flex md:items-center md:justify-center md:flex-1 -mr-[3rem]" id="menu">
 			<ul class="text-base secondary-font uppercase font-bold text-white md:flex md:justify-center md:gap-16">
 				<li>
 					<a
@@ -149,12 +149,12 @@
 
 		<!-- Right: Logo -->
 		<div
-			class="absolute right-2 top-0 transform bg-white h-[4.2rem] w-[4.2rem] rounded-full flex items-center justify-center">
+			class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white h-[3.7rem] w-[3.7rem] rounded-full flex items-center justify-center">
 			<a on:click|preventDefault={() => handleClick("/", "landing")}>
 				<img
 					src="{logoImg}"
 					alt="Logo"
-					class="h-8 w-auto"
+					class="h-[26px] w-auto"
 				/>
 			</a>
 		</div>

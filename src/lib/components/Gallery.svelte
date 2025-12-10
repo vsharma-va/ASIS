@@ -4,7 +4,7 @@
 	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
 
 	// Register this component immediately when script runs
-	registerComponent('gallery');
+	// registerComponent('gallery');
 
 	export let galleryData;
 
@@ -104,6 +104,8 @@
 			console.log('gemstoneToIndex for', galleryData?.id, gemstoneToIndex);
 		}
 
+		registerComponent('gallery');
+
 		animateCarouselIn();
 		gsap.fromTo(
 			'.product-info > *',
@@ -124,11 +126,14 @@
 	});
 
 	onDestroy(() => {
-		gsap.killTweensOf('.main-image-wrapper');
-		gsap.killTweensOf('.thumbnail-item');
-		gsap.killTweensOf('.product-info > *');
-		gsap.killTweensOf(mainImageEl);
+		if (typeof window !== 'undefined') {
+			gsap.killTweensOf('.main-image-wrapper');
+			gsap.killTweensOf('.thumbnail-item');
+			gsap.killTweensOf('.product-info > *');
+			gsap.killTweensOf(mainImageEl);
+		}
 
+		// Unregister component when destroyed (client-only)
 		unregisterComponent('gallery');
 	});
 

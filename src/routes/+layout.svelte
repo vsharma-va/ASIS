@@ -6,11 +6,12 @@
 	import { ScrollSmoother } from 'gsap/dist/ScrollSmoother';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount } from 'svelte';
-	import { afterNavigate } from '$app/navigation';
-	import { isLoading, componentStates, expectedComponents } from '$lib/stores/loadingStore';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { isLoading, componentStates, expectedComponents, startNavigation } from '$lib/stores/loadingStore';
 
 	let { children } = $props();
 	let smoother;
+
 
 	// Debug logging
 	$effect(() => {
@@ -21,6 +22,13 @@
 
 	if (typeof window !== 'undefined') {
 		gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+	}
+
+	if (typeof window !== 'undefined') {
+		beforeNavigate(() => {
+			// mark navigation in progress (starts loader + timer)
+			startNavigation();
+		});
 	}
 
 	onMount(() => {
@@ -45,6 +53,9 @@
 		}
 		// Fallback for immediate reset
 		window.scrollTo(0, 0);
+		// Note: we *do not* call completeNavigation() here. setComponentReady() will call completeNavigation()
+		// once components mark themselves ready. For pages with no expected components, setComponentReady()
+		// logic will also call completeNavigation() automatically.
 	});
 </script>
 
