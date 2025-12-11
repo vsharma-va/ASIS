@@ -2,6 +2,7 @@
 	import { gsap } from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount } from 'svelte';
+	import { openContactForm } from '$lib/stores/contactFormStore';
 
 	gsap.registerPlugin(ScrollTrigger);
 	onMount(() => {
@@ -26,7 +27,22 @@
 				opacity: 1,
 				ease: 'power2.inOut',
 				duration: 2
+			})
+			.to('.animate-cta', {
+				y: 0,
+				opacity: 1,
+				ease: 'power2.inOut',
+				duration: 2
 			});
+
+		// Subtle pulse animation for the arrow
+		gsap.to('.arrow-icon', {
+			y: 5,
+			duration: 1,
+			repeat: -1,
+			yoyo: true,
+			ease: 'power1.inOut'
+		});
 	});
 </script>
 
@@ -35,13 +51,36 @@
         flex flex-col justify-center items-center text-black text-center px-4 sm:px-0">
 		<!-- Header section -->
 		<div class="header-section mb-8 sm:mb-12 lg:mb-16 relative text-center w-full overflow-hidden">
-			<h1 class="animate-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl primary-font leading-tight capitalize
-								translate-y-[110%] opacity-0">
+			<button
+				on:click={openContactForm}
+				class="group animate-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl primary-font leading-tight capitalize
+                    translate-y-[110%] opacity-0 cursor-pointer transition-all duration-300 relative
+                    hover:scale-105 active:scale-95">
 				Collaborate with us
-			</h1>
-			<p class="animate-title text-xs sm:text-sm tracking-tight secondary-font translate-y-full opacity-0">
+				<!-- Underline effect -->
+				<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-black
+                          group-hover:w-full transition-all duration-500 ease-out"></span>
+			</button>
+			<p class="animate-title text-xs sm:text-sm tracking-tight secondary-font translate-y-full opacity-0 mt-2">
 				Become A Wholesaler & Distributor
 			</p>
+
+			<!-- Call-to-action button with arrow -->
+			<button
+				on:click={openContactForm}
+				class="animate-cta mt-6 inline-flex items-center gap-2 px-6 py-3 bg-black text-white
+                    rounded-full hover:bg-gray-800 transition-all duration-300 translate-y-[110%] opacity-0
+                    hover:gap-3 group shadow-lg hover:shadow-xl">
+				<span class="text-sm sm:text-base font-medium">Get in Touch</span>
+				<svg
+					class="arrow-icon w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+						  d="M17 8l4 4m0 0l-4 4m4-4H3" />
+				</svg>
+			</button>
 		</div>
 
 		<!-- Changing content section -->
@@ -49,12 +88,12 @@
 			<div class="para-wrapper overflow-hidden w-full">
 				<p
 					class="animate-paragraph w-full text-sm sm:text-base lg:text-lg tracking-normal secondary-font
-								leading-relaxed translate-y-[110%] opacity-0">
+                         leading-relaxed translate-y-[110%] opacity-0">
 					Join us in celebrating individuality and craftsmanship by partnering with ASIS Watches as a
 					wholesaler or
 					distributor. Our exquisite timepieces are not just watches; they are wearable art, meticulously
 					crafted to
-					resonate with style and sophistication.By becoming a part of our network, you’ll offer your
+					resonate with style and sophistication.By becoming a part of our network, you'll offer your
 					customers unique,
 					high-quality products while benefiting from our after sales support.
 				</p>

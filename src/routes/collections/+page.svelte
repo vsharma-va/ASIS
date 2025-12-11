@@ -10,6 +10,7 @@
 	// Load watches from the comprehensive store
 	// Filter only enabled watches and keep original ordering
 	let watches = getAllWatches().filter((w) => w.isEnabled);
+	console.log('Loaded watches:', watches);
 
 	// Track timers so we can clear fallback timers when image loads/errors
 	const fallbackTimers = new Map();
@@ -104,7 +105,7 @@
 			</div>
 
 			<!-- Decorative Spinning Circles (Fixed behind) -->
-			<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  opacity-5 pointer-events-none">
+			<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  opacity-100 z pointer-events-none">
 				<div
 					class="w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] border border-stone-800 rounded-full animate-[spin_60s_linear_infinite]"></div>
 			</div>
@@ -119,7 +120,7 @@
 				<div
 					class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
 					<span class="footer-font text-[30vw] text-stone-400/10 whitespace-nowrap blur-[1px]">
-						{watch.collection.split(' ')[0]}
+						{watch.collection.split(" ")[1]}
 					</span>
 				</div>
 
@@ -225,8 +226,8 @@
 		left: 50%;
 		transform: translate(-50%, -50%) rotate(-90deg); /* 90° anticlockwise */
 		transform-origin: center center;
-		height: 100%;    /* <--- ensure image height equals container height */
-		width: auto;     /* width scales automatically to preserve aspect */
+		height: 100%; /* <--- ensure image height equals container height */
+		width: auto; /* width scales automatically to preserve aspect */
 		max-width: none;
 		max-height: none;
 		object-fit: cover; /* keep same cropping behavior */

@@ -1,144 +1,176 @@
-<!--<div stlye="height:100vh; "></div>-->
+<script>
+	// ---------------------------------------------------------
+	// DATA
+	// ---------------------------------------------------------
+	const watches = [
+		{
+			id: 1,
+			name: 'The Invisible Round',
+			brand: 'AS-IS',
+			price: '10 Variations',
+			image: 'src/lib/assets/collection_watch_faces/invisible_petite_round.png',
+			tagline: 'Petite',
+			description: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
+			year: '2025',
+			specs: ['10 Variations', 'Aligator/ Vegan', '33mm']
+		},
+		{
+			id: 2,
+			name: 'The Invisible Round',
+			brand: 'AS-IS',
+			price: '10 Variations',
+			image: 'src/lib/assets/collection_watch_faces/invisible_petite_round_grande.png',
+			tagline: 'Grande',
+			description: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
+			year: '2025',
+			specs: ['10 Variations', 'Aligator/Vegan', '40mm']
+		},
+		{
+			id: 3,
+			name: 'The Mosaic',
+			brand: 'AS-IS',
+			price: '3 Variations',
+			image: 'src/lib/assets/collection_watch_faces/the_mosiac.png',
+			tagline: 'Mosaic Art',
+			description: 'A Vivid Arrangement of Colors in Mosaic Art',
+			year: '2025',
+			specs: ['3 Variations', 'Aligator/ Vegan', '49 X 28 MM']
+		},
+		{
+			id: 4,
+			name: 'The Twin-Rainbow',
+			brand: 'AS-IS',
+			price: '7 Variations',
+			image: 'src/lib/assets/collection_watch_faces/the_twin-rainbow.png',
+			tagline: 'Rainbow',
+			description: 'A Colorful Spectrum Capturing the Rare Essence of a Twin Rainbow Watch',
+			year: '2025',
+			specs: ['7 Variations', 'Aligator/ Vegan', '38 MM']
+		}
+	];
+</script>
 
-<!--<body class="demo-2">-->
-<!--<svg class="hidden">-->
-<!--	<symbol id="icon-arrow" viewBox="0 0 24 24">-->
-<!--		<title>arrow</title>-->
-<!--		<polygon points="6.3,12.8 20.9,12.8 20.9,11.2 6.3,11.2 10.2,7.2 9,6 3.1,12 9,18 10.2,16.8 " />-->
-<!--	</symbol>-->
-<!--	<symbol id="icon-drop" viewBox="0 0 24 24">-->
-<!--		<title>drop</title>-->
-<!--		<path-->
-<!--			d="M12,21c-3.6,0-6.6-3-6.6-6.6C5.4,11,10.8,4,11.4,3.2C11.6,3.1,11.8,3,12,3s0.4,0.1,0.6,0.3c0.6,0.8,6.1,7.8,6.1,11.2C18.6,18.1,15.6,21,12,21zM12,4.8c-1.8,2.4-5.2,7.4-5.2,9.6c0,2.9,2.3,5.2,5.2,5.2s5.2-2.3,5.2-5.2C17.2,12.2,13.8,7.3,12,4.8z"-->
-<!--		/>-->
-<!--		<path-->
-<!--			d="M12,18.2c-0.4,0-0.7-0.3-0.7-0.7s0.3-0.7,0.7-0.7c1.3,0,2.4-1.1,2.4-2.4c0-0.4,0.3-0.7,0.7-0.7c0.4,0,0.7,0.3,0.7,0.7C15.8,16.5,14.1,18.2,12,18.2z"-->
-<!--		/>-->
-<!--	</symbol>-->
-<!--	<symbol id="icon-github" viewBox="0 0 32.6 31.8">-->
-<!--		<title>github</title>-->
-<!--		<path-->
-<!--			d="M16.3,0C7.3,0,0,7.3,0,16.3c0,7.2,4.7,13.3,11.1,15.5c0.8,0.1,1.1-0.4,1.1-0.8c0-0.4,0-1.4,0-2.8c-4.5,1-5.5-2.2-5.5-2.2c-0.7-1.9-1.8-2.4-1.8-2.4c-1.5-1,0.1-1,0.1-1c1.6,0.1,2.5,1.7,2.5,1.7c1.5,2.5,3.8,1.8,4.7,1.4c0.1-1.1,0.6-1.8,1-2.2c-3.6-0.4-7.4-1.8-7.4-8.1c0-1.8,0.6-3.2,1.7-4.4C7.4,10.7,6.8,9,7.7,6.8c0,0,1.4-0.4,4.5,1.7c1.3-0.4,2.7-0.5,4.1-0.5c1.4,0,2.8,0.2,4.1,0.5c3.1-2.1,4.5-1.7,4.5-1.7c0.9,2.2,0.3,3.9,0.2,4.3c1,1.1,1.7,2.6,1.7,4.4c0,6.3-3.8,7.6-7.4,8c0.6,0.5,1.1,1.5,1.1,3c0,2.2,0,3.9,0,4.5c0,0.4,0.3,0.9,1.1,0.8c6.5-2.2,11.1-8.3,11.1-15.5C32.6,7.3,25.3,0,16.3,0z"-->
-<!--		/>-->
-<!--	</symbol>-->
-<!--	<symbol id="hypercritical" viewBox="7.80069 -0.000757502 3.6 3.301">-->
-<!--		<path-->
-<!--			d="M 8.7375 3.3 c -0.015 0 -0.0255 -0.0075 -0.0345 -0.0135 c -0.1305 -0.075 -0.2505 -0.162 -0.36 -0.264 a 2.073 2.073 90 0 1 -0.477 -0.795 a 1.629 1.629 90 0 1 -0.06 -0.588 c 0.012 -0.1695 0.045 -0.336 0.1125 -0.495 c 0.0345 -0.081 0.075 -0.162 0.117 -0.24 a 1.623 1.623 90 0 1 0.39 -0.471 A 1.767 1.767 90 0 1 9.675 0.0015 c 0.8355 0.036 1.4895 0.609 1.6725 1.332 a 1.71 1.71 90 0 1 -0.189 1.302 a 1.7745 1.7745 90 0 1 -0.6255 0.6315 c -0.018 0.012 -0.036 0.021 -0.054 0.03 c -0.0075 -0.0075 0 -0.009 0 -0.0135 l 0.0105 -0.0105 a 1.419 1.419 90 0 0 0.2115 -0.285 a 1.1385 1.1385 90 0 0 0.111 -0.9105 a 0.99 0.99 90 0 0 -0.2025 -0.3615 a 1.236 1.236 90 0 0 -0.7005 -0.42 a 1.488 1.488 90 0 0 -0.93 0.1125 a 1.26 1.26 90 0 0 -0.5115 0.4905 c -0.0435 0.075 -0.069 0.1575 -0.09 0.24 c -0.0255 0.105 -0.039 0.2115 -0.033 0.321 c 0.009 0.171 0.057 0.333 0.135 0.486 a 1.4325 1.4325 90 0 0 0.255 0.348 c 0.003 0 0.003 0 0.0045 0.006 Z"-->
-<!--			fill="#fff"-->
-<!--		/>-->
-<!--	</symbol>-->
-<!--	<symbol id="icon-keyboard" viewBox="0 0 100 70">-->
-<!--		<title>keyboard</title>-->
+<style>
+	/* Layout */
+	.bg-gradient-custom {
+		background: linear-gradient(90deg, #E2D9DC 0%, #DED5D8 50%, #B9B0B3 100%);
+	}
 
-<!--		<path-->
-<!--			d="M 60.94,1.83 39.22,1.83 C 36.71,1.83 34.67,3.86 34.67,6.376 L 34.67,28.1 C 34.67,30.61 36.71,32.65 39.22,32.65 L 60.94,32.65 C 63.45,32.65 65.5,30.61 65.5,28.1 L 65.5,6.376 C 65.5,3.86 63.45,1.83 60.94,1.83 Z M 44.79,18.63 50.08,11.74 55.37,18.63 Z"-->
-<!--			opacity="0.2"-->
-<!--		/>-->
-<!--		<path-->
-<!--			d="M 60.86,36.75 39.14,36.75 C 36.63,36.75 34.59,38.79 34.59,41.3 L 34.59,63.02 C 34.59,65.53 36.63,67.57 39.14,67.57 L 60.86,67.57 C 63.38,67.57 65.41,65.53 65.41,63.02 L 65.41,41.3 C 65.42,38.79 63.38,36.75 60.86,36.75 Z M 50.08,57.45 44.79,50.55 55.37,50.55 Z"-->
-<!--			opacity="0.2"-->
-<!--		/>-->
-<!--		<path-->
-<!--			d="M 95.45,36.75 73.73,36.75 C 71.22,36.75 69.18,38.79 69.18,41.3 L 69.18,63.02 C 69.18,65.53 71.22,67.57 73.73,67.57 L 95.45,67.57 C 97.97,67.57 100,65.53 100,63.02 L 100,41.3 C 100,38.79 97.97,36.75 95.45,36.75 Z M 83.4,57.45 83.4,46.86 90.3,52.16 Z"-->
-<!--		/>-->
-<!--		<path-->
-<!--			d="M 26.27,36.75 4.55,36.75 C 2.037,36.75 0,38.79 0,41.3 L 0,63.02 C 0,65.53 2.037,67.57 4.55,67.57 L 26.27,67.57 C 28.78,67.57 30.82,65.53 30.82,63.02 L 30.82,41.3 C 30.82,38.79 28.78,36.75 26.27,36.75 Z M 16.69,57.45 9.79,52.16 16.69,46.86 Z"-->
-<!--		/>-->
-<!--	</symbol>-->
-<!--</svg>-->
-<!--<main>-->
-<!--	<div class="message">Please view this demo on desktop in order to have the best experience.</div>-->
-<!--	<div class="hypercritical-div">-->
-<!--		<a class="hypercritical" onclick="window.open('https://hypercritical.vercel.app', '_blank')" title="find us"-->
-<!--		><svg class="icon icon&#45;&#45;github">-->
-<!--			<use xlink:href="#hypercritical"></use></svg-->
-<!--		></a>-->
-<!--	</div>-->
-<!--	<div class="content content&#45;&#45;fixed">-->
-<!--		<header class="hypercritical-header">-->
-<!--			<h1 class="hypercritical-header__title">Hypercritical studio</h1>-->
-<!--			<span class="info">Carousel Arrow Cursor</span>-->
-<!--		</header>-->
-<!--		<a-->
-<!--			class="github"-->
-<!--			href=""-->
-<!--			onclick="window.open('https://github.com/vickkie', '_blank')"-->
-<!--			title="Find this  on GitHub"-->
-<!--		><svg class="icon icon&#45;&#45;github">-->
-<!--			<use xlink:href="#icon-github"></use></svg-->
-<!--		></a>-->
-<!--		<nav class="demos">-->
-<!--			<svg class="icon icon&#45;&#45;keyboard">-->
-<!--				<use xlink:href="#icon-keyboard"></use>-->
-<!--			</svg>-->
-<!--		</nav>-->
-<!--	</div>-->
+	/* Global Scroll Behavior */
+	:global(html) {
+		scroll-behavior: smooth;
+	}
+</style>
 
-<!--	<div class="content content&#45;&#45;demo2">-->
-<!--		<div class="arrow-cursor">-->
-<!--			<svg class="arrow-cursor__icon" viewBox="0 0 117.25 86.75">-->
-<!--				<path-->
-<!--					class="arrow-cursor__path"-->
-<!--					d="M111.45,42.5,74.65,5.7l-9.9,9.9,20.6,20.6H6.45v14h78.9L64.75,70.8l9.9,9.9,36.8-36.8A1,1,0,0,0,111.45,42.5Z"-->
-<!--				/>-->
-<!--			</svg>-->
-<!--		</div>-->
-<!--		<div class="background-f">-->
-<!--			<div class="grid">-->
-<!--				<div class="swiper-container">-->
-<!--					<div class="swiper-wrapper">-->
-<!--						<div class="swiper-slide swiper-slide&#45;&#45;wide">-->
-<!--							<img-->
-<!--								class="swiper-slide__img lazyload"-->
-<!--								data-src="https://i.postimg.cc/mZSwdSMn/neoculturalcouture-thumb.webp-->
-<!--"-->
-<!--								alt=""-->
-<!--							/>-->
-<!--						</div>-->
-<!--						<div class="swiper-slide swiper-slide&#45;&#45;portrait">-->
-<!--							<img-->
-<!--								class="swiper-slide__img lazyload"-->
-<!--								data-src="                                https://i.postimg.cc/63r0xrPy/errormgmt-thumb.webp"-->
-<!--								alt=""-->
-<!--							/>-->
-<!--						</div>-->
-<!--						<div class="swiper-slide swiper-slide&#45;&#45;wide">-->
-<!--							<img class="swiper-slide__img lazyload" data-src=https://i.postimg.cc/15z16QjN/7.jpg" alt="">-->
-<!--						</div>-->
-<!--						<div class="swiper-slide swiper-slide&#45;&#45;portrait">-->
-<!--							<img-->
-<!--								class="swiper-slide__img lazyload"-->
-<!--								data-src="https://i.postimg.cc/4dHMMfjB/garoaskincare-thumb.webp"-->
-<!--							/>-->
-<!--						</div>-->
-<!--						<div class="swiper-slide swiper-slide&#45;&#45;square">-->
-<!--							<img-->
-<!--								class="swiper-slide__img lazyload"-->
-<!--								data-src="https://i.postimg.cc/kG7yJVrw/yulia-thumb.webp"-->
-<!--								alt=""-->
-<!--							/>-->
-<!--						</div>-->
-<!--						<div class="swiper-slide swiper-slide&#45;&#45;portrait">-->
-<!--							<img-->
-<!--								class="swiper-slide__img lazyload"-->
-<!--								data-src="https://i.postimg.cc/4ywQmJsG/villaeugenie-thumb.webp"-->
-<!--								alt=""-->
-<!--							/>-->
-<!--						</div>-->
-<!--					</div>-->
-<!--					<div class="swiper-button-prev"></div>-->
-<!--					<div class="swiper-button-next"></div>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--		</div>-->
-<!--	</div>-->
-<!--</main>-->
+<!-- Main Wrapper -->
+<div
+	class="relative min-h-screen bg-gradient-custom text-black overflow-x-hidden selection:bg-stone-800 selection:text-[#E2D9DC]">
 
-<!--<script>-->
-<!--	window.lazySizesConfig = window.lazySizesConfig || {};-->
-<!--	window.lazySizesConfig.init = false;-->
-<!--</script>-->
-<!--<script src=""></script>-->
-<!--<script src=""></script>-->
-<!--<script src=""></script>-->
-<!--</body>-->
+	<!-- Main Content Flow -->
+	<main class="flex flex-col w-full">
+
+		<!-- INTRO SECTION -->
+		<section class="min-h-screen w-full flex flex-col justify-center items-center relative px-6 md:px-24 py-32">
+			<div class="text-center relative z-10">
+				<p class="secondary-font text-xs uppercase tracking-[0.3em] text-stone-500 mb-6">Volume I — 2025</p>
+				<h2 class="footer-font text-[18vw] md:text-[15vw] leading-[0.85] text-stone-800 select-none">
+					AS-IS<br>COLLECTION
+				</h2>
+				<div class="mt-12 max-w-md mx-auto">
+					<p class="primary-font text-2xl md:text-3xl italic text-stone-600 leading-relaxed">
+						"Time is the only true luxury. How you measure it defines who you are. Placeholder"
+					</p>
+				</div>
+			</div>
+
+			<!-- Decorative Spinning Circles (Fixed behind) -->
+			<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  opacity-5 pointer-events-none">
+				<div
+					class="w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] border border-stone-800 rounded-full animate-[spin_60s_linear_infinite]"></div>
+			</div>
+		</section>
+
+		<!-- WATCH SECTIONS -->
+		{#each watches as watch, i}
+			<section
+				class="min-h-screen w-full flex items-center justify-center relative px-4 md:px-0 py-24 border-t border-stone-800/5 group">
+
+				<!-- Background Large Typography -->
+				<div
+					class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+                    <span class="footer-font text-[30vw] text-stone-400/10 whitespace-nowrap blur-[1px]">
+                        {watch.brand.split(' ')[0]}
+                    </span>
+				</div>
+
+				<!-- Main Grid Layout -->
+				<div
+					class="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center relative z-10">
+
+					<!-- Text Left -->
+					<div
+						class="md:col-span-4 md:text-right order-2 md:order-1 flex flex-col justify-center items-start md:items-end space-y-6">
+						<div
+							class="bg-stone-800 text-[#E2D9DC] px-4 py-1 rounded-full secondary-font text-xs inline-block mb-2 shadow-lg">
+							Lot No. 0{i + 1}
+						</div>
+						<h3 class="primary-font text-5xl md:text-6xl lg:text-7xl text-stone-900 leading-[0.9]">
+							{watch.name}
+						</h3>
+						<p class="primary-font text-xl italic text-stone-600 max-w-xs md:ml-auto">
+							"{watch.tagline}"
+						</p>
+						<!-- Specs List -->
+						<ul class="secondary-font text-[10px] text-stone-500 uppercase tracking-wider space-y-2 border-l md:border-l-0 md:border-r border-stone-400 pl-4 md:pl-0 md:pr-4 pt-4">
+							{#each watch.specs as spec}
+								<li>{spec}</li>
+							{/each}
+						</ul>
+					</div>
+
+					<!-- Image Center -->
+					<div
+						class="md:col-span-4 order-1 md:order-2 flex justify-center items-center relative py-8 md:py-0">
+						<!-- Image Container -->
+						<div
+							class="relative w-[80vw] h-[80vw] md:w-[28vw] md:h-[35vw] bg-stone-300 shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-transform duration-500 hover:scale-[1.02]">
+							<img
+								src={watch.image}
+								alt={watch.name}
+								class="w-full h-full object-cover grayscale-[10%] contrast-[1.15]"
+							/>
+							<!-- Frame Border -->
+							<div class="absolute inset-2 border border-white/20 pointer-events-none"></div>
+						</div>
+					</div>
+
+					<!-- Details Right -->
+					<div class="md:col-span-4 order-3 flex flex-col justify-end items-start h-full pb-8 md:pb-0">
+						<div class="max-w-xs space-y-8 md:pl-8">
+							<p class="secondary-font text-xs leading-relaxed text-stone-800 text-justify">
+								{watch.description}
+							</p>
+
+							<div class="flex items-center gap-6 pt-6 border-t border-stone-800/20 w-full">
+								<span class="footer-font-alt text-2xl md:text-3xl text-stone-800">{watch.price}</span>
+								<button
+									class="w-12 h-12 rounded-full border border-stone-800 flex items-center justify-center hover:bg-stone-800 hover:text-[#E2D9DC] transition-colors group/btn">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+										 stroke-width="1.5"
+										 class="group-hover/btn:-rotate-45 transition-transform duration-300">
+										<path d="M5 12h14M12 5l7 7-7 7" />
+									</svg>
+								</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</section>
+		{/each}
+
+		<!-- FOOTER -->
+
+	</main>
+
+</div>

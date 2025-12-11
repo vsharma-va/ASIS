@@ -2,6 +2,7 @@
 	import '../app.css';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import PageTransition from '$lib/components/PageTransition.svelte';
+	import ContactForm from '$lib/components/contactForm.svelte';
 	import { gsap } from 'gsap/dist/gsap';
 	import { ScrollSmoother } from 'gsap/dist/ScrollSmoother';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
@@ -73,6 +74,7 @@
 
 <!-- The Navbar is placed outside the scrolling area to keep it fixed -->
 <Navbar />
+<ContactForm />
 
 <!-- These wrapper and content divs are for GSAP ScrollSmoother -->
 <div id="smooth-wrapper">
