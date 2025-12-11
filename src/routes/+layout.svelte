@@ -12,7 +12,6 @@
 	let { children } = $props();
 	let smoother;
 
-
 	// Debug logging
 	$effect(() => {
 		console.log('Loading state:', $isLoading);
@@ -37,8 +36,6 @@
 			wrapper: '#smooth-wrapper',
 			content: '#smooth-content',
 			smooth: 2
-			// smoothTouch: 0.5,
-			// ease: 'sine'
 		});
 
 		return () => {
@@ -63,14 +60,16 @@
 <PageTransition />
 
 <!-- Global Loading Overlay - Shows on top of transition while content loads -->
-<div class="loading-overlay" class:hidden={!$isLoading}>
-	<div class="newtons-cradle">
-		<div class="newtons-cradle__dot"></div>
-		<div class="newtons-cradle__dot"></div>
-		<div class="newtons-cradle__dot"></div>
-		<div class="newtons-cradle__dot"></div>
+{#if $isLoading}
+	<div class="loading-overlay">
+		<div class="newtons-cradle" aria-hidden="true">
+			<div class="newtons-cradle__dot"></div>
+			<div class="newtons-cradle__dot"></div>
+			<div class="newtons-cradle__dot"></div>
+			<div class="newtons-cradle__dot"></div>
+		</div>
 	</div>
-</div>
+{/if}
 
 <!-- The Navbar is placed outside the scrolling area to keep it fixed -->
 <Navbar />
@@ -93,15 +92,13 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		z-index: 10000; /* Above transition so it shows on top while loading */
-		transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+		z-index: 99999; /* Above everything while loading */
+		/* keep a short fade-in/out if you like: */
+		transition: opacity 0.22s ease-out;
 	}
 
-	.loading-overlay.hidden {
-		opacity: 0;
-		visibility: hidden;
-		pointer-events: none;
-	}
+	/* When the overlay is removed from the DOM by the {#if}, we don't rely on class toggles.
+	   If you prefer to animate out before removing, implement a local transition / animate directive. */
 
 	.newtons-cradle {
 		--uib-size: 40px;

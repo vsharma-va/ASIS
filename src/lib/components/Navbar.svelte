@@ -46,22 +46,56 @@
 		}
 	};
 
-	const handleClick = (targetPage, divID) => {
+	// make async so we can await goto and guarantee order
+	const handleClick = async (targetPage, divID) => {
 		// Close mobile menu if open
 		if (isMenuOpen) {
 			toggleMenu();
 		}
 
-		const scrollToTarget = divID === '#' ? 0 : `#${divID}`;
+		// Normalize divID: treat empty/whitespace as "no anchor" -> scroll to top (0)
+		const hasAnchor = typeof divID === 'string' && divID.trim().length > 0;
+		const scrollToTarget = hasAnchor ? `#${divID.trim()}` : 0;
 
+		// If we're already on the page, just scroll
 		if ($page.url.pathname === targetPage) {
-			gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
-		} else {
-			goto(targetPage).then(() => {
-				requestAnimationFrame(() => {
+			try {
+				// guard gsap calls so runtime errors don't block UI cleanup
+				await Promise.resolve(); // microtask to keep same async shape
+				gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
+			} catch (e) {
+				console.warn('Scroll attempt failed:', e);
+				// fallback to native scroll so user isn't stuck
+				if (scrollToTarget === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+				else {
+					const el = document.getElementById(divID);
+					if (el) el.scrollIntoView({ behavior: 'smooth' });
+				}
+			}
+			return;
+		}
+
+		// Not on the page -> navigate first, then scroll to anchor
+		try {
+			await goto(targetPage);
+
+			// ensure DOM has painted before attempting GSAP scroll (requestAnimationFrame)
+			requestAnimationFrame(() => {
+				try {
 					gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
-				});
+				} catch (err) {
+					console.warn('GSAP scroll failed after navigation:', err);
+					// fallback to native scroll behavior
+					if (scrollToTarget === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+					else {
+						const el = document.getElementById(divID);
+						if (el) el.scrollIntoView({ behavior: 'smooth' });
+					}
+				}
 			});
+		} catch (navErr) {
+			// If goto failed, at least log and keep UI usable
+			console.error('Navigation failed:', navErr);
 		}
 	};
 
@@ -115,7 +149,7 @@
 				<li>
 					<a
 						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
-						on:click|preventDefault={() => handleClick("/", "collections")}
+						on:click|preventDefault={() => handleClick("/collections", "")}
 					>
 						Collections
 					</a>
@@ -152,7 +186,7 @@
 			class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white h-[3.7rem] w-[3.7rem] rounded-full flex items-center justify-center">
 			<a on:click|preventDefault={() => handleClick("/", "landing")}>
 				<img
-					src="{logoImg}"
+					src={logoImg}
 					alt="Logo"
 					class="h-[26px] w-auto"
 				/>
@@ -232,7 +266,6 @@
 		</div>
 	</nav>
 </header>
-
 
 <style>
 	.bg-gradient {
