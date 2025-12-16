@@ -173,7 +173,7 @@
 				<li>
 					<a
 						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
-						on:click|preventDefault={() => handleClick("/", "footer")}
+						on:click|preventDefault={() => handleClick("/", "CSR")}
 					>
 						CSR
 					</a>
@@ -257,7 +257,7 @@
 				<li>
 					<a
 						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
-						on:click|preventDefault={() => handleClick("/", "footer")}
+						on:click|preventDefault={() => handleClick("/", "CSR")}
 					>
 						CSR
 					</a>

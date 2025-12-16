@@ -227,19 +227,22 @@
 	class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient">
 	<img src="{LandingBg}" alt="Background img" loading="eager"
 		 class="LandingBG absolute top-0 left-0 h-screen w-full object-cover z-0">
-
 	<div
 		class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 -mt-[10rem]">
 		<div class="flex flex-col w-fit max-w-full">
-			<div class="self-start uppercase secondary-font text-base sm:text-sm mb-2 sm:mb-0">Meet</div>
+			<div
+				class="self-start font-bold uppercase secondary-font text-lg sm:text-2xl tracking-[0.2em] sm:mb-0 z-50">
+				Meet
+			</div>
 			<div class="text-center sm:text-left text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-[5.5rem]
              primary-font font-[600] mb-2 sm:mb-0 leading-[0.8] capitalize whitespace-nowrap">
 				The Exclusive Jewelry Watch
 			</div>
 			<div class="self-end uppercase secondary-font text-xs sm:text-sm">
-				<div class="flex items-center justify-end gap-2">
-					<span class="align-text-bottom -mb-[0.6rem]">BY</span>
-					<img src="{logoImg}" alt="ASIS" class="h-6 w-auto object-contain" />
+				<div class="flex items-center justify-end gap-1">
+					<span class="align-text-bottom -mb-[1rem] font-bold
+							secondary-font text-lg sm:text-xl tracking-widest z-50">BY</span>
+					<img src="{logoImg}" alt="ASIS" class="h-9 w-auto object-contain" />
 				</div>
 			</div>
 		</div>

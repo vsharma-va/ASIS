@@ -1,176 +1,202 @@
 <script>
-	// ---------------------------------------------------------
-	// DATA
-	// ---------------------------------------------------------
-	const watches = [
-		{
-			id: 1,
-			name: 'The Invisible Round',
-			brand: 'AS-IS',
-			price: '10 Variations',
-			image: 'src/lib/assets/collection_watch_faces/invisible_petite_round.png',
-			tagline: 'Petite',
-			description: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
-			year: '2025',
-			specs: ['10 Variations', 'Aligator/ Vegan', '33mm']
-		},
-		{
-			id: 2,
-			name: 'The Invisible Round',
-			brand: 'AS-IS',
-			price: '10 Variations',
-			image: 'src/lib/assets/collection_watch_faces/invisible_petite_round_grande.png',
-			tagline: 'Grande',
-			description: 'A Gemstone Symphony Crafted in the Art of Invisible Setting Round Watch',
-			year: '2025',
-			specs: ['10 Variations', 'Aligator/Vegan', '40mm']
-		},
-		{
-			id: 3,
-			name: 'The Mosaic',
-			brand: 'AS-IS',
-			price: '3 Variations',
-			image: 'src/lib/assets/collection_watch_faces/the_mosiac.png',
-			tagline: 'Mosaic Art',
-			description: 'A Vivid Arrangement of Colors in Mosaic Art',
-			year: '2025',
-			specs: ['3 Variations', 'Aligator/ Vegan', '49 X 28 MM']
-		},
-		{
-			id: 4,
-			name: 'The Twin-Rainbow',
-			brand: 'AS-IS',
-			price: '7 Variations',
-			image: 'src/lib/assets/collection_watch_faces/the_twin-rainbow.png',
-			tagline: 'Rainbow',
-			description: 'A Colorful Spectrum Capturing the Rare Essence of a Twin Rainbow Watch',
-			year: '2025',
-			specs: ['7 Variations', 'Aligator/ Vegan', '38 MM']
-		}
-	];
+	import { gsap } from 'gsap/dist/gsap';
+	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+	import { onMount } from 'svelte';
+	import { openContactForm } from '$lib/stores/contactFormStore';
+
+	export let csrLink = 'https://your-csr-page.com';
+
+	gsap.registerPlugin(ScrollTrigger);
+	onMount(() => {
+		// Initial entrance animation for collaboration section
+		let entranceTimeline = gsap.timeline({
+			scrollTrigger: {
+				trigger: '.combined-section',
+				start: 'top-=45% center',
+				end: 'top center',
+				scrub: 2,
+				markers: false
+			}
+		});
+		entranceTimeline.to('.animate-title', {
+			y: 0,
+			opacity: 1,
+			ease: 'power2.inOut',
+			stagger: 0.2,
+			duration: 2
+		})
+			.to('.animate-paragraph', {
+				y: 0,
+				opacity: 1,
+				ease: 'power2.inOut',
+				duration: 2
+			})
+			.to('.animate-cta', {
+				y: 0,
+				opacity: 1,
+				ease: 'power2.inOut',
+				duration: 2
+			});
+
+		// Transition animation from collaboration to CSR
+		let transitionTimeline = gsap.timeline({
+			scrollTrigger: {
+				trigger: '.combined-section',
+				start: 'center center',
+				end: 'bottom top',
+				scrub: 2,
+				markers: false
+			}
+		});
+
+		// Fade out and move collaboration content
+		transitionTimeline
+			.to('.collaboration-content', {
+				opacity: 0,
+				y: -50,
+				ease: 'power2.inOut',
+				duration: 1
+			}, 0)
+			// Fade in and move CSR content
+			.fromTo('.csr-content', {
+				opacity: 0,
+				y: 50
+			}, {
+				opacity: 1,
+				y: 0,
+				ease: 'power2.inOut',
+				duration: 1
+			}, 0);
+
+		// Subtle pulse animation for the arrows
+		gsap.to('.arrow-icon', {
+			y: 5,
+			duration: 1,
+			repeat: -1,
+			yoyo: true,
+			ease: 'power1.inOut'
+		});
+	});
 </script>
 
-<style>
-	/* Layout */
-	.bg-gradient-custom {
-		background: linear-gradient(90deg, #E2D9DC 0%, #DED5D8 50%, #B9B0B3 100%);
-	}
+<div class="combined-section h-[180vh] w-full relative flex justify-center items-start bg-gradient pb-6 sm:pb-10">
+	<div class="sticky top-0 h-screen w-full flex justify-center items-center">
+		<div class="center-text w-[95%] sm:w-4/5 lg:w-3/5 xl:w-2/4 h-full overflow-hidden
+			flex flex-col justify-center items-center text-black text-center px-4 sm:px-0 relative">
 
-	/* Global Scroll Behavior */
-	:global(html) {
-		scroll-behavior: smooth;
-	}
-</style>
-
-<!-- Main Wrapper -->
-<div
-	class="relative min-h-screen bg-gradient-custom text-black overflow-x-hidden selection:bg-stone-800 selection:text-[#E2D9DC]">
-
-	<!-- Main Content Flow -->
-	<main class="flex flex-col w-full">
-
-		<!-- INTRO SECTION -->
-		<section class="min-h-screen w-full flex flex-col justify-center items-center relative px-6 md:px-24 py-32">
-			<div class="text-center relative z-10">
-				<p class="secondary-font text-xs uppercase tracking-[0.3em] text-stone-500 mb-6">Volume I — 2025</p>
-				<h2 class="footer-font text-[18vw] md:text-[15vw] leading-[0.85] text-stone-800 select-none">
-					AS-IS<br>COLLECTION
-				</h2>
-				<div class="mt-12 max-w-md mx-auto">
-					<p class="primary-font text-2xl md:text-3xl italic text-stone-600 leading-relaxed">
-						"Time is the only true luxury. How you measure it defines who you are. Placeholder"
+			<!-- COLLABORATION CONTENT -->
+			<div class="collaboration-content absolute inset-0 flex flex-col justify-center items-center">
+				<!-- Header section -->
+				<div class="header-section mb-8 sm:mb-12 lg:mb-16 relative text-center w-full overflow-hidden">
+					<button
+						on:click={openContactForm}
+						class="group animate-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl primary-font leading-tight capitalize
+							translate-y-[110%] opacity-0 cursor-pointer transition-all duration-300 relative
+							hover:scale-105 active:scale-95">
+						Collaborate with us
+						<!-- Underline effect -->
+						<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-black
+							group-hover:w-full transition-all duration-500 ease-out"></span>
+					</button>
+					<p class="animate-title text-xs sm:text-sm tracking-tight secondary-font translate-y-full opacity-0 mt-2">
+						Become A Wholesaler & Distributor
 					</p>
-				</div>
-			</div>
 
-			<!-- Decorative Spinning Circles (Fixed behind) -->
-			<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  opacity-5 pointer-events-none">
-				<div
-					class="w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] border border-stone-800 rounded-full animate-[spin_60s_linear_infinite]"></div>
-			</div>
-		</section>
-
-		<!-- WATCH SECTIONS -->
-		{#each watches as watch, i}
-			<section
-				class="min-h-screen w-full flex items-center justify-center relative px-4 md:px-0 py-24 border-t border-stone-800/5 group">
-
-				<!-- Background Large Typography -->
-				<div
-					class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-                    <span class="footer-font text-[30vw] text-stone-400/10 whitespace-nowrap blur-[1px]">
-                        {watch.brand.split(' ')[0]}
-                    </span>
+					<!-- Call-to-action button with arrow -->
+					<button
+						on:click={openContactForm}
+						class="animate-cta mt-6 inline-flex items-center gap-2 px-6 py-3 bg-black text-white
+							rounded-full hover:bg-gray-800 transition-all duration-300 translate-y-[110%] opacity-0
+							hover:gap-3 group shadow-lg hover:shadow-xl">
+						<span class="text-sm sm:text-base font-medium">Get in Touch</span>
+						<svg
+							class="arrow-icon w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								  d="M17 8l4 4m0 0l-4 4m4-4H3" />
+						</svg>
+					</button>
 				</div>
 
-				<!-- Main Grid Layout -->
-				<div
-					class="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center relative z-10">
-
-					<!-- Text Left -->
-					<div
-						class="md:col-span-4 md:text-right order-2 md:order-1 flex flex-col justify-center items-start md:items-end space-y-6">
-						<div
-							class="bg-stone-800 text-[#E2D9DC] px-4 py-1 rounded-full secondary-font text-xs inline-block mb-2 shadow-lg">
-							Lot No. 0{i + 1}
-						</div>
-						<h3 class="primary-font text-5xl md:text-6xl lg:text-7xl text-stone-900 leading-[0.9]">
-							{watch.name}
-						</h3>
-						<p class="primary-font text-xl italic text-stone-600 max-w-xs md:ml-auto">
-							"{watch.tagline}"
+				<!-- Changing content section -->
+				<div class="changingTextContainer w-full">
+					<div class="para-wrapper overflow-hidden w-full">
+						<p
+							class="animate-paragraph w-full text-sm sm:text-base lg:text-lg tracking-normal secondary-font
+								leading-relaxed translate-y-[110%] opacity-0">
+							Join us in celebrating individuality and craftsmanship by partnering with ASIS Watches as a
+							wholesaler or
+							distributor. Our exquisite timepieces are not just watches; they are wearable art,
+							meticulously
+							crafted to
+							resonate with style and sophistication.By becoming a part of our network, you'll offer your
+							customers unique,
+							high-quality products while benefiting from our after sales support.
 						</p>
-						<!-- Specs List -->
-						<ul class="secondary-font text-[10px] text-stone-500 uppercase tracking-wider space-y-2 border-l md:border-l-0 md:border-r border-stone-400 pl-4 md:pl-0 md:pr-4 pt-4">
-							{#each watch.specs as spec}
-								<li>{spec}</li>
-							{/each}
-						</ul>
 					</div>
-
-					<!-- Image Center -->
-					<div
-						class="md:col-span-4 order-1 md:order-2 flex justify-center items-center relative py-8 md:py-0">
-						<!-- Image Container -->
-						<div
-							class="relative w-[80vw] h-[80vw] md:w-[28vw] md:h-[35vw] bg-stone-300 shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-transform duration-500 hover:scale-[1.02]">
-							<img
-								src={watch.image}
-								alt={watch.name}
-								class="w-full h-full object-cover grayscale-[10%] contrast-[1.15]"
-							/>
-							<!-- Frame Border -->
-							<div class="absolute inset-2 border border-white/20 pointer-events-none"></div>
-						</div>
-					</div>
-
-					<!-- Details Right -->
-					<div class="md:col-span-4 order-3 flex flex-col justify-end items-start h-full pb-8 md:pb-0">
-						<div class="max-w-xs space-y-8 md:pl-8">
-							<p class="secondary-font text-xs leading-relaxed text-stone-800 text-justify">
-								{watch.description}
-							</p>
-
-							<div class="flex items-center gap-6 pt-6 border-t border-stone-800/20 w-full">
-								<span class="footer-font-alt text-2xl md:text-3xl text-stone-800">{watch.price}</span>
-								<button
-									class="w-12 h-12 rounded-full border border-stone-800 flex items-center justify-center hover:bg-stone-800 hover:text-[#E2D9DC] transition-colors group/btn">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-										 stroke-width="1.5"
-										 class="group-hover/btn:-rotate-45 transition-transform duration-300">
-										<path d="M5 12h14M12 5l7 7-7 7" />
-									</svg>
-								</button>
-							</div>
-						</div>
-					</div>
-
 				</div>
-			</section>
-		{/each}
+			</div>
 
-		<!-- FOOTER -->
+			<!-- CSR CONTENT -->
+			<div class="csr-content absolute inset-0 flex flex-col justify-center items-center opacity-0">
+				<!-- Header section -->
+				<div class="header-section mb-8 sm:mb-12 lg:mb-16 relative text-center w-full overflow-hidden">
+					<a
+						href={csrLink}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="group text-3xl sm:text-4xl md:text-5xl lg:text-6xl primary-font leading-tight capitalize
+							transition-all duration-300 relative block
+							hover:scale-105 active:scale-95">
+						Corporate Social Responsibility
+						<!-- Underline effect -->
+						<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-black
+							group-hover:w-full transition-all duration-500 ease-out"></span>
+					</a>
+					<p class="text-xs sm:text-sm tracking-tight secondary-font mt-2">
+						Making A Difference Together
+					</p>
 
-	</main>
+					<!-- Call-to-action button with arrow -->
+					<a
+						href={csrLink}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-black text-white
+							rounded-full hover:bg-gray-800 transition-all duration-300
+							hover:gap-3 group shadow-lg hover:shadow-xl">
+						<span class="text-sm sm:text-base font-medium">Learn More</span>
+						<svg
+							class="arrow-icon w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								  d="M17 8l4 4m0 0l-4 4m4-4H3" />
+						</svg>
+					</a>
+				</div>
 
+				<!-- Content section -->
+				<div class="changingTextContainer w-full">
+					<div class="para-wrapper overflow-hidden w-full">
+						<p
+							class="w-full text-sm sm:text-base lg:text-lg tracking-normal secondary-font
+								leading-relaxed">
+							At ASIS Watches, we believe in giving back to the communities that inspire us. Our
+							commitment
+							to corporate social responsibility goes beyond creating exceptional timepieces. We actively
+							support initiatives that promote sustainability, empower local artisans, and contribute to
+							meaningful social causes. Through ethical sourcing, environmental consciousness, and
+							community
+							partnerships, we strive to make a positive impact while crafting watches that stand the test
+							of time.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

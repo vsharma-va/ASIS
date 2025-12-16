@@ -2,9 +2,10 @@
 	import Footer from '$lib/components/footer.svelte';
 	import Landing from '$lib/components/Landing.svelte';
 	import Partners from '$lib/components/Partners.svelte';
+	import Collections from '$lib/components/Collections.svelte';
+	import CSR from '$lib/components/CSR.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap/dist/gsap';
-	import Collections from '$lib/components/Collections.svelte';
 
 	const ld = {
 		'@context': 'https://schema.org',
@@ -85,6 +86,9 @@
 
 <div id="collaboration">
 	<Partners />
+</div>
+<div id="CSR">
+	<CSR />
 </div>
 <div id="footer">
 	<Footer />

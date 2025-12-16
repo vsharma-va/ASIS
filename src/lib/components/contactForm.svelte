@@ -167,11 +167,11 @@
 
 				<!-- Address -->
 				<div class="space-y-1 text-black sidebar-element pt-8">
-					<p class="font-medium">416.749.1508</p>
-					<p>240 Spinnaker Way</p>
-					<p>Units 2-5</p>
-					<p>Concord, ON Canada</p>
-					<p>L4K 4P9</p>
+					<p class="font-medium">ENQUIRY@ASISWATCHES.COM</p>
+					<!--					<p>240 Spinnaker Way</p>-->
+					<!--					<p>Units 2-5</p>-->
+					<!--					<p>Concord, ON Canada</p>-->
+					<!--					<p>L4K 4P9</p>-->
 				</div>
 			</div>
 
