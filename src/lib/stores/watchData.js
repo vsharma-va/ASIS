@@ -146,8 +146,8 @@ export const watchData = {
 			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
-			'Ruby',
-			'Emerald',
+			'Premium Ruby',
+			'Premium Emerald',
 			'Topaz'
 		],
 		landingImage: getLandingImage(
@@ -332,8 +332,8 @@ export const watchData = {
 			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
-			'Ruby',
-			'Emerald',
+			'Premium Ruby',
+			'Premium Emerald',
 			'Topaz'
 		],
 		landingImage: getLandingImage(
@@ -831,7 +831,6 @@ export const watchData = {
 
 	'the-leopard-grande': {
 		isEnabled: true,
-		isPremium: true,
 		id: 'the-leopard-grande',
 		collection: 'The Leopard',
 		subCollection: 'Grande',
