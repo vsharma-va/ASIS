@@ -212,10 +212,10 @@
 
 {#if watchData}
 	<div
-		class="LandingSection h-screen w-full relative flex justify-center items-start pt-[5%] sm:pt-[3%] md:pt-[5%] overflow-hidden bg-gradient mt-[3rem] -mb-[80vh]">
+		class="LandingSection h-screen w-full relative flex justify-center items-start overflow-hidden bg-gradient mt-[3rem] -mb-[78vh]">
 
 		<div
-			class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 text-white/90 px-4 sm:px-0 -mt-[20rem]">
+			class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 px-4 sm:px-0 -mt-[20rem]">
 			<div class="relative w-full flex justify-center items-center">
 
 				<div
@@ -240,21 +240,22 @@
 					</div>
 				</div>
 
-				<div class="relative w-fit max-w-[60vw] sm:max-w-[70vw] mx-auto LandingBG LandingTextElem">
+				<div class="relative w-fit max-w-[90vw] sm:max-w-[80vw] md:max-w-[75vw] lg:max-w-[70vw] mx-auto LandingBG LandingTextElem">
 
-					<div class="absolute -top-5 sm:-top-6 left-0 uppercase secondary-font text-xs sm:text-sm">
+					<div class="absolute -top-4 sm:-top-5 md:-top-6 left-0 uppercase text-zinc-600 font-semibold tracking-[0.15em] secondary-font text-[0.7rem] sm:text-[0.9rem] md:text-sm">
 						Meet
 					</div>
 
-					<div class="text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-[5.5rem]
-                   primary-font font-[600] leading-[0.8] capitalize text-center">
-						{watchData.collection + " " + watchData.subCollection}
+					<div class="text-[3rem] sm:text-5xl md:text-5xl lg:text-7xl xl:text-7xl
+                   text-zinc-900 primary-font font-[700] leading-[1] capitalize text-center tracking-tight px-1 sm:px-2">
+						{watchData.collection}
+						<span class="block sm:inline sm:ml-2">{watchData.subCollection}</span>
 					</div>
 
-					<div class="absolute -bottom-6 sm:-bottom-8 right-0 uppercase secondary-font text-xs sm:text-sm">
-						<div class="flex items-center gap-2">
-							<span class="align-text-bottom">BY</span>
-							<img src="{logoImg}" alt="ASIS" class="h-4 sm:h-6 w-auto object-contain" />
+					<div class="absolute -bottom-4 sm:-bottom-5 md:-bottom-7 right-0 uppercase secondary-font text-[0.7rem] sm:text-[0.8rem] md:text-sm text-zinc-600 font-semibold tracking-[0.12em]">
+						<div class="flex items-center gap-1 sm:gap-1.5">
+							<span class="align-baseline">BY</span>
+							<img src="{logoImg}" alt="ASIS" class="h-3 sm:h-3.5 md:h-5 w-auto object-contain opacity-80" />
 						</div>
 					</div>
 				</div>

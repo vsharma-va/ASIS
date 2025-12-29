@@ -154,7 +154,7 @@ export const watchData = {
 			'the-invisible-round-petite',
 			'invisible_petite_1.webp',
 			true,
-			'SON08487.webp'
+			'SON08352.webp'
 		),
 		variants: [
 			{
@@ -340,7 +340,7 @@ export const watchData = {
 			'the-invisible-round-grande',
 			'invisible_petite_1.webp',
 			true,
-			'SON08492.webp'
+			'SON08402.webp'
 		),
 		variants: [
 			{
@@ -513,7 +513,7 @@ export const watchData = {
 			{ label: 'Variants', value: '3 Variants' }
 		],
 		gemstones: ['Diamonds', 'Sapphires'],
-		landingImage: getLandingImage('the-mosaic', 'mosaic_1.webp', true, 'SON08502.webp'),
+		landingImage: getLandingImage('the-mosaic', 'mosaic_1.webp', true, 'SON08378.webp'),
 		variants: [
 			{
 				id: 'blue',
@@ -583,7 +583,7 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getLandingImage('the-single-rainbow', 'single_rainbow_1.webp'),
+		landingImage: getLandingImage('the-single-rainbow', 'single_rainbow_1.webp', true, 'SONO08398.webp'),
 		variants: [
 			{
 				id: 'multi',
@@ -612,7 +612,7 @@ export const watchData = {
 			{ label: 'Variants', value: '1 Variant' }
 		],
 		gemstones: ['Diamonds', 'Colored Sapphires'],
-		landingImage: getLandingImage('the-twin-rainbow', 'twin_rainbow_1.webp', true, 'SON08537.webp'),
+		landingImage: getLandingImage('the-twin-rainbow', 'twin_rainbow_1.webp', true, 'SON08398.webp'),
 		variants: [
 			{
 				id: 'white',
@@ -660,7 +660,7 @@ export const watchData = {
 			'the-turning-humming-bird',
 			'humming_bird_1.webp',
 			true,
-			'SON08525.webp'
+			'SON08405.webp'
 		),
 		variants: [
 			{
@@ -784,7 +784,7 @@ export const watchData = {
 			'the-black-panther-grande',
 			'black_panther_1.webp',
 			true,
-			'SON089001.webp'
+			'SON08399-f.webp'
 		),
 		variants: [
 			{
@@ -831,6 +831,7 @@ export const watchData = {
 
 	'the-leopard-grande': {
 		isEnabled: true,
+		isPremium: true,
 		id: 'the-leopard-grande',
 		collection: 'The Leopard',
 		subCollection: 'Grande',
@@ -847,7 +848,7 @@ export const watchData = {
 			'the-leopard-grande',
 			'leopard_grande_1.webp',
 			true,
-			'SON08522.webp'
+			'SON08404.webp'
 		),
 		variants: [
 			{
@@ -891,7 +892,7 @@ export const watchData = {
 			'my-light-dancing',
 			'my_light_dancing_1.webp',
 			true,
-			'SON08511.webp'
+			'SON08377.webp'
 		),
 		variants: [
 			{
