@@ -143,7 +143,9 @@
 			About us
 		</div>
 		<p class="footer-para translate-y-[200%] opacity-0 h-auto w-full text-sm sm:text-base leading-relaxed secondary-font mb-6">
-			At AS‑IS Watches, we believe every person is unique — and your watch should be too. Inspired by the love and wisdom passed down through generations, we create jewellery watches that celebrate individuality.
+			At AS‑IS Watches, we believe every person is unique — and your watch should be too. Inspired by the love and wisdom passed down through generations, we create jewellery watches that celebrate individuality. Each piece is crafted with natural gemstones, making every watch slightly different and truly personal.
+			We blend fine jewellery with precise watchmaking to create timepieces that feel special, meaningful, and full of character. With every AS‑IS watch sold, we also support community initiatives that help young creators grow.
+			AS‑IS Watches — because you are unique, as is.
 		</p>
 
 		<!-- Read Our Story Button -->
