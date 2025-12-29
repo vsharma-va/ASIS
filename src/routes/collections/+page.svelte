@@ -6,7 +6,6 @@
 		setComponentReady
 	} from '$lib/stores/loadingStore';
 	import { getAllWatches } from '$lib/stores/watchData';
-	import PremiumBadge from '$lib/components/PremiumBadge.svelte';
 
 	let watches = getAllWatches().filter((w) => w.isEnabled);
 	console.log('Loaded watches:', watches);
