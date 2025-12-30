@@ -6,6 +6,7 @@
 		setComponentReady
 	} from '$lib/stores/loadingStore';
 	import { getAllWatches } from '$lib/stores/watchData';
+	import { goto } from '\$app/navigation';
 
 	let watches = getAllWatches().filter((w) => w.isEnabled);
 	console.log('Loaded watches:', watches);
@@ -105,10 +106,10 @@
 					<div
 						class="md:col-span-4 text-center md:text-right order-1 flex flex-col items-center md:items-end space-y-5 md:space-y-6 px-6 md:px-0">
 
-							<div
-								class="border border-stone-800/30 text-stone-800 px-5 py-1.5 rounded-full secondary-font text-[10px] md:text-xs tracking-widest uppercase inline-block mb-2 md:bg-stone-800 md:text-[#E2D9DC] md:border-none md:shadow-lg">
-								Collection No. 0{i + 1}
-							</div>
+						<div
+							class="border border-stone-800/30 text-stone-800 px-5 py-1.5 rounded-full secondary-font text-[10px] md:text-xs tracking-widest uppercase inline-block mb-2 md:bg-stone-800 md:text-[#E2D9DC] md:border-none md:shadow-lg">
+							Collection No. 0{i + 1}
+						</div>
 
 						<h3 class="primary-font text-5xl sm:text-6xl md:text-6xl lg:text-7xl leading-[0.9]
                       text-stone-900">
@@ -174,15 +175,21 @@
                          </span>
 
 								<button
+									on:click={() => goto(`/watches/${watch.id}/`)}
 									class="w-14 h-14 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-300 group/btn
-                               		border border-stone-800 hover:bg-stone-800 hover:text-[#E2D9DC]">
-									<svg width="20" height="20" md:width="20" md:height="20" viewBox="0 0 24 24"
-										 fill="none" stroke="currentColor"
-										 stroke-width="1.5"
-										 class="group-hover/btn:-rotate-45 transition-transform duration-300">
+	       border border-stone-800 hover:bg-stone-800 hover:text-[#E2D9DC]">
+									<svg
+										width="20"
+										height="20"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										class="group-hover/btn:-rotate-45 transition-transform duration-300">
 										<path d="M5 12h14M12 5l7 7-7 7" />
 									</svg>
 								</button>
+
 							</div>
 						</div>
 					</div>

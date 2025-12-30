@@ -4,7 +4,12 @@
 	import { onMount } from 'svelte';
 	import { openContactForm } from '$lib/stores/contactFormStore';
 
+	// Import all company logos
+	const logoModules = import.meta.glob('$lib/assets/images/company_logos/*', { eager: true });
+	const companyLogos = Object.values(logoModules).map(module => module.default);
+
 	gsap.registerPlugin(ScrollTrigger);
+
 	onMount(() => {
 		let timeline = gsap.timeline({
 			scrollTrigger: {
@@ -15,6 +20,7 @@
 				markers: false
 			}
 		});
+
 		timeline.to('.animate-title', {
 			y: 0,
 			opacity: 1,
@@ -32,22 +38,34 @@
 				y: 0,
 				opacity: 1,
 				ease: 'power2.inOut',
-				duration: 2
-			});
+				duration: 0.5
+			}, '<')
+			.to('.animate-logos', {
+				y: 0,
+				opacity: 1,
+				ease: 'power2.inOut',
+				duration: 1.5
+			}, '-=0.5');
 
-		// Subtle pulse animation for the arrow
-		gsap.to('.arrow-icon', {
-			y: 5,
-			duration: 1,
-			repeat: -1,
-			yoyo: true,
-			ease: 'power1.inOut'
-		});
+		// Animate the logo ribbon infinitely
+		if (companyLogos.length > 0) {
+			const logoRibbon = document.querySelector('.logo-ribbon-track');
+			if (logoRibbon) {
+				const ribbonWidth = logoRibbon.scrollWidth / 2;
+				gsap.to('.logo-ribbon-track', {
+					x: -ribbonWidth,
+					duration: 30,
+					ease: 'none',
+					repeat: -1
+				});
+			}
+		}
 	});
 </script>
 
-<div class="collection-section h-[90vh] w-full relative flex justify-center items-center bg-gradient pb-6 sm:pb-10">
-	<div class="collection-center-text w-[95%] sm:w-4/5 lg:w-3/5 xl:w-2/4 h-full overflow-hidden
+<div
+	class="collection-section h-auto min-h-[90vh] w-full relative flex flex-col justify-center items-center bg-gradient pb-6 sm:pb-10 pt-12 sm:pt-16">
+	<div class="collection-center-text w-[95%] sm:w-4/5 lg:w-3/5 xl:w-2/4 h-auto overflow-hidden
         flex flex-col justify-center items-center text-black text-center px-4 sm:px-0">
 		<!-- Header section -->
 		<div class="header-section mb-8 sm:mb-12 lg:mb-16 relative text-center w-full overflow-hidden">
@@ -84,7 +102,7 @@
 		</div>
 
 		<!-- Changing content section -->
-		<div class="changingTextContainer w-full">
+		<div class="changingTextContainer w-full mb-12 sm:mb-16">
 			<div class="para-wrapper overflow-hidden w-full">
 				<p
 					class="animate-paragraph w-full text-sm sm:text-base lg:text-lg tracking-normal secondary-font
@@ -93,11 +111,91 @@
 					wholesaler or
 					distributor. Our exquisite timepieces are not just watches; they are wearable art, meticulously
 					crafted to
-					resonate with style and sophistication.By becoming a part of our network, you'll offer your
+					resonate with style and sophistication. By becoming a part of our network, you'll offer your
 					customers unique,
 					high-quality products while benefiting from our after sales support.
 				</p>
 			</div>
 		</div>
 	</div>
+
+	<!-- Retailer Logos Ribbon -->
+	{#if companyLogos.length > 0}
+		<div class="animate-logos w-full overflow-hidden py-1 translate-y-[110%] opacity-0">
+			<div class="mb-6 text-center">
+				<h3 class="text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-600 font-semibold secondary-font">
+					Trusted by Leading Retailers
+				</h3>
+			</div>
+
+			<div class="logo-ribbon relative w-full overflow-hidden">
+				<div class="logo-ribbon-track flex items-center gap-12 sm:gap-16 md:gap-20">
+					<!-- First set of logos -->
+					{#each companyLogos as logo, i}
+						<div
+							class="logo-item flex-shrink-0  hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100">
+							<img
+								src={logo}
+								alt="Retailer logo {i + 1}"
+								class="h-12 sm:h-16 md:h-20 w-auto object-contain"
+								loading="lazy"
+							/>
+						</div>
+					{/each}
+
+					<!-- Duplicate set for seamless loop -->
+					{#each companyLogos as logo, i}
+						<div
+							class="logo-item flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100">
+							<img
+								src={logo}
+								alt="Retailer logo {i + 1}"
+								class="h-12 sm:h-16 md:h-20 w-auto object-contain"
+								loading="lazy"
+							/>
+						</div>
+					{/each}
+				</div>
+			</div>
+		</div>
+	{/if}
 </div>
+
+<style>
+	.logo-ribbon {
+		mask-image: linear-gradient(
+			to right,
+			transparent 0%,
+			black 10%,
+			black 90%,
+			transparent 100%
+		);
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent 0%,
+			black 10%,
+			black 90%,
+			transparent 100%
+		);
+	}
+
+	.logo-ribbon-track {
+		will-change: transform;
+	}
+
+	.logo-item {
+		min-width: 120px;
+	}
+
+	@media (min-width: 640px) {
+		.logo-item {
+			min-width: 150px;
+		}
+	}
+
+	@media (min-width: 768px) {
+		.logo-item {
+			min-width: 180px;
+		}
+	}
+</style>

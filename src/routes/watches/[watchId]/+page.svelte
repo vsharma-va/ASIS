@@ -211,12 +211,13 @@
 </svelte:head>
 
 {#if watchData}
+	<!-- Hero Section - Fixed positioning to overlay the gallery -->
 	<div
-		class="LandingSection h-screen w-full relative flex justify-center items-start overflow-hidden bg-gradient mt-[3rem] -mb-[78vh]">
+		class="LandingSection fixed top-0 left-0 h-screen w-full flex justify-center items-start overflow-hidden bg-transparent z-[99] pointer-events-none pt-[10rem]">
 
 		<div
-			class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center z-10 px-4 sm:px-0 -mt-[20rem]">
-			<div class="relative w-full flex justify-center items-center">
+			class="LandingTextElemContainer w-full h-full flex flex-col justify-center items-center px-4 sm:px-0 -mt-[20rem]">
+			<div class="relative w-full flex justify-center items-center pointer-events-auto">
 
 				<div
 					class="nav-wrap nav-prev"
@@ -240,9 +241,11 @@
 					</div>
 				</div>
 
-				<div class="relative w-fit max-w-[90vw] sm:max-w-[80vw] md:max-w-[75vw] lg:max-w-[70vw] mx-auto LandingBG LandingTextElem">
+				<div
+					class="relative w-fit max-w-[90vw] sm:max-w-[80vw] md:max-w-[75vw] lg:max-w-[70vw] mx-auto mt-3 LandingBG ">
 
-					<div class="absolute -top-4 sm:-top-5 md:-top-6 left-0 uppercase text-zinc-600 font-semibold tracking-[0.15em] secondary-font text-[0.7rem] sm:text-[0.9rem] md:text-sm">
+					<div
+						class="absolute -top-1 sm:-top-1 md:-top-2 left-0 uppercase text-zinc-600 font-semibold tracking-[0.15em] secondary-font text-[0.7rem] sm:text-[0.9rem] md:text-sm z-[99]">
 						Meet
 					</div>
 
@@ -252,10 +255,12 @@
 						<span class="block sm:inline sm:ml-2">{watchData.subCollection}</span>
 					</div>
 
-					<div class="absolute -bottom-4 sm:-bottom-5 md:-bottom-7 right-0 uppercase secondary-font text-[0.7rem] sm:text-[0.8rem] md:text-sm text-zinc-600 font-semibold tracking-[0.12em]">
+					<div
+						class="absolute -bottom-4 sm:-bottom-4 md:-bottom-5 right-0 uppercase secondary-font text-[0.7rem] sm:text-[0.8rem] md:text-sm text-zinc-600 font-semibold tracking-[0.12em]">
 						<div class="flex items-center gap-1 sm:gap-1.5">
 							<span class="align-baseline">BY</span>
-							<img src="{logoImg}" alt="ASIS" class="h-3 sm:h-3.5 md:h-5 w-auto object-contain opacity-80" />
+							<img src="{logoImg}" alt="ASIS"
+								 class="h-3 sm:h-3.5 md:h-5 w-auto object-contain opacity-80" />
 						</div>
 					</div>
 				</div>
@@ -285,7 +290,11 @@
 			</div>
 		</div>
 	</div>
-	<Gallery {galleryData} />
+
+	<!-- Gallery Section - Normal flow with top padding to account for hero -->
+	<div class="w-full pt-[20vh]">
+		<Gallery {galleryData} />
+	</div>
 {:else}
 	<!-- Loading State -->
 	<div
@@ -313,7 +322,7 @@
 		height: 48px;
 		z-index: 10;
 		display: flex;
-		justify-content: center; /* Center align content for the label below */
+		justify-content: center;
 	}
 
 	@media (max-width: 640px) {
@@ -348,7 +357,7 @@
 		font-size: 1.05rem;
 		cursor: pointer;
 		transition: transform 140ms ease, opacity 140ms ease;
-		z-index: 20; /* Ensure button sits above label area if overlapping */
+		z-index: 20;
 	}
 
 	.nav-circle:disabled {
@@ -360,16 +369,16 @@
 	/* LABEL: Positioned BELOW the button */
 	.nav-label {
 		position: absolute;
-		top: 100%; /* Push below button */
-		left: 50%; /* Center horizontally relative to button */
-		transform: translateX(-50%) translateY(-10px); /* Start slightly up and centered */
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-10px);
 
 		white-space: nowrap;
 		overflow: hidden;
-		max-width: 0; /* Animate width */
-		opacity: 0; /* Animate opacity */
+		max-width: 0;
+		opacity: 0;
 
-		margin-top: 12px; /* Spacing from button */
+		margin-top: 12px;
 		padding: 8px 12px;
 		border-radius: 8px;
 		background: rgba(255, 255, 255, 0.95);
@@ -389,9 +398,9 @@
 	/* HOVER STATE */
 	.nav-wrap:hover .nav-label,
 	.nav-wrap:focus-within .nav-label {
-		max-width: 200px; /* Limit width */
+		max-width: 200px;
 		opacity: 1;
-		transform: translateX(-50%) translateY(0); /* Drop into place */
+		transform: translateX(-50%) translateY(0);
 	}
 
 	/* Button hover scale */
@@ -399,7 +408,6 @@
 	.nav-wrap:focus-within .nav-circle {
 		transform: scale(1.05);
 	}
-
 
 	/* Small-screen adjustments */
 	@media (max-width: 640px) {
@@ -426,6 +434,4 @@
 	.nav-wrap:focus-within .nav-circle {
 		transform: scale(1.03);
 	}
-
-
 </style>

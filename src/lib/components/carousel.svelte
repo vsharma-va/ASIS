@@ -15,7 +15,7 @@
 	gsap.registerPlugin(InertiaPlugin, Draggable);
 	const allWatches = getAllWatches();
 	const displayWatches = $derived(allWatches.filter((watch) => watch.isEnabled !== false));
-	let images = $derived(displayWatches.map(watch => watch.landingImage));
+	let images = $derived(displayWatches.map(watch => watch.variants[0].images[1]));
 	let watchIds = $derived(displayWatches.map(watch => watch.id));
 
 	// ---- NAMES derived from watch.id (hyphens removed, words capitalized) ----

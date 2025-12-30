@@ -158,6 +158,23 @@ export const watchData = {
 		),
 		variants: [
 			{
+				id: 'blue',
+				name: 'Colored Sapphire',
+				color: '#1E40AF',
+				accent: '#3B82F6',
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-blue').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-blue')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
+			},
+			{
 				id: 'multi',
 				name: 'Diamond',
 				color: '#E2E8F0',
@@ -191,23 +208,7 @@ export const watchData = {
 								getImageByID('invisible_petite_6.webp')
 							]
 			},
-			{
-				id: 'blue',
-				name: 'Colored Sapphire',
-				color: '#1E40AF',
-				accent: '#3B82F6',
-				images:
-					getVariantImages('the-invisible-round-petite', 'IP-blue').length > 0
-						? getVariantImages('the-invisible-round-petite', 'IP-blue')
-						: [
-								getImageByID('invisible_petite_1.webp'),
-								getImageByID('invisible_petite_2.webp'),
-								getImageByID('invisible_petite_3.webp'),
-								getImageByID('invisible_petite_4.webp'),
-								getImageByID('invisible_petite_5.webp'),
-								getImageByID('invisible_petite_6.webp')
-							]
-			},
+
 			{
 				id: 'green',
 				name: 'Emerald',
@@ -344,6 +345,23 @@ export const watchData = {
 		),
 		variants: [
 			{
+				id: 'green',
+				name: 'Emerald',
+				color: '#065F46',
+				accent: '#10B981',
+				images:
+					getVariantImages('the-invisible-round-petite', 'IP-green').length > 0
+						? getVariantImages('the-invisible-round-petite', 'IP-green')
+						: [
+								getImageByID('invisible_petite_1.webp'),
+								getImageByID('invisible_petite_2.webp'),
+								getImageByID('invisible_petite_3.webp'),
+								getImageByID('invisible_petite_4.webp'),
+								getImageByID('invisible_petite_5.webp'),
+								getImageByID('invisible_petite_6.webp')
+							]
+			},
+			{
 				id: 'multi',
 				name: 'Diamond',
 				color: '#E2E8F0',
@@ -394,23 +412,7 @@ export const watchData = {
 								getImageByID('invisible_petite_6.webp')
 							]
 			},
-			{
-				id: 'green',
-				name: 'Emerald',
-				color: '#065F46',
-				accent: '#10B981',
-				images:
-					getVariantImages('the-invisible-round-petite', 'IP-green').length > 0
-						? getVariantImages('the-invisible-round-petite', 'IP-green')
-						: [
-								getImageByID('invisible_petite_1.webp'),
-								getImageByID('invisible_petite_2.webp'),
-								getImageByID('invisible_petite_3.webp'),
-								getImageByID('invisible_petite_4.webp'),
-								getImageByID('invisible_petite_5.webp'),
-								getImageByID('invisible_petite_6.webp')
-							]
-			},
+
 			{
 				id: 'purple',
 				name: 'Iolite',
@@ -583,7 +585,12 @@ export const watchData = {
 			'Emerald',
 			'Topaz'
 		],
-		landingImage: getLandingImage('the-single-rainbow', 'single_rainbow_1.webp', true, 'SONO08398.webp'),
+		landingImage: getLandingImage(
+			'the-single-rainbow',
+			'single_rainbow_1.webp',
+			true,
+			'SONO08398.webp'
+		),
 		variants: [
 			{
 				id: 'multi',

@@ -34,17 +34,8 @@
 				y: 0,
 				opacity: 1,
 				ease: 'power2.inOut',
-				duration: 2
-			});
-
-		// Subtle pulse animation for the arrow
-		gsap.to('.csr-arrow-icon', {
-			y: 5,
-			duration: 1,
-			repeat: -1,
-			yoyo: true,
-			ease: 'power1.inOut'
-		});
+				duration: 0.5
+			},"<");
 	});
 </script>
 

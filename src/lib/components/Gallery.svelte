@@ -215,7 +215,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </svelte:head>
 
-<div class="font-sans min-h-[115vh] bg-gradient text-zinc-800 relative z-20">
+<div class="font-sans min-h-[125vh] bg-gradient text-zinc-800 relative z-20">
 	<main class="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
 		<div class="lg:col-span-1 h-[65vh] lg:h-screen flex flex-col p-6 sm:p-8 lg:p-12 lg:sticky lg:top-0 mt-[4rem] relative z-20">
 			{#key selectedVariantIndex}
