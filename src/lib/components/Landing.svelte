@@ -10,6 +10,11 @@
 	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
 	import logoImg from '$lib/assets/images/AS IS.png';
 	import { fade, scale } from 'svelte/transition'; // Standard svelte transitions for the modal
+	import movementImg from "$lib/assets/images/movement.jpeg";
+	import buckleImg from "$lib/assets/images/buckle.jpeg";
+	import crownImg from "$lib/assets/images/crown.jpeg";
+	import leatherImg from "$lib/assets/images/leather.jpeg";
+	import certificationImg from "$lib/assets/images/certification.jpeg";
 
 	let imagesLoaded = false;
 	let ctx;
@@ -27,7 +32,7 @@
 			left: '10%'
 		},
 		{ id: 2, title: 'Glass', desc: 'Sapphire Crystal', img: WatchDetailImage2, top: '25%', right: '5%' },
-		{ id: 3, title: 'Movement', desc: 'Swiss Automatic', img: WatchDetailImage, top: '60%', left: '8%' },
+		{ id: 3, title: 'Movement', desc: 'Swiss Automatic', img: movementImg, top: '60%', left: '8%' },
 		{ id: 4, title: 'Metal', desc: 'High Grade Steel', img: WatchDetailImage, top: '75%', right: '10%' },
 		{ id: 5, title: 'Finish', desc: 'Polished & Brushed', img: WatchDetailImage3, top: '85%', left: '35%' }
 	];
@@ -315,7 +320,7 @@
 					<div class="detail-desc text-xs uppercase font-bold tracking-wide">Swiss Automatic</div>
 					<div
 						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-						<img src="{WatchDetailImage}" alt="Movement detail"
+						<img src="{movementImg}" alt="Movement detail"
 							 class="detail-image w-full h-full object-cover" loading="eager">
 					</div>
 				</div>
@@ -345,7 +350,7 @@
 						</div>
 						<div
 							class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-							<img src="{WatchDetailImage2}" alt="Watch craftsmanship detail"
+							<img src="{leatherImg}" alt="Watch craftsmanship detail"
 								 class="detail-image-second w-full h-full object-cover" loading="eager">
 						</div>
 					</div>
@@ -372,7 +377,7 @@
 				<div class="detail-text-second ml-2 w-1/2 secondary-font">
 					<div
 						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-						<img src="{WatchDetailImage2}" alt="Watch craftsmanship detail"
+						<img src="{certificationImg}" alt="Watch craftsmanship detail"
 							 class="detail-image-second w-full h-full object-cover" loading="eager">
 					</div>
 					<div class="detail-heading text-lg uppercase font-light tracking-wider">WARRANTY</div>
@@ -392,7 +397,7 @@
 						</div>
 						<div
 							class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-							<img src="{WatchDetailImage3}" alt="Watch finish detail"
+							<img src="{crownImg}" alt="Watch finish detail"
 								 class="detail-image-third w-full h-full object-cover" loading="eager">
 						</div>
 					</div>
@@ -408,7 +413,7 @@
 					<div class="detail-desc text-xs uppercase font-bold tracking-wide">some text</div>
 					<div
 						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-						<img src="{WatchDetailImage3}" alt="Watch buckle detail"
+						<img src="{buckleImg}" alt="Watch buckle detail"
 							 class="detail-image-third w-full h-full object-cover" loading="eager">
 					</div>
 				</div>
@@ -419,7 +424,7 @@
 				<div class="detail-text-third ml-2 w-1/2 secondary-font">
 					<div
 						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-						<img src="{WatchDetailImage3}" alt="Watch warranty detail"
+						<img src="{certificationImg}" alt="Watch warranty detail"
 							 class="detail-image-third w-full h-full object-cover" loading="eager">
 					</div>
 					<div class="detail-heading text-lg uppercase font-light tracking-wider">warranty</div>
