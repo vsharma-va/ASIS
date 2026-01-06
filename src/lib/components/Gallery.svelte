@@ -1,7 +1,11 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap';
-	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
+	import {
+		setComponentReady,
+		registerComponent,
+		unregisterComponent
+	} from '$lib/stores/loadingStore';
 
 	export let galleryData;
 
@@ -14,13 +18,17 @@
 
 	$: currentVariant = galleryData.variants[selectedVariantIndex];
 
+	// --- GEMSTONE MATCHING LOGIC ---
+
 	function normalizeName(s) {
 		return (s || '')
 			.toString()
 			.trim()
 			.toLowerCase()
-			.replace(/[^\w\s]/g, '')
-			.replace(/\s+/g, ' ');
+			.replace(/[^\w\s]/g, '')      // Remove special characters
+			.replace(/\bpremium\b/g, '')  // Remove the word 'premium' specifically
+			.replace(/\s+/g, ' ')         // Collapse multiple spaces into one
+			.trim();
 	}
 
 	function tokensOf(s) {
@@ -29,29 +37,31 @@
 
 	function findVariantIndexByGemstone(gemstone) {
 		if (!galleryData || !galleryData.variants) return undefined;
+
 		const gNorm = normalizeName(gemstone);
 		if (!gNorm) return undefined;
 
-		// 1. Exact match
+		// 1. Exact Match
 		for (let i = 0; i < galleryData.variants.length; i++) {
 			const vNorm = normalizeName(galleryData.variants[i].name);
 			if (vNorm === gNorm) return i;
 		}
 
-		// 2. Token-based matching
+		// 2. Token Matching (All tokens must exist)
 		const gTokens = tokensOf(gemstone);
 		if (gTokens.length > 0) {
 			for (let i = 0; i < galleryData.variants.length; i++) {
 				const vTokens = tokensOf(galleryData.variants[i].name);
-				if (gTokens.every(gt => vTokens.includes(gt))) return i;
+				if (gTokens.every((gt) => vTokens.includes(gt))) return i;
 			}
+			// 3. Partial Token Matching (Some tokens exist)
 			for (let i = 0; i < galleryData.variants.length; i++) {
 				const vTokens = tokensOf(galleryData.variants[i].name);
-				if (gTokens.some(gt => vTokens.includes(gt))) return i;
+				if (gTokens.some((gt) => vTokens.includes(gt))) return i;
 			}
 		}
 
-		// 3. Substring matching
+		// 4. Substring Match (for longer names)
 		if (gNorm.length > 3) {
 			for (let i = 0; i < galleryData.variants.length; i++) {
 				const vNorm = normalizeName(galleryData.variants[i].name);
@@ -59,7 +69,7 @@
 			}
 		}
 
-		// 4. Fuzzy matching
+		// 5. Prefix Match
 		if (gNorm.length >= 3) {
 			const gPrefix = gNorm.substring(0, Math.min(4, gNorm.length));
 			for (let i = 0; i < galleryData.variants.length; i++) {
@@ -67,39 +77,49 @@
 				if (vNorm.startsWith(gPrefix)) return i;
 			}
 		}
-
 		return undefined;
 	}
 
-	$: gemstoneToIndex = (galleryData && galleryData.gemstones)
-		? galleryData.gemstones.reduce((acc, g) => {
-			acc[g] = findVariantIndexByGemstone(g);
-			return acc;
-		}, {})
-		: {};
+	$: gemstoneToIndex =
+		galleryData && galleryData.gemstones
+			? galleryData.gemstones.reduce((acc, g) => {
+				acc[g] = findVariantIndexByGemstone(g);
+				return acc;
+			}, {})
+			: {};
 
-	// --- ANIMATION & LIFECYCLE ---
+	// --- ANIMATION ---
 	function animateCarouselIn() {
 		if (isAnimating) return;
 		isAnimating = true;
 
+		// Title Reveal
+		gsap.fromTo('.hero-title-char',
+			{ y: 100, opacity: 0, rotateX: -20 },
+			{ duration: 1.2, y: 0, opacity: 1, rotateX: 0, stagger: 0.05, ease: 'expo.out' }
+		);
+
+		// Image scale in
 		gsap.fromTo(
 			'.main-image-wrapper',
-			{ scale: 0.95, opacity: 0 },
+			{ opacity: 0, scale: 1.1 },
 			{
-				duration: 1.2,
-				scale: 1,
+				duration: 1.5,
 				opacity: 1,
-				ease: 'expo.out',
+				scale: 1,
+				ease: 'power2.out',
+				delay: 0.2,
 				onComplete: () => {
 					isAnimating = false;
 				}
 			}
 		);
+
+		// UI fade up
 		gsap.fromTo(
-			'.thumbnail-item',
+			'.ui-fade-up',
 			{ y: 20, opacity: 0 },
-			{ duration: 0.6, y: 0, opacity: 1, stagger: 0.07, ease: 'power2.out', delay: 0.4 }
+			{ duration: 0.8, y: 0, opacity: 1, stagger: 0.1, ease: 'power2.out', delay: 0.6 }
 		);
 	}
 
@@ -108,15 +128,15 @@
 		animateCarouselIn();
 
 		gsap.fromTo(
-			'.product-info > *',
-			{ y: 30, opacity: 0 },
+			'.content-block',
+			{ x: 30, opacity: 0 },
 			{
-				duration: 0.8,
-				y: 0,
+				duration: 1,
+				x: 0,
 				opacity: 1,
-				stagger: 0.08,
+				stagger: 0.1,
 				ease: 'power3.out',
-				delay: 0.2,
+				delay: 0.4,
 				onComplete: () => {
 					hasAnimatedIn = true;
 					setComponentReady('gallery', true);
@@ -128,8 +148,9 @@
 	onDestroy(() => {
 		if (typeof window !== 'undefined') {
 			gsap.killTweensOf('.main-image-wrapper');
-			gsap.killTweensOf('.thumbnail-item');
-			gsap.killTweensOf('.product-info > *');
+			gsap.killTweensOf('.ui-fade-up');
+			gsap.killTweensOf('.content-block');
+			gsap.killTweensOf('.hero-title-char');
 			gsap.killTweensOf(mainImageEl);
 		}
 		unregisterComponent('gallery');
@@ -146,13 +167,22 @@
 				selectedImageIndex = 0;
 				isZoomed = false;
 				isAnimating = false;
+
+				// Animate back in (Scale & Opacity only)
+				gsap.to(mainImageEl, {
+					duration: 0.6,
+					opacity: 1,
+					scale: 1,
+					ease: 'power2.out'
+				});
 			}
 		});
 
-		tl.to('.main-image-wrapper', {
+		// Animate out (Image only)
+		tl.to(mainImageEl, {
 			duration: 0.3,
 			opacity: 0,
-			y: -20,
+			scale: 0.95,
 			ease: 'power2.in'
 		});
 	}
@@ -167,11 +197,12 @@
 			}
 		});
 
+		// Slide out
 		tl.to(mainImageEl, {
-			duration: 0.4,
+			duration: 0.3,
 			opacity: 0,
-			scale: 0.98,
-			ease: 'expo.in'
+			x: -40,
+			ease: 'power1.in'
 		});
 
 		tl.call(() => {
@@ -179,14 +210,18 @@
 			if (isZoomed) {
 				isZoomed = false;
 				gsap.set(mainImageEl, { scale: 1, x: 0, y: 0 });
+			} else {
+				gsap.set(mainImageEl, { x: 40 });
 			}
 		});
 
+		// Slide in
 		tl.to(mainImageEl, {
-			duration: 0.6,
+			duration: 0.5,
 			opacity: 1,
+			x: 0,
 			scale: 1,
-			ease: 'expo.out'
+			ease: 'power2.out'
 		});
 	}
 
@@ -194,9 +229,9 @@
 		if (isAnimating) return;
 		isZoomed = !isZoomed;
 		if (isZoomed) {
-			gsap.to(mainImageEl, { duration: 0.5, scale: 1.5, ease: 'power3.inOut' });
+			gsap.to(mainImageEl, { duration: 1.2, scale: 2, ease: 'expo.inOut' });
 		} else {
-			gsap.to(mainImageEl, { duration: 0.5, scale: 1, x: 0, y: 0, ease: 'power3.inOut' });
+			gsap.to(mainImageEl, { duration: 1, scale: 1, x: 0, y: 0, ease: 'expo.inOut' });
 		}
 	}
 
@@ -205,186 +240,200 @@
 		const rect = e.currentTarget.getBoundingClientRect();
 		const x = (e.clientX - rect.left) / rect.width - 0.5;
 		const y = (e.clientY - rect.top) / rect.height - 0.5;
-		gsap.to(mainImageEl, { duration: 1, x: x * -150, y: y * -150, ease: 'power2.out' });
+		gsap.to(mainImageEl, { duration: 0.6, x: x * -400, y: y * -400, ease: 'power1.out' });
 	}
 </script>
 
-<svelte:head>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</svelte:head>
+<div class="bg-gradient w-full min-h-screen text-zinc-900 overflow-x-hidden selection:bg-zinc-800 selection:text-white">
+	<main class="grid grid-cols-1 lg:grid-cols-12 min-h-screen">
 
-<div class="font-sans min-h-[125vh] bg-gradient text-zinc-800 relative z-20">
-	<main class="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-		<div class="lg:col-span-1 h-[65vh] lg:h-screen flex flex-col p-6 sm:p-8 lg:p-12 lg:sticky lg:top-0 mt-[4rem] relative z-20">
-			{#key selectedVariantIndex}
+		<div class="lg:col-span-7 relative h-[55vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden flex flex-col">
+
+			<div class="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay"
+				 style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiMwMDAiLz48L3N2Zz4=');">
+			</div>
+
+			<div class="absolute top-6 left-6 lg:top-8 lg:left-8 z-20 pointer-events-none ui-fade-up">
+				<span class="secondary-font text-[9px] sm:text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">Exhibit A</span>
+			</div>
+
+			<div class="flex-1 relative w-full h-full flex items-center justify-center p-6 lg:p-0">
 				<div
-					class="main-image-wrapper relative flex-1 w-full bg-white rounded-3xl overflow-hidden shadow-lg"
+					class="main-image-wrapper relative w-full h-full max-w-4xl max-h-[45vh] lg:max-h-[80vh] flex items-center justify-center z-10"
 					on:mousemove={handleImageMouseMove}
-					role="img"
-					aria-label="Product image viewer"
-					style="box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);"
+					on:click={toggleZoom}
+					role="button"
+					tabindex="0"
+					on:keydown={(e) => e.key === 'Enter' && toggleZoom()}
 				>
-					{#key currentVariant.images[selectedImageIndex]}
-						<div
-							class="w-full h-full absolute flex items-center justify-center {isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}"
-							on:click={toggleZoom}
-							role="button"
-							tabindex="0"
-							on:keydown={(e) => e.key === 'Enter' && toggleZoom()}
-						>
-							<img
-								bind:this={mainImageEl}
-								src={currentVariant.images[selectedImageIndex]}
-								alt={`${galleryData.title} - ${currentVariant.name}`}
-								class="w-full h-full rounded-lg object-contain will-change-transform"
-								loading="eager"
-								decoding="async"
-							/>
-						</div>
-					{/key}
-
-					<div
-						class="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-zinc-800 px-4 py-2 rounded-full text-xs font-semibold tracking-wide shadow-sm">
-						{selectedImageIndex + 1} / {currentVariant.images.length}
-					</div>
+					<img
+						bind:this={mainImageEl}
+						src={currentVariant.images[selectedImageIndex]}
+						alt={`${galleryData.title} - ${currentVariant.name}`}
+						class="w-full h-full object-contain will-change-transform relative z-10 {isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}"
+						style="will-change: transform, opacity;"
+						loading="eager"
+					/>
 				</div>
+			</div>
 
-				<div class="flex-shrink-0 pt-8">
-					<div class="flex justify-center items-center gap-3">
+			<div class="absolute bottom-6 lg:bottom-8 w-full flex justify-center z-20 px-4 ui-fade-up">
+				<div class="flex items-center gap-4 lg:gap-6 px-4 lg:px-6 py-2 lg:py-3 bg-white/30 backdrop-blur-xl border border-white/40 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.05)]">
+
+					<div class="flex gap-2">
 						{#each currentVariant.images as image, index}
 							<button
-								class="thumbnail-item flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 ease-out shadow-sm hover:shadow-md cursor-pointer"
-								class:ring-2={selectedImageIndex === index}
-								class:ring-zinc-900={selectedImageIndex === index}
-								class:ring-offset-2={selectedImageIndex === index}
-								class:opacity-50={selectedImageIndex !== index}
-								class:hover:opacity-100={selectedImageIndex !== index}
-								class:scale-105={selectedImageIndex === index}
-								class:hover:scale-105={selectedImageIndex !== index}
-								on:click={() => selectImage(index)}
-								aria-label={`View image ${index + 1}`}
-								type="button"
+								class="relative w-8 h-8 lg:w-10 lg:h-10 rounded-full overflow-hidden transition-all duration-300 group focus:outline-none"
+								on:click|stopPropagation={() => selectImage(index)}
 							>
-								<img src={image} alt="Thumbnail {index + 1}" class="w-14 h-14 object-cover"
-									 loading="eager" />
+								<div class="absolute inset-0 bg-zinc-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+								<img
+									src={image}
+									alt="thumb"
+									class="w-full h-full object-cover transition-transform duration-500"
+									class:scale-110={selectedImageIndex === index}
+								/>
+								{#if selectedImageIndex === index}
+									<div class="absolute inset-0 ring-[1.5px] ring-inset ring-zinc-800 rounded-full z-20"></div>
+								{/if}
 							</button>
 						{/each}
 					</div>
+
+					<div class="h-4 w-px bg-zinc-400/30"></div>
+
+					<span class="secondary-font text-[9px] lg:text-[10px] font-bold tracking-widest text-zinc-700 min-w-[3ch] text-center">
+                        {selectedImageIndex + 1}/{currentVariant.images.length}
+                    </span>
+
 				</div>
-			{/key}
+			</div>
 		</div>
 
-		<div class="lg:col-span-1 flex items-center relative z-20">
-			<div class="p-8 sm:p-12 lg:p-20 w-full product-info space-y-10">
-				<header class="space-y-4">
-					<h1 class="text-5xl lg:text-6xl font-light tracking-tight text-zinc-900 leading-tight">
-						{galleryData.title}
-					</h1>
-					<p class="text-lg text-zinc-600 max-w-prose leading-relaxed">
-						{galleryData.watchDescription}
-					</p>
+		<div class="lg:col-span-5 relative z-20 bg-white/10 backdrop-blur-[2px] lg:border-l border-white/20 min-h-full">
+
+			<div class="flex flex-col justify-center min-h-[50vh] lg:min-h-screen px-6 py-10 sm:px-12 lg:px-16 xl:px-20 space-y-12 lg:space-y-16">
+
+				<header class="relative space-y-6 lg:space-y-8">
+					<div class="flex items-center gap-3 ui-fade-up overflow-hidden">
+						<div class="h-[2px] w-6 bg-zinc-800"></div>
+						<h2 class="secondary-font text-[10px] sm:text-xs font-bold tracking-[0.3em] text-zinc-800 uppercase">
+							Collection
+						</h2>
+					</div>
+
+					<div class="relative">
+						<h1 class="primary-font text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-light tracking-tighter text-zinc-900 leading-[0.85] overflow-visible">
+							<span class="block hero-title-char">{galleryData.title}</span>
+						</h1>
+					</div>
+
+					<div class="content-block relative pl-6 border-l border-zinc-400/40">
+						<p class="secondary-font text-base sm:text-sm lg:text-lg text-zinc-700 leading-relaxed font-light">
+							{galleryData.watchDescription}
+						</p>
+					</div>
 				</header>
 
-				<section class="space-y-6">
-					<div>
-						<h3 class="text-sm font-semibold text-zinc-900 tracking-wide uppercase mb-4 opacity-60">Variant</h3>
-						<div class="flex flex-wrap gap-2">
+				<section class="space-y-8 lg:space-y-10">
+					<div class="content-block space-y-5">
+						<div class="flex justify-between items-baseline border-b border-zinc-400/20 pb-2">
+							<h3 class="secondary-font text-[14px] sm:text-sm font-bold text-zinc-900 tracking-widest uppercase">VARIANT</h3>
+							<span class="secondary-font text-sm text-zinc-700 italic">{currentVariant.name}</span>
+						</div>
+
+						<div class="flex flex-wrap gap-4 sm:gap-5 pt-2">
 							{#each galleryData.gemstones as gemstone}
 								{@const index = gemstoneToIndex[gemstone]}
 
 								{#if index !== undefined}
 									{@const variant = galleryData.variants[index]}
-
 									<button
 										on:click={() => selectVariant(index)}
-										class="group relative flex items-center p-2 rounded-2xl transition-all duration-300 cursor-pointer"
-										class:bg-zinc-100={selectedVariantIndex === index}
-										class:shadow-sm={selectedVariantIndex === index}
-										class:hover:bg-zinc-50={selectedVariantIndex !== index}
-										title={variant.name}
-										aria-label={`Select ${variant.name}`}
-										type="button"
+										class="group relative flex flex-col items-center gap-2 focus:outline-none"
+										aria-label="Select {variant.name}"
 									>
 										<div
-											class="w-10 h-10 rounded-full shadow-md transition-all duration-300 ease-out"
+											class="w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-all duration-300 group-hover:-translate-y-1"
 											class:scale-110={selectedVariantIndex === index}
-											class:shadow-lg={selectedVariantIndex === index}
-											class:group-hover:scale-105={selectedVariantIndex !== index}
-											style="background: {variant.color ? `linear-gradient(135deg, ${variant.color}, ${variant.accent || variant.color})` : '#e4e4e7'}; border: 2px solid rgba(255,255,255,0.8)"
+											style="
+                                    background: {variant.color ? `linear-gradient(135deg, ${variant.color}, ${variant.accent || variant.color})` : '#e4e4e7'};
+                                    box-shadow: {selectedVariantIndex === index
+                                        ? `0 10px 25px -5px ${variant.color}88, 0 0 0 1px rgba(0,0,0,0.8)`
+                                        : '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)'};
+                                  "
 										></div>
-
-										{#if selectedVariantIndex === index}
-											<div
-												class="absolute inset-0 rounded-2xl ring-2 ring-zinc-400 pointer-events-none"></div>
-										{/if}
+										<div class="h-1 w-1 rounded-full bg-zinc-900 transition-all duration-300"
+											 class:opacity-100={selectedVariantIndex === index}
+											 class:opacity-0={selectedVariantIndex !== index}>
+										</div>
 									</button>
 								{/if}
 							{/each}
 						</div>
 					</div>
 
-					<p class="text-base text-zinc-700">
-						<span class="font-medium">Selected:</span>
-						<span class="text-zinc-900 font-semibold">{currentVariant.name}</span>
-					</p>
+					<div class="content-block space-y-5">
+						<h3 class="secondary-font text-[14px] sm:text-sm font-bold text-zinc-900 tracking-widest uppercase">Gemstones</h3>
+
+						<div class="flex flex-col items-start gap-3">
+							{#each galleryData.gemstones as gemstone}
+								{#if gemstoneToIndex[gemstone] !== undefined}
+									<button
+										on:click={() => selectVariant(gemstoneToIndex[gemstone])}
+										class="relative px-3 py-2 sm:px-4 sm:py-2.5 text-[11px] sm:text-[13px] uppercase tracking-[0.15em] font-bold border transition-all duration-300 secondary-font overflow-hidden group w-full text-left sm:w-auto"
+										class:border-zinc-800={selectedVariantIndex === gemstoneToIndex[gemstone]}
+										class:text-white={selectedVariantIndex === gemstoneToIndex[gemstone]}
+										class:text-zinc-600={selectedVariantIndex !== gemstoneToIndex[gemstone]}
+										class:border-zinc-300={selectedVariantIndex !== gemstoneToIndex[gemstone]}
+										class:hover:border-zinc-500={selectedVariantIndex !== gemstoneToIndex[gemstone]}
+									>
+										<div class="absolute inset-0 bg-zinc-800 transition-transform duration-300 origin-left"
+											 class:scale-x-100={selectedVariantIndex === gemstoneToIndex[gemstone]}
+											 class:scale-x-0={selectedVariantIndex !== gemstoneToIndex[gemstone]}>
+										</div>
+
+										<span class="relative z-10">{gemstone}</span>
+									</button>
+								{:else}
+                            <span
+								class="px-3 py-2 sm:px-4 sm:py-2.5 text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-bold border border-transparent text-zinc-400/50 bg-black/5 cursor-not-allowed secondary-font w-full sm:w-auto text-left"
+							>
+                               {gemstone}
+                            </span>
+								{/if}
+							{/each}
+						</div>
+					</div>
 				</section>
 
-				<section class="space-y-5">
-					<h3 class="text-sm font-semibold text-zinc-900 tracking-wide uppercase opacity-60">Specifications</h3>
-					<div class="border border-zinc-200/60 rounded-2xl overflow-hidden bg-white/40">
-						{#each galleryData.specs as spec, index}
-							<div class="flex justify-between items-center px-5 py-4" class:border-t={index > 0}
-								 class:border-zinc-200={index > 0}>
-								<span class="text-sm text-zinc-600 font-medium">{spec.label}</span>
-								<span class="text-sm font-semibold text-zinc-900">{spec.value}</span>
+				<section class="content-block pt-8 lg:pt-12 mt-auto">
+					<div class="grid grid-cols-2 gap-x-6 gap-y-8 lg:gap-x-8 lg:gap-y-10 border-t border-zinc-800/10 pt-8 lg:pt-10">
+						{#each galleryData.specs as spec}
+							<div class="group">
+								<dt class="secondary-font text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1 lg:mb-2 group-hover:text-zinc-800 transition-colors">
+									{spec.label}
+								</dt>
+								<dd class="secondary-font text-base sm:text-lg text-zinc-900 leading-tight">
+									{spec.value}
+								</dd>
 							</div>
 						{/each}
 					</div>
 				</section>
 
-				<section class="space-y-5">
-					<h3 class="text-sm font-semibold text-zinc-900 tracking-wide uppercase opacity-60">Gemstones</h3>
-					<div class="flex flex-wrap gap-2">
-						{#each galleryData.gemstones as gemstone}
-							{#if gemstoneToIndex[gemstone] !== undefined}
-								<button
-									type="button"
-									on:click={() => selectVariant(gemstoneToIndex[gemstone])}
-									on:keydown={(e) =>
-                               e.key === 'Enter' && selectVariant(gemstoneToIndex[gemstone])
-                            }
-									class="relative px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all duration-200 focus:outline-none hover:shadow-sm cursor-pointer"
-									class:bg-zinc-900={selectedVariantIndex === gemstoneToIndex[gemstone]}
-									class:text-white={selectedVariantIndex === gemstoneToIndex[gemstone]}
-									class:border-zinc-900={selectedVariantIndex === gemstoneToIndex[gemstone]}
-									class:bg-white={selectedVariantIndex !== gemstoneToIndex[gemstone]}
-									class:text-zinc-700={selectedVariantIndex !== gemstoneToIndex[gemstone]}
-									class:border-zinc-200={selectedVariantIndex !== gemstoneToIndex[gemstone]}
-									class:hover:border-zinc-300={selectedVariantIndex !== gemstoneToIndex[gemstone]}
-									aria-pressed={selectedVariantIndex === gemstoneToIndex[gemstone]}
-									aria-label={`Select gemstone ${gemstone}`}
-								>
-									{gemstone}
-								</button>
-							{:else}
-                         <span
-							 class="bg-zinc-100 text-zinc-500 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-zinc-200"
-						 >
-                            {gemstone}
-                         </span>
-							{/if}
-						{/each}
-					</div>
-				</section>
 			</div>
 		</div>
 	</main>
 </div>
 
 <style>
-	:global(body) {
-		font-family: 'Inter', sans-serif;
+	.bg-gradient {
+		background: linear-gradient(
+			90deg,
+			#E2D9DC 0%,
+			#DED5D8 50%,
+			#B9B0B3 100%
+		);
 	}
 </style>

@@ -141,14 +141,16 @@ export const watchData = {
 			{ label: 'Variants', value: '9 Variants' }
 		],
 		gemstones: [
-			'Diamond',
-			'Colored Sapphire',
+			'Mix Gemstones',
+			'Premium Blue Sapphire',
 			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
-			'Premium Ruby',
-			'Premium Emerald',
-			'Topaz'
+			'Premium Red Orange Sapphire',
+			'Premium TSavorite',
+			'Yellow Sapphire',
+			'Swiss Blue Topaz',
+			'Pink Sapphire'
 		],
 		landingImage: getLandingImage(
 			'the-invisible-round-petite',
@@ -159,7 +161,7 @@ export const watchData = {
 		variants: [
 			{
 				id: 'blue',
-				name: 'Colored Sapphire',
+				name: 'Premium Blue Sapphire',
 				color: '#1E40AF',
 				accent: '#3B82F6',
 				images:
@@ -176,7 +178,7 @@ export const watchData = {
 			},
 			{
 				id: 'multi',
-				name: 'Diamond',
+				name: 'Mix Gemstones',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
 				images:
@@ -193,7 +195,7 @@ export const watchData = {
 			},
 			{
 				id: 'sky-blue',
-				name: 'Sky Blue Topaz',
+				name: 'Swiss Blue Topaz',
 				color: '#00FFF0',
 				accent: '#82C8E5',
 				images:
@@ -211,7 +213,7 @@ export const watchData = {
 
 			{
 				id: 'green',
-				name: 'Emerald',
+				name: 'Premium TSavorite',
 				color: '#065F46',
 				accent: '#10B981',
 				images:
@@ -245,7 +247,7 @@ export const watchData = {
 			},
 			{
 				id: 'pink',
-				name: 'Sapphire',
+				name: 'Pink Sapphire',
 				color: '#9966CC',
 				accent: '#CC66CC',
 				images:
@@ -262,7 +264,7 @@ export const watchData = {
 			},
 			{
 				id: 'red',
-				name: 'Ruby',
+				name: 'Premium Red Orange Sapphire',
 				color: '#991B1B',
 				accent: '#F87171',
 				images:
@@ -296,7 +298,7 @@ export const watchData = {
 			},
 			{
 				id: 'yellow',
-				name: 'Topaz',
+				name: 'Yellow Sapphire',
 				color: '#F59E0B',
 				accent: '#FCD34D',
 				images:
@@ -328,14 +330,16 @@ export const watchData = {
 			{ label: 'Variants', value: '9 Variants' }
 		],
 		gemstones: [
-			'Diamond',
-			'Colored Sapphire',
+			'Mix Gemstones',
+			'Premium Blue Sapphire',
 			// 'Tsavorite',
 			'Iolite',
 			'Amethyst',
-			'Premium Ruby',
-			'Premium Emerald',
-			'Topaz'
+			'Premium Red Orange Sapphire',
+			'Premium TSavorite',
+			'Swiss Blue Topaz',
+			'Yellow Sapphire',
+			'Pink Sapphire',
 		],
 		landingImage: getLandingImage(
 			'the-invisible-round-grande',
@@ -346,7 +350,7 @@ export const watchData = {
 		variants: [
 			{
 				id: 'green',
-				name: 'Emerald',
+				name: 'Premium TSavorite',
 				color: '#065F46',
 				accent: '#10B981',
 				images:
@@ -363,7 +367,7 @@ export const watchData = {
 			},
 			{
 				id: 'multi',
-				name: 'Diamond',
+				name: 'Mix Gemstones',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
 				images:
@@ -380,7 +384,7 @@ export const watchData = {
 			},
 			{
 				id: 'sky-blue',
-				name: 'Sky Blue Topaz',
+				name: 'Swiss Blue Topaz',
 				color: '#00FFF0',
 				accent: '#82C8E5',
 				images:
@@ -397,7 +401,7 @@ export const watchData = {
 			},
 			{
 				id: 'blue',
-				name: 'Colored Sapphire',
+				name: 'Premium Blue Sapphire',
 				color: '#1E40AF',
 				accent: '#3B82F6',
 				images:
@@ -432,7 +436,7 @@ export const watchData = {
 			},
 			{
 				id: 'pink',
-				name: 'Sapphire',
+				name: 'Pink Sapphire',
 				color: '#9966CC',
 				accent: '#CC66CC',
 				images:
@@ -449,7 +453,7 @@ export const watchData = {
 			},
 			{
 				id: 'red',
-				name: 'Ruby',
+				name: 'Premium Red Orange Sapphire',
 				color: '#991B1B',
 				accent: '#F87171',
 				images:
@@ -483,7 +487,7 @@ export const watchData = {
 			},
 			{
 				id: 'yellow',
-				name: 'Topaz',
+				name: 'Yellow Sapphire',
 				color: '#F59E0B',
 				accent: '#FCD34D',
 				images:
@@ -514,12 +518,12 @@ export const watchData = {
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
 			{ label: 'Variants', value: '3 Variants' }
 		],
-		gemstones: ['Diamonds', 'Sapphires'],
+		gemstones: ['Mix Gemstones', 'Blue Sapphire', 'Pink Sapphire'],
 		landingImage: getLandingImage('the-mosaic', 'mosaic_1.webp', true, 'SON08378.webp'),
 		variants: [
 			{
 				id: 'blue',
-				name: 'Sapphire',
+				name: 'Blue Sapphire',
 				color: '#1E40AF',
 				accent: '#3B82F6',
 				images:
@@ -533,7 +537,7 @@ export const watchData = {
 			},
 			{
 				id: 'multi',
-				name: 'Diamond',
+				name: 'Mix Gemstones',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
 				images:
@@ -547,7 +551,7 @@ export const watchData = {
 			},
 			{
 				id: 'pink',
-				name: 'Tsavorite',
+				name: 'Pink Sapphire',
 				color: '#9966CC',
 				accent: '#CC66CC',
 				images:
@@ -618,12 +622,12 @@ export const watchData = {
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
 			{ label: 'Variants', value: '1 Variant' }
 		],
-		gemstones: ['Diamonds', 'Colored Sapphires'],
+		gemstones: ['Mix Gemstones - Garnet, Citrine, Sapphire, Peridot, Chrome Di Opside, Iolite, Amethyst'],
 		landingImage: getLandingImage('the-twin-rainbow', 'twin_rainbow_1.webp', true, 'SON08398.webp'),
 		variants: [
 			{
 				id: 'white',
-				name: 'Double Rainbow',
+				name: 'Mix Gemstones',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
 				images:
@@ -654,14 +658,9 @@ export const watchData = {
 			{ label: 'Variants', value: '3 Variants' }
 		],
 		gemstones: [
-			'Diamond',
-			'Colored Sapphires',
-			// 'Tsavorite',
-			'Iolite',
-			'Amethyst',
-			'Ruby',
-			'Emerald',
-			'Topaz'
+			'Mix Gemstones',
+			'Swiss Blue Topaz',
+			'Garnet',
 		],
 		landingImage: getLandingImage(
 			'the-turning-humming-bird',
@@ -672,7 +671,7 @@ export const watchData = {
 		variants: [
 			{
 				id: 'white',
-				name: 'Diamond',
+				name: 'Mix Gemstones',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
 				images:
@@ -682,7 +681,7 @@ export const watchData = {
 			},
 			{
 				id: 'blue',
-				name: 'Sapphire',
+				name: 'Swiss Blue Topaz',
 				color: '#00FFF0',
 				accent: '#82C8E5',
 				images:
@@ -692,7 +691,7 @@ export const watchData = {
 			},
 			{
 				id: 'pink',
-				name: 'Iolite',
+				name: 'Garnet',
 				color: '#9966CC',
 				accent: '#CC66CC',
 				images:
@@ -786,7 +785,7 @@ export const watchData = {
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
 			{ label: 'Variants', value: '1 Variant' }
 		],
-		gemstones: ['Diamonds', 'Tsavorite'],
+		gemstones: ['Black Diamond, White Diamond, Pink & Yellow Sapphire'],
 		landingImage: getLandingImage(
 			'the-black-panther-grande',
 			'black_panther_1.webp',
@@ -796,7 +795,7 @@ export const watchData = {
 		variants: [
 			{
 				id: 'black',
-				name: 'Diamonds and Tsavorite',
+				name: 'Diamond and Sapphire',
 				color: '#111827',
 				accent: '#374151',
 				images:
@@ -849,7 +848,7 @@ export const watchData = {
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
 			{ label: 'Variants', value: '2 Variants' }
 		],
-		gemstones: ['Diamonds', 'Tsavorite'],
+		gemstones: ['Black-Strap, Black Diamond, White Diamond, Brown Diamond, Green TSavorite', 'White-Strap, Black Diamond, White Diamond, Brown Diamond, Green TSavorite'],
 		landingImage: getLandingImage(
 			'the-leopard-grande',
 			'leopard_grande_1.webp',
@@ -859,7 +858,7 @@ export const watchData = {
 		variants: [
 			{
 				id: 'black',
-				name: 'Black',
+				name: 'Black-Strap',
 				color: '#111827',
 				accent: '#374151',
 				images:
@@ -869,7 +868,7 @@ export const watchData = {
 			},
 			{
 				id: 'white',
-				name: 'white',
+				name: 'White-Strap',
 				color: '#E2E8F0',
 				accent: '#F8FAFC',
 				images:
@@ -893,7 +892,7 @@ export const watchData = {
 			{ label: 'Leather Options', value: 'Alligator / Vegan' },
 			{ label: 'Variants', value: '2 Variants' }
 		],
-		gemstones: ['Diamonds', 'sapphires', 'Tsavorite'],
+		gemstones: ['Radiosa + Blue Sapphire', 'Radiosa + Pink Sapphire'],
 		landingImage: getLandingImage(
 			'my-light-dancing',
 			'my_light_dancing_1.webp',
@@ -903,7 +902,7 @@ export const watchData = {
 		variants: [
 			{
 				id: 'blue',
-				name: 'Sapphire',
+				name: 'Radiosa + Blue Sapphire',
 				color: '#1E40AF',
 				accent: '#3B82F6',
 				images:
@@ -913,7 +912,7 @@ export const watchData = {
 			},
 			{
 				id: 'pink',
-				name: 'Diamond',
+				name: 'Radiosa + Pink Sapphire',
 				color: '#BE185D',
 				accent: '#F472B6',
 				images:
