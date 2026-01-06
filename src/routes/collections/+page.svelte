@@ -1,19 +1,18 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
+	import { gsap } from 'gsap';
 	import {
 		registerComponent,
 		unregisterComponent,
 		setComponentReady
 	} from '$lib/stores/loadingStore';
 	import { getAllWatches } from '$lib/stores/watchData';
-	import { goto } from '\$app/navigation';
+	import { goto } from '$app/navigation';
 
 	let watches = getAllWatches().filter((w) => w.isEnabled);
-	console.log('Loaded watches:', watches);
 
 	const fallbackTimers = new Map();
 	const IMAGE_FALLBACK_MS = 7000;
-
 	const compName = (id) => `watch-image-${id}`;
 
 	function imageLoaded(id) {
@@ -47,6 +46,37 @@
 		}
 	});
 
+	// --- GSAP Zoom Logic (New) ---
+	function handleMouseEnter(e) {
+		const container = e.currentTarget;
+		const img = container.querySelector('.zoom-target');
+
+		if (!img) return;
+
+		// Luxurious, slow zoom
+		gsap.to(img, {
+			duration: 1.5,
+			scale: 1.08,
+			ease: "power2.out",
+			overwrite: "auto"
+		});
+	}
+
+	function handleMouseLeave(e) {
+		const container = e.currentTarget;
+		const img = container.querySelector('.zoom-target');
+
+		if (!img) return;
+
+		// Smooth return to normal
+		gsap.to(img, {
+			duration: 1,
+			scale: 1,
+			ease: "power2.out",
+			overwrite: "auto"
+		});
+	}
+
 	function landingImageFor(w) {
 		if (w.landingImage) return w.landingImage;
 		if (w.variants && w.variants.length && w.variants[0].images && w.variants[0].images.length)
@@ -67,172 +97,184 @@
 	}
 </script>
 
-<div
-	class="relative min-h-screen bg-gradient-custom text-black overflow-x-hidden selection:bg-stone-800 selection:text-[#E2D9DC]">
+<div class="relative min-h-screen bg-[#EAE8E4] text-black overflow-x-hidden selection:bg-stone-800 selection:text-[#E2D9DC]">
 
 	<main class="flex flex-col w-full">
 
-		<section
-			class="min-h-screen w-full flex flex-col justify-center items-center relative px-6 md:px-24 py-24 md:py-32">
-			<div class="text-center relative z-10 flex flex-col items-center">
-				<div class="w-px h-16 bg-stone-800 mb-8 md:hidden"></div>
-				<h2 class="footer-font text-[16vw] md:text-[15vw] leading-[0.85] text-stone-800 select-none tracking-tighter">
-					AS-IS<br />COLLECTIONS
-				</h2>
-				<div class="mt-8 md:mt-12 max-w-md mx-auto">
-					<p class="secondary-font text-base md:text-xl italic text-stone-600 leading-relaxed font-light">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit.
+		<section class="relative min-h-[80vh] w-full flex flex-col justify-center items-center px-6 py-24 bg-[#EAE8E4] overflow-hidden">
+
+			<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent pointer-events-none"></div>
+
+			<div class="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto">
+
+				<div class="w-px h-16 md:h-24 bg-stone-800/20 mb-8 opacity-0 animate-fade-in-up"></div>
+
+				<h1 class="footer-font text-stone-900 leading-[0.8] tracking-tighter opacity-0 animate-fade-in-up animation-delay-200 mb-12 md:mb-16"
+					style="font-size: clamp(3.5rem, 13vw, 10rem);">
+					COLLECTIONS
+				</h1>
+
+				<div class="space-y-6 md:space-y-8 max-w-2xl px-2 md:px-0 opacity-0 animate-fade-in-up animation-delay-400">
+
+					<p class="secondary-font text-xs md:text-sm uppercase tracking-[0.15em] leading-7 md:leading-8 text-stone-600 font-medium">
+						At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike.
 					</p>
+
+					<div class="flex justify-center py-2">
+						<span class="w-1.5 h-1.5 bg-stone-400 rounded-full"></span>
+					</div>
+
+					<p class="secondary-font text-xs md:text-sm uppercase tracking-[0.15em] leading-7 md:leading-8 text-stone-500 font-light">
+						From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story.
+					</p>
+
+					<p class="secondary-font text-xs md:text-sm uppercase tracking-[0.15em] leading-7 md:leading-8 text-stone-800 font-medium border-t border-b border-stone-800/10 py-6 mt-4">
+						Embrace your individuality with every tick of an AS - IS watch.
+					</p>
+
 				</div>
+
+				<div class="mt-16 opacity-0 animate-fade-in-up animation-delay-600 hidden md:flex flex-col items-center gap-2">
+					<div class="w-px h-12 bg-stone-400/30"></div>
+				</div>
+
 			</div>
 		</section>
 
 		{#each watches as watch, i}
-			<section
-				class="min-h-screen w-full flex items-center justify-center relative px-0 md:px-0 py-16 md:py-24 group transition-all duration-700
-                'border-t border-stone-800/5">
+			<section class="relative w-full flex flex-col lg:grid lg:grid-cols-2 group overflow-hidden border-t border-stone-800/5 bg-gradient-to-b from-[#EAE8E4] to-[#F2F1EF]">
 
-				<div
-					class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-                <span class="footer-font text-[30vw] whitespace-nowrap blur-[1px]
-                   text-stone-400/5 md:text-stone-400/10">
-                   {watch.collection.split(" ")[1]}
-                </span>
-				</div>
+				<div class="relative flex flex-col justify-center px-6 py-16 md:px-12 lg:p-24 order-1 {i % 2 === 0 ? 'lg:order-1' : 'lg:order-2'} z-20">
 
-				<div
-					class="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-center relative z-10 pb-12 md:pb-0">
+					<div class="relative backdrop-blur-md bg-white/40 p-6 md:p-10 lg:p-12 rounded-sm border border-white/40 shadow-sm transition-transform duration-700 lg:hover:-translate-y-2">
 
-					<div
-						class="md:col-span-4 text-center md:text-right order-1 flex flex-col items-center md:items-end space-y-5 md:space-y-6 px-6 md:px-0">
+						<div class="space-y-6 md:space-y-10">
+							<div class="space-y-3 md:space-y-4">
+								<div class="flex items-center gap-3 opacity-60">
+									<span class="h-px w-8 bg-stone-800"></span>
+									<span class="secondary-font text-[10px] md:text-xs uppercase tracking-[0.25em] text-stone-800">
+                               Collection 0{i+1}
+                            </span>
+								</div>
+								<h3 class="primary-font text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.9] text-stone-900">
+									{watch.collection}
+								</h3>
+								<p class="primary-font text-lg sm:text-xl md:text-2xl italic text-stone-600 font-light pl-1">
+									"{watch.subCollection || watch.title}"
+								</p>
+							</div>
 
-						<div
-							class="border border-stone-800/30 text-stone-800 px-5 py-1.5 rounded-full secondary-font text-[10px] md:text-xs tracking-widest uppercase inline-block mb-2 md:bg-stone-800 md:text-[#E2D9DC] md:border-none md:shadow-lg">
-							Collection No. 0{i + 1}
-						</div>
+							<div class="py-4 md:py-6 border-t border-stone-800/10">
+								<ul class="flex flex-wrap gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-3 secondary-font text-[9px] md:text-[10px] uppercase tracking-widest text-stone-500">
+									{#each specsList(watch).slice(0, 4) as spec}
+										<li class="flex items-center gap-2">
+											<span class="w-1 h-1 bg-stone-400 rounded-full"></span>
+											{spec}
+										</li>
+									{/each}
+								</ul>
+							</div>
 
-						<h3 class="primary-font text-5xl sm:text-6xl md:text-6xl lg:text-7xl leading-[0.9]
-                      text-stone-900">
-							{watch.collection}
-						</h3>
-
-						<p class="primary-font text-lg md:text-xl italic max-w-xs md:ml-auto font-light text-stone-600">
-							"{watch.subCollection || watch.title}"
-						</p>
-
-						<ul class="w-full flex flex-wrap justify-center gap-x-4 gap-y-2 md:block md:w-auto secondary-font text-[10px] uppercase tracking-widest md:space-y-2 md:pr-4 pt-4 md:pt-4 border-t mt-2 md:mt-0
-                      'text-stone-500 border-stone-800/10 md:border-r border-stone-400">
-							{#each specsList(watch) as spec, j}
-								<li class="whitespace-nowrap flex items-center justify-center md:justify-end">
-									{spec}
-									{#if j < specsList(watch).length - 1}
-										<span class="md:hidden mx-2 opacity-50">•</span>
-									{/if}
-								</li>
-							{/each}
-						</ul>
-					</div>
-
-					<div class="md:col-span-4 order-2 flex justify-center items-center relative py-4 md:py-0 w-full">
-						<div class="relative overflow-hidden w-[85vw] h-[115vw] max-h-[65vh] md:w-[28vw] md:h-[35vw] md:max-h-none transition-transform duration-500 hover:scale-[1.02] bg-stone-300
-                         shadow-[0_15px_40px_rgba(0,0,0,0.15)] md:shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
-
-							{#if landingImageFor(watch)}
-								<img
-									src={landingImageFor(watch)}
-									alt={watch.collection}
-									class="rotated-watch-img"
-									on:load={() => imageLoaded(watch.id)}
-									on:error={() => imageLoaded(watch.id)}
-								/>
-							{:else}
-								<img
-									src=""
-									alt="placeholder"
-									class="rotated-watch-img"
-									on:load={() => imageLoaded(watch.id)}
-									on:error={() => imageLoaded(watch.id)}
-								/>
-							{/if}
-
-							<div class="absolute inset-2 pointer-events-none mix-blend-overlay
-                         border border-white/30"></div>
-						</div>
-					</div>
-
-					<div
-						class="md:col-span-4 order-3 flex flex-col justify-end items-center md:items-start h-full px-8 md:px-0 text-center md:text-left">
-						<div class="max-w-xs space-y-8 md:space-y-8 md:pl-8">
-							<p class="secondary-font text-sm md:text-xs leading-loose text-stone-700 md:text-stone-800 md:text-justify font-light">
+							<p class="secondary-font text-xs md:text-sm leading-loose text-stone-800 font-light text-justify max-w-md">
 								{watch.watchDescription}
 							</p>
 
-							<div class="flex flex-col md:flex-row items-center justify-center md:justify-start gap-6 pt-6 border-t w-full
-                         'border-stone-800/10 md:border-stone-800/20">
-
-                         <span class="footer-font-alt text-3xl md:text-3xl text-stone-900">
-                            {priceFor(watch)}
-                         </span>
-
+							<div class="flex items-center gap-6 pt-2 md:pt-4">
 								<button
 									on:click={() => goto(`/watches/${watch.id}/`)}
-									class="w-14 h-14 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-300 group/btn
-	       border border-stone-800 hover:bg-stone-800 hover:text-[#E2D9DC]">
-									<svg
-										width="20"
-										height="20"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										class="group-hover/btn:-rotate-45 transition-transform duration-300">
+									class="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center bg-stone-900 text-[#E2D9DC] shadow-lg transition-transform duration-300 active:scale-95 lg:hover:scale-110 lg:hover:bg-black group/btn">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="lg:group-hover/btn:-rotate-45 transition-transform duration-300 scale-90 md:scale-100">
 										<path d="M5 12h14M12 5l7 7-7 7" />
 									</svg>
 								</button>
-
+								<span class="footer-font-alt text-2xl md:text-3xl lg:text-4xl text-stone-900">
+                            {priceFor(watch)}
+                         </span>
 							</div>
 						</div>
 					</div>
+				</div>
+
+				<div class="relative w-full min-h-[50vh] lg:h-auto lg:min-h-screen order-2 {i % 2 === 0 ? 'lg:order-2' : 'lg:order-1'} flex items-center justify-center z-10 py-12 lg:py-0">
+
+					<div class="absolute inset-0 flex items-center justify-center select-none pointer-events-none overflow-hidden">
+                    <span class="footer-font text-[40vw] lg:text-[25vw] leading-none text-stone-900/[0.04] lg:text-stone-900/[0.03] scale-150 transition-transform duration-1000 lg:group-hover:scale-125 lg:group-hover:rotate-6">
+                        0{i+1}
+                    </span>
+					</div>
+
+					<div
+						class="hidden lg:flex relative w-full h-full items-center justify-center"
+						on:mouseenter={handleMouseEnter}
+						on:mouseleave={handleMouseLeave}
+						role="img"
+					>
+						{#if landingImageFor(watch)}
+							<img
+								src={landingImageFor(watch)}
+								alt={watch.collection}
+								class="zoom-target w-[85%] max-w-none h-auto object-contain drop-shadow-2xl will-change-transform"
+								on:load={() => imageLoaded(watch.id)}
+								on:error={() => imageLoaded(watch.id)}
+							/>
+						{:else}
+							<img src="" alt="" class="zoom-target w-full h-auto" />
+						{/if}
+					</div>
+
+					<div class="lg:hidden relative w-full h-[60vh] sm:h-[70vh] flex items-center justify-center">
+						{#if landingImageFor(watch)}
+							<img
+								src={landingImageFor(watch)}
+								alt={watch.collection}
+								class="absolute w-[65vh] sm:w-[80vh] max-w-none h-auto -rotate-90 object-contain drop-shadow-xl"
+								on:load={() => imageLoaded(watch.id)}
+								on:error={() => imageLoaded(watch.id)}
+							/>
+						{:else}
+							<img src="" alt="" class="w-full h-full object-contain" />
+						{/if}
+					</div>
 
 				</div>
+
 			</section>
 		{/each}
 	</main>
 </div>
 
 <style>
-	/* Layout */
+	/* Styling */
 	.bg-gradient-custom {
 		background: linear-gradient(90deg, #E2D9DC 0%, #DED5D8 50%, #B9B0B3 100%);
 	}
 
-	/* Gold Gradient Text */
-	.text-gradient-gold {
-		background: linear-gradient(135deg, #B08D55 0%, #D4AF37 50%, #8C6D36 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		color: #C5A059; /* Fallback */
-	}
-
-	/* Global Scroll Behavior */
 	:global(html) {
 		scroll-behavior: smooth;
+		background-color: #EAE8E4;
 	}
 
-	/* Rotated Watch Logic */
-	.rotated-watch-img {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%) rotate(-90deg);
-		transform-origin: center center;
-		height: 100%;
-		width: auto;
-		max-width: none;
-		max-height: none;
-		object-fit: contain;
-		pointer-events: none;
-		will-change: transform;
+	/* Enhanced Shadow */
+	img {
+		filter: drop-shadow(0 25px 45px rgba(0,0,0,0.15));
 	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in-up {
+		animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	}
+
+	.animation-delay-200 { animation-delay: 0.2s; }
+	.animation-delay-400 { animation-delay: 0.4s; }
+	.animation-delay-600 { animation-delay: 0.6s; }
 </style>

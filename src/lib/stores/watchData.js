@@ -791,7 +791,7 @@ export const watchData = {
 			'the-black-panther-grande',
 			'black_panther_1.webp',
 			true,
-			'SON08399-f.webp'
+			'SON08901.webp'
 		),
 		variants: [
 			{
