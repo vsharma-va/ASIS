@@ -11,7 +11,7 @@
 	// --- PROPS ---
 	export let introData = {
 		title: 'Collections',
-		description: 'At AS - IS Watches, our collections are a tribute to individuality and artistry. Each line features meticulously crafted timepieces that showcase handpicked natural gemstones, ensuring that no two watches are alike. From elegant classics to bold statement pieces, our collections cater to every style and occasion. Discover the perfect watch that resonates with your essence, and wear a piece of art that tells your unique story. Embrace your individuality with every tick of an AS - IS watch.'
+		description: ''
 	};
 
 	// --- STATE & ANIMATION ---
@@ -76,14 +76,27 @@
 	});
 </script>
 
-<div class="intro-section h-fit flex items-center justify-center py-16" transition:fade>
+<div class="intro-section h-fit flex flex-col items-center justify-center py-16" transition:fade>
 	<div bind:this={introContainer} class="text-center max-w-4xl mx-auto">
 		<h1 class="primary-font text-6xl md:text-7xl text-zinc-900 mb-3">{introData.title}</h1>
-		<p class="secondary-font text-zinc-600 leading-relaxed text-base mb-10">{introData.description}</p>
 	</div>
+	<a
+		href="/collections"
+		class="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-black text-white
+    				rounded-full hover:bg-gray-800 transition-all duration-300
+    				hover:gap-3 group shadow-lg hover:shadow-xl">
+		<span class="text-sm sm:text-base font-medium">Explore Our Collections</span>
+		<svg
+			class="arrow-icon w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24">
+			<path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+		</svg>
+	</a>
 </div>
 
 <!-- Carousel Section -->
-<div class="carousel-section -mt-[10rem]">
+<div class="carousel-section -mt-[5rem]">
 	<ImageCarousel />
 </div>

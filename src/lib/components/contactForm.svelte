@@ -1,6 +1,3 @@
--->
-
-<!-- FILE 2: src/lib/components/ContactForm.svelte -->
 <script>
 	import { onMount } from 'svelte';
 	import { gsap } from 'gsap';
@@ -103,14 +100,12 @@
 	}
 </script>
 
-<!-- Contact Form Overlay with padding -->
 <div
 	bind:this={formContainer}
-	class="fixed inset-1 md:inset-5 lg:inset-8 xl:inset-10 bg-[#E5DDD5] z-50 overflow-y-hidden
-	rounded-none md:rounded-3xl shadow-2xl"
+	class="fixed inset-1 md:inset-5 lg:inset-8 xl:inset-10 bg-[#E5DDD5] z-50 overflow-y-auto
+    rounded-none md:rounded-3xl shadow-2xl"
 	style="transform: translateX(100%);"
 >
-	<!-- Close Button -->
 	<button
 		on:click={handleClose}
 		class="absolute top-6 right-6 md:top-8 md:right-8 z-20 w-10 h-10 flex items-center justify-center hover:rotate-90 transition-transform duration-300"
@@ -121,20 +116,16 @@
 		</svg>
 	</button>
 
-	<!-- Background Text -->
 	<div class="background-text absolute inset-0 flex items-center justify-center pointer-events-none opacity-0">
 		<h1 class="text-[12rem] md:text-[16rem] lg:text-[20rem] xl:text-[24rem] font-bold text-white leading-none tracking-tight">
 			Contact
 		</h1>
 	</div>
 
-	<!-- Main Content -->
 	<div class="relative z-10 max-w-7xl mx-auto pt-20 md:pt-24 px-4 md:px-8 lg:px-12 pb-12">
 		<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
-			<!-- Left Sidebar -->
-			<div class="lg:col-span-4 space-y-6">
-				<!-- Enquiry Buttons -->
+			<div class="lg:col-span-4 space-y-8">
 				<div class="space-y-3 sidebar-element">
 					<button
 						type="button"
@@ -165,20 +156,48 @@
 					</button>
 				</div>
 
-				<!-- Address -->
-				<div class="space-y-1 text-black sidebar-element pt-8">
-					<p class="font-medium">ENQUIRY@ASISWATCHES.COM</p>
-					<!--					<p>240 Spinnaker Way</p>-->
-					<!--					<p>Units 2-5</p>-->
-					<!--					<p>Concord, ON Canada</p>-->
-					<!--					<p>L4K 4P9</p>-->
+				<div class="space-y-6 text-black sidebar-element pt-4 text-sm">
+
+					<div>
+						<h3 class="font-bold uppercase mb-1">General Enquiry</h3>
+						<a href="mailto:enquiry@asiswatches.com" class="hover:underline text-base">enquiry@asiswatches.com</a>
+					</div>
+
+					<div>
+						<h3 class="font-bold uppercase mb-2 mt-4">Manufacturer</h3>
+
+						<div class="mb-3">
+							<p class="font-bold text-xs text-gray-600 mb-0.5">HONG KONG</p>
+							<p>THEA INTERNATIONAL HK LTD</p>
+							<a href="mailto:sales@theainternationalhkltd.com" class="block hover:underline">sales@theainternationalhkltd.com</a>
+							<a href="tel:+85231010321" class="block hover:underline">+852 3101 0321</a>
+						</div>
+					</div>
+
+					<div>
+						<h3 class="font-bold uppercase mb-3 mt-4">Authorised Resellers & Service Centers</h3>
+
+						<div class="space-y-4">
+							<div>
+								<p class="font-bold text-xs text-gray-600 mb-0.5">UNITED STATES OF AMERICA</p>
+								<p>ZAYN JEWELS</p>
+								<a href="mailto:info@zaynjewels.com" class="block hover:underline">info@zaynjewels.com</a>
+								<a href="tel:+19499006910" class="block hover:underline">+1 (949) 900 6910</a>
+							</div>
+
+							<div>
+								<p class="font-bold text-xs text-gray-600 mb-0.5">INDIA</p>
+								<p>ADL SERVICES</p>
+								<a href="mailto:info.adlservices@gmail.com" class="block hover:underline">info.adlservices@gmail.com</a>
+								<a href="tel:+911414015544" class="block hover:underline">+91 141 4015544</a>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<!-- Right Form -->
 			<div class="lg:col-span-8">
 				<form on:submit|preventDefault={handleSubmit} class="space-y-8">
-					<!-- Name and Company Row -->
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
 						<div class="form-element">
 							<label for="name" class="block text-sm font-medium text-black mb-2">Name</label>
@@ -202,7 +221,6 @@
 						</div>
 					</div>
 
-					<!-- Email and Phone Row -->
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
 						<div class="form-element">
 							<label for="email" class="block text-sm font-medium text-black mb-2">Email</label>
@@ -226,7 +244,6 @@
 						</div>
 					</div>
 
-					<!-- Message Area -->
 					<div class="form-element">
 						<label for="message" class="block text-base font-medium text-black mb-4">
 							Want to know more? Drop us a line!
@@ -240,7 +257,6 @@
 						></textarea>
 					</div>
 
-					<!-- reCAPTCHA and Submit -->
 					<div
 						class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 form-element">
 						<div class="flex items-center gap-3">
