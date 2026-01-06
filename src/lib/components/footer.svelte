@@ -139,7 +139,7 @@
 
 	<!-- Bottom Section - Description -->
 	<div class="bottom-text text-center uppercase w-full sm:w-3/4 overflow-hidden flex flex-col justify-center items-center mt-6">
-		<div class="footer-para translate-y-[200%] opacity-0 w-full capitalize primary-font text-sm sm:text-md mb-2">
+		<div class="footer-para translate-y-[200%] opacity-0 w-full capitalize primary-font text-lg sm:text-xl md:text-2xl mb-2">
 			About us
 		</div>
 		<p class="footer-para translate-y-[200%] opacity-0 h-auto w-full text-sm sm:text-base leading-relaxed secondary-font mb-6">
