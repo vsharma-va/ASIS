@@ -244,6 +244,7 @@
 			class="carousel-cards absolute w-[16.2rem] h-[25.2rem] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
 		>
 			{#each images as image, index}
+				{console.log(image, index)}
 				<!-- NOTE: keep the li structure intact; add Svelte class binding is-center -->
 				<li
 					class="carousel-card list-none p-0 m-0 w-full h-full absolute top-0 left-0 rounded-xl"
