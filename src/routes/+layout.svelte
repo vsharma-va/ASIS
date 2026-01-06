@@ -1,5 +1,6 @@
 <script>
 	import '../app.css';
+	import {page} from "$app/stores";
 	import Navbar from '$lib/components/Navbar.svelte';
 	import PageTransition from '$lib/components/PageTransition.svelte';
 	import ContactForm from '$lib/components/contactForm.svelte';
@@ -33,12 +34,16 @@
 
 	onMount(() => {
 		// Explicitly define the wrapper and content for ScrollSmoother for stability
-		smoother = ScrollSmoother.create({
-			wrapper: '#smooth-wrapper',
-			content: '#smooth-content',
-			smooth: 2
-		});
+		if(!$page.url.pathname.includes('watches')) {
+			smoother = ScrollSmoother.create({
+				wrapper: '#smooth-wrapper',
+				content: '#smooth-content',
+				smooth: 2
+			});
 
+		} else {
+			smoother?.kill();
+		}
 		return () => {
 			smoother?.kill();
 		};
