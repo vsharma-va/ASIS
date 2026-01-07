@@ -1,10 +1,11 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { gsap } from 'gsap/dist/gsap';
 	import { goto } from '$app/navigation';
 	import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin';
 	import { page } from '$app/stores';
 	import logoImg from '$lib/assets/images/AS IS.png';
+	import { isLoading } from '$lib/stores/loadingStore.js';
 
 	let menuElement;
 	let menuButton;
@@ -46,6 +47,17 @@
 		}
 	};
 
+	const waitForLoadingToFinish = () => {
+		return new Promise((resolve) => {
+			const unsubscribe = isLoading.subscribe(value => {
+				if (value === false) {
+					unsubscribe();
+					resolve();
+				}
+			});
+		});
+	};
+
 	// make async so we can await goto and guarantee order
 	const handleClick = async (targetPage, divID) => {
 		// Close mobile menu if open
@@ -53,48 +65,47 @@
 			toggleMenu();
 		}
 
-		// Normalize divID: treat empty/whitespace as "no anchor" -> scroll to top (0)
 		const hasAnchor = typeof divID === 'string' && divID.trim().length > 0;
 		const scrollToTarget = hasAnchor ? `#${divID.trim()}` : 0;
 
-		// If we're already on the page, just scroll
+		// 1. If we are ALREADY on the page, just scroll
 		if ($page.url.pathname === targetPage) {
-			try {
-				// guard gsap calls so runtime errors don't block UI cleanup
-				await Promise.resolve(); // microtask to keep same async shape
-				gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
-			} catch (e) {
-				console.warn('Scroll attempt failed:', e);
-				// fallback to native scroll so user isn't stuck
-				if (scrollToTarget === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
-				else {
-					const el = document.getElementById(divID);
-					if (el) el.scrollIntoView({ behavior: 'smooth' });
-				}
-			}
+			await waitForLoadingToFinish();
+			gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
 			return;
 		}
 
-		// Not on the page -> navigate first, then scroll to anchor
+		// 2. If we are on a DIFFERENT page, Navigate -> Wait -> Scroll
 		try {
 			await goto(targetPage);
 
-			// ensure DOM has painted before attempting GSAP scroll (requestAnimationFrame)
-			requestAnimationFrame(() => {
+			// Wait for Svelte to update the DOM structure
+			await tick();
+
+			// Use a small timeout to allow layout painting to finish
+			setTimeout(async () => {
 				try {
-					gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
+					// Check if target exists before scrolling (prevents GSAP warnings)
+					const targetExists = hasAnchor ? document.querySelector(scrollToTarget) : true;
+					// loading finishes after this but gsap takes longer to load, hence a timeout of one additional second
+					// seems to work for now
+					await waitForLoadingToFinish();
+					// if (targetExists) {
+					// 	console.log('Target Exists: ', targetExists, scrollToTarget);
+					// 	gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
+					// } else {
+					console.log('Target doesnt Exists: ', targetExists, scrollToTarget);
+					console.log('Loading Finished Scrolling Now');
+					setTimeout(() => {
+						gsap.to(window, { duration: 0.5, scrollTo: scrollToTarget });
+					}, 1000);
+					// }
 				} catch (err) {
-					console.warn('GSAP scroll failed after navigation:', err);
-					// fallback to native scroll behavior
-					if (scrollToTarget === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
-					else {
-						const el = document.getElementById(divID);
-						if (el) el.scrollIntoView({ behavior: 'smooth' });
-					}
+					console.warn('GSAP scroll failed:', err);
 				}
-			});
+			}, 100); // 100ms delay is usually imperceptible but ensures stability
+
 		} catch (navErr) {
-			// If goto failed, at least log and keep UI usable
 			console.error('Navigation failed:', navErr);
 		}
 	};
@@ -162,14 +173,14 @@
 						Collaboration
 					</a>
 				</li>
-<!--				<li>-->
-<!--					<a-->
-<!--						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"-->
-<!--						on:click|preventDefault={() => handleClick("/", "footer")}-->
-<!--					>-->
-<!--						Contact-->
-<!--					</a>-->
-<!--				</li>-->
+				<!--				<li>-->
+				<!--					<a-->
+				<!--						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"-->
+				<!--						on:click|preventDefault={() => handleClick("/", "footer")}-->
+				<!--					>-->
+				<!--						Contact-->
+				<!--					</a>-->
+				<!--				</li>-->
 				<li>
 					<a
 						class="md:p-4 py-2 block hover:text-[#5cc6c9] cursor-pointer transition-colors duration-300"
@@ -186,31 +197,31 @@
 			class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white h-[3.7rem] w-[3.7rem] rounded-full flex items-center justify-center">
 			<a on:click|preventDefault={() => handleClick("/", "landing")}>
 				<img
-					src={logoImg}
 					alt="Logo"
 					class="h-[26px] w-auto"
+					src={logoImg}
 				/>
 			</a>
 		</div>
 
 		<!-- Mobile Menu Button -->
 		<button
-			bind:this={menuButton}
-			on:click={toggleMenu}
-			class="h-6 w-6 cursor-pointer md:hidden block order-first"
 			aria-label="Toggle menu"
+			bind:this={menuButton}
+			class="h-6 w-6 cursor-pointer md:hidden block order-first"
+			on:click={toggleMenu}
 		>
 			<svg
-				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
-				viewBox="0 0 24 24"
 				stroke="currentColor"
+				viewBox="0 0 24 24"
+				xmlns="http://www.w3.org/2000/svg"
 			>
 				<path
+					d="M4 6h16M4 12h16M4 18h16"
 					stroke-linecap="round"
 					stroke-linejoin="round"
 					stroke-width="2"
-					d="M4 6h16M4 12h16M4 18h16"
 				/>
 			</svg>
 		</button>
