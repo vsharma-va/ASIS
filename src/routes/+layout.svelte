@@ -9,7 +9,7 @@
 	import { ScrollSmoother } from 'gsap/dist/ScrollSmoother';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount } from 'svelte';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import {
 		isLoading,
 		componentStates,
@@ -17,6 +17,17 @@
 		startNavigation,
 		smoother
 	} from '$lib/stores/loadingStore';
+
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 
 	let { children } = $props();
 	const currentUrl = $derived(page.url.href);
