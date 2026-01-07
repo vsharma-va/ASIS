@@ -10,6 +10,8 @@ const componentStates = writable({});
 // Track navigation state to prevent premature loading completion
 const isNavigating = writable(false);
 
+export const smoother = writable();
+
 // Track when loading started for safety timeout
 const loadingStartTime = writable(null);
 

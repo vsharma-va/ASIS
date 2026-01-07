@@ -1,12 +1,12 @@
 <script>
 	import { goto } from '$app/navigation';
-	import { onMount, onDestroy } from 'svelte';
-	import { slide } from 'svelte/transition';
+	import { onMount, onDestroy, tick } from 'svelte';
+	import { fly } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { gsap } from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import Gallery from '$lib/components/Gallery.svelte';
-	import { setComponentReady, registerComponent, unregisterComponent } from '$lib/stores/loadingStore';
+	import { setComponentReady, registerComponent, unregisterComponent, smoother } from '$lib/stores/loadingStore';
 	import logoImg from '$lib/assets/images/AS IS.png';
 	import { getAllWatchIds, getWatchById } from '$lib/stores/watchData';
 
@@ -20,9 +20,12 @@
 	// Menu State
 	let isMenuOpen = false;
 	let allWatches = [];
+	let ctx = null; // GSAP Context storage
+	let currentWatchId = null; // To track ID changes
 
 	$: watchData = data?.watch ?? null;
 
+	// --- 1. DATA REACTIVITY ---
 	$: if (watchData) {
 		galleryData = {
 			collection: watchData.subCollection,
@@ -39,6 +42,7 @@
 		galleryData = null;
 	}
 
+	// --- 2. MENU LIST REACTIVITY ---
 	$: {
 		const ids = getAllWatchIds().filter((id) => getWatchById(id)?.isEnabled);
 		allWatches = ids.map(id => {
@@ -48,23 +52,42 @@
 		});
 	}
 
+	// --- 3. PORTAL ACTION (THE SMOOTH SCROLL FIX) ---
+	// Moves the nav dock to document.body to escape GSAP transforms/scroll containers
+	function portal(node) {
+		if (typeof document !== 'undefined') {
+			document.body.appendChild(node);
+		}
+		return {
+			destroy() {
+				if (node.parentNode) {
+					node.parentNode.removeChild(node);
+				}
+			}
+		};
+	}
+
 	function updateCollectionNames() {
 		const allIds = getAllWatchIds().filter((id) => getWatchById(id)?.isEnabled);
 		if (!allIds || allIds.length === 0) return;
 
 		const currentIndex = allIds.indexOf(watchData?.id);
 		const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % allIds.length;
-		nextCollectionName = getWatchById(allIds[nextIndex])?.collection || '';
 		const prevIndex = currentIndex === -1 ? allIds.length - 1 : (currentIndex - 1 + allIds.length) % allIds.length;
+
+		nextCollectionName = getWatchById(allIds[nextIndex])?.collection || '';
 		prevCollectionName = getWatchById(allIds[prevIndex])?.collection || '';
 	}
 
-	let ctx = null;
-
-	function initWatch() {
+	// --- 4. HERO ANIMATION LOGIC ---
+	async function initWatch() {
 		if (typeof window === 'undefined' || !watchData) return;
+
+		// Kill previous animations immediately
 		if (ctx) ctx.revert();
-		ctx = null;
+
+		// Wait for the DOM to update via the {#key} block
+		await tick();
 
 		registerComponent('watchDetail');
 		gsap.registerPlugin(ScrollTrigger);
@@ -98,18 +121,26 @@
 					ease: 'power2.out'
 				}, '-=0.5');
 		});
+
+		// Ensure scroll resets when a new watch loads
+		window.scrollTo(0, 0);
 	}
 
+	// --- 5. NAVIGATION HANDLERS ---
 	function navigate(direction) {
 		const allIds = getAllWatchIds().filter((id) => getWatchById(id)?.isEnabled);
 		if (!allIds.length) return;
+
 		const currentIndex = allIds.indexOf(watchData?.id);
 		let targetIndex;
+
 		if (direction === 'next') {
 			targetIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % allIds.length;
 		} else {
 			targetIndex = currentIndex === -1 ? allIds.length - 1 : (currentIndex - 1 + allIds.length) % allIds.length;
 		}
+
+		isMenuOpen = false;
 		goto(`/watches/${allIds[targetIndex]}`);
 	}
 
@@ -126,41 +157,24 @@
 		isMenuOpen = !isMenuOpen;
 	}
 
-	onMount(() => {
+	// --- 6. REACTIVE INITIALIZATION ---
+	// This watches the ID. If it changes, we re-run init.
+	// The {#key} block in HTML handles the DOM reset, this handles the JS reset.
+	$: if (watchData?.id && watchData.id !== currentWatchId) {
+		currentWatchId = watchData.id;
 		initWatch();
+	}
 
-		// DIAGNOSTIC: Check parent elements for transforms
-		if (typeof window !== 'undefined') {
-			setTimeout(() => {
-				const navDock = document.querySelector('.nav-dock-container');
-				if (navDock) {
-					let el = navDock.parentElement;
-					console.log('=== NAV DOCK PARENT CHAIN ===');
-					while (el && el !== document.body) {
-						const styles = window.getComputedStyle(el);
-						const transform = styles.transform;
-						const position = styles.position;
-						const willChange = styles.willChange;
+	onMount(() => {
+		// Kill global smoother on this specific page if desired
+		// if ($smoother) $smoother.kill();
 
-						if (transform !== 'none' || position === 'fixed' || position === 'sticky' || willChange.includes('transform')) {
-							console.warn('⚠️ FOUND ISSUE:', {
-								element: el.tagName + (el.className ? '.' + el.className : ''),
-								transform,
-								position,
-								willChange
-							});
-						}
-						el = el.parentElement;
-					}
-					console.log('=== END DIAGNOSTIC ===');
-				}
-			}, 1000);
+		// Initial load
+		if (watchData?.id) {
+			currentWatchId = watchData.id;
+			initWatch();
 		}
 	});
-
-	$: if (typeof window !== 'undefined' && watchData?.id) {
-		Promise.resolve().then(() => initWatch());
-	}
 
 	onDestroy(() => {
 		if (ctx) ctx.revert();
@@ -173,14 +187,12 @@
 	<title>{watchData ? `${watchData.collection}` : 'Watch Not Found'}</title>
 </svelte:head>
 
-<!-- MOVE NAV DOCK OUTSIDE THE MAIN CONTENT WRAPPER -->
-<!-- This ensures no parent transforms affect it -->
-<div class="nav-dock-container">
+<div class="nav-dock-container" use:portal>
 	<div class="nav-dock-inner">
 
 		{#if isMenuOpen && watchData}
 			<div
-				transition:slide={{ duration: 400, easing: cubicOut, axis: 'y' }}
+				transition:fly={{ duration: 400, y: 20, easing: cubicOut }}
 				class="pointer-events-auto mb-3 w-[92vw] max-w-md max-h-[50vh] overflow-y-auto glass-panel rounded-2xl p-2 flex flex-col gap-1 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)]"
 			>
 				<div class="px-4 py-2 border-b border-white/10 mb-1 flex justify-between items-center">
@@ -188,7 +200,7 @@
 					<span class="text-[10px] text-zinc-400">{allWatches.length} Available</span>
 				</div>
 
-				{#each allWatches as watch}
+				{#each allWatches as watch (watch.id)}
 					<button
 						on:click={() => navigateToId(watch.id)}
 						class="flex items-center gap-4 p-2 rounded-xl hover:bg-white/20 transition-all duration-200 w-full text-left group"
@@ -196,17 +208,25 @@
 					>
 						<div class="w-12 h-12 bg-white/50 rounded-lg overflow-hidden shrink-0 border border-white/30 shadow-sm group-hover:scale-105 transition-transform">
 							{#if watch.thumb}
-								<img src={watch.thumb} alt={watch.collection} class="w-full h-full object-cover mix-blend-multiply" />
+								<img
+									src={watch.thumb}
+									alt={watch.collection}
+									class="w-full h-full object-cover mix-blend-multiply"
+									decoding="async"
+									loading="lazy"
+									width="48"
+									height="48"
+								/>
 							{/if}
 						</div>
 
 						<div class="flex flex-col">
-							<span class="font-serif text-zinc-800 text-lg leading-none group-hover:text-black transition-colors">
-								{watch.collection}
-							</span>
+                      <span class="font-serif text-zinc-800 text-lg leading-none group-hover:text-black transition-colors">
+                         {watch.collection}
+                      </span>
 							<span class="text-[10px] uppercase tracking-widest text-zinc-500 mt-1 group-hover:text-zinc-700">
-								{watch.subCollection}
-							</span>
+                         {watch.subCollection}
+                      </span>
 						</div>
 
 						{#if watch.id === watchData.id}
@@ -219,7 +239,6 @@
 
 		{#if watchData}
 			<div class="glass-dock px-2 py-2 rounded-full flex items-center gap-2 sm:gap-6 transition-transform duration-300 pointer-events-auto shadow-[0_8px_32px_0_rgba(0,0,0,0.1)]">
-
 				<button
 					on:click={() => navigate('prev')}
 					class="group flex items-center gap-4 pl-1 pr-4 py-1 rounded-full hover:bg-white/20 transition-all duration-300"
@@ -230,8 +249,8 @@
 					<div class="hidden sm:flex flex-col items-start text-left">
 						<span class="text-[0.5rem] uppercase tracking-widest text-zinc-500 font-bold mb-0.5">Prev</span>
 						<span class="text-xs font-serif text-zinc-800 whitespace-nowrap min-w-[60px] max-w-[100px] truncate">
-							{prevCollectionName || 'Back'}
-						</span>
+                      {prevCollectionName || 'Back'}
+                   </span>
 					</div>
 				</button>
 
@@ -266,52 +285,53 @@
 					<div class="hidden sm:flex flex-col items-end text-right">
 						<span class="text-[0.5rem] uppercase tracking-widest text-zinc-500 font-bold mb-0.5">Next</span>
 						<span class="text-xs font-serif text-zinc-800 whitespace-nowrap min-w-[60px] max-w-[100px] truncate">
-							{nextCollectionName || 'Next'}
-						</span>
+                      {nextCollectionName || 'Next'}
+                   </span>
 					</div>
 					<div class="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
 						<span class="text-lg pb-1 leading-none font-light">→</span>
 					</div>
 				</button>
-
 			</div>
 		{/if}
 	</div>
 </div>
 
 {#if watchData}
-	<div class="w-full pt-[120px] pb-10 flex justify-center pointer-events-none z-[40]">
-		<div class="hero-wrapper relative w-fit max-w-[94vw] mx-auto px-6 py-8 md:px-10 md:py-10 mix-blend-multiply dark:mix-blend-normal">
-			<div class="corner-label absolute top-0 left-0 pt-2 pl-2">
-                <span class="block text-[0.6rem] sm:text-xs md:text-sm font-bold tracking-[0.25em] uppercase text-zinc-500 font-sans">
-                    Meet
-                </span>
-			</div>
-
-			<div class="text-center z-10">
-				<div class="overflow-hidden px-1 pb-2">
-					<h1 class="reveal-text text-[13vw] sm:text-[10vw] md:text-[6rem] lg:text-[7rem] leading-[0.8] font-serif font-medium text-zinc-900 tracking-tighter capitalize text-balance break-words">
-						{watchData.collection}
-					</h1>
+	{#key watchData.id}
+		<div class="w-full pt-[120px] pb-10 flex justify-center pointer-events-none z-[40]">
+			<div class="hero-wrapper relative w-fit max-w-[94vw] mx-auto px-6 py-8 md:px-10 md:py-10 mix-blend-multiply dark:mix-blend-normal">
+				<div class="corner-label absolute top-0 left-0 pt-2 pl-2">
+                    <span class="block text-[0.6rem] sm:text-xs md:text-sm font-bold tracking-[0.25em] uppercase text-zinc-500 font-sans">
+                        Meet
+                    </span>
 				</div>
 
-				<div class="overflow-hidden mt-1 sm:mt-2">
-					<h2 class="reveal-text text-xs sm:text-sm md:text-lg font-light tracking-[0.3em] uppercase text-zinc-500">
-						{watchData.subCollection}
-					</h2>
-				</div>
-			</div>
+				<div class="text-center z-10">
+					<div class="overflow-hidden px-1 pb-2">
+						<h1 class="reveal-text text-[13vw] sm:text-[10vw] md:text-[6rem] lg:text-[7rem] leading-[0.8] font-serif font-medium text-zinc-900 tracking-tighter capitalize text-balance break-words">
+							{watchData.collection}
+						</h1>
+					</div>
 
-			<div class="corner-label absolute bottom-0 right-0 pb-2 pr-2 flex items-center gap-2 sm:gap-3">
-				<span class="text-[0.6rem] sm:text-xs md:text-sm tracking-widest text-zinc-500 font-semibold uppercase">By</span>
-				<img src="{logoImg}" alt="ASIS" class="h-3 sm:h-4 md:h-5 w-auto opacity-70" />
+					<div class="overflow-hidden mt-1 sm:mt-2">
+						<h2 class="reveal-text text-xs sm:text-sm md:text-lg font-light tracking-[0.3em] uppercase text-zinc-500">
+							{watchData.subCollection}
+						</h2>
+					</div>
+				</div>
+
+				<div class="corner-label absolute bottom-0 right-0 pb-2 pr-2 flex items-center gap-2 sm:gap-3">
+					<span class="text-[0.6rem] sm:text-xs md:text-sm tracking-widest text-zinc-500 font-semibold uppercase">By</span>
+					<img src="{logoImg}" alt="ASIS" class="h-3 sm:h-4 md:h-5 w-auto opacity-70" />
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="relative w-full z-20 pb-40">
-		<Gallery {galleryData} />
-	</div>
+		<div class="relative w-full z-20 pb-40">
+			<Gallery {galleryData} />
+		</div>
+	{/key}
 
 {:else}
 	<div class="min-h-screen flex items-center justify-center bg-zinc-50">
@@ -324,23 +344,24 @@
 		font-family: 'Playfair Display', serif;
 	}
 
-	/* NUCLEAR OPTION: Force fixed positioning with !important */
+	/* Updated Dock Styles
+	   Removed the 'nuclear' !important hacks because
+	   the 'use:portal' action handles the positioning logic cleanly now.
+	*/
 	.nav-dock-container {
-		position: fixed !important;
-		bottom: 0 !important;
-		left: 0 !important;
-		right: 0 !important;
-		width: 100% !important;
-		z-index: 9999 !important;
-		pointer-events: none !important;
-		padding-bottom: 1.5rem !important;
-		transform: none !important;
-		will-change: auto !important;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		z-index: 9999;
+		pointer-events: none;
+		padding-bottom: 1.5rem;
 	}
 
 	@media (min-width: 640px) {
 		.nav-dock-container {
-			padding-bottom: 2rem !important;
+			padding-bottom: 2rem;
 		}
 	}
 
@@ -351,19 +372,13 @@
 		justify-content: flex-end;
 		width: 100%;
 		animation: fadeInDock 1s ease-out 0.6s both;
-		transform: none !important;
 	}
 
 	@keyframes fadeInDock {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
+		from { opacity: 0; }
+		to { opacity: 1; }
 	}
 
-	/* GLASSMORPHISM STYLES */
 	.glass-dock {
 		background: rgba(255, 255, 255, 0.4);
 		backdrop-filter: blur(20px) saturate(180%);
@@ -373,9 +388,12 @@
 
 	.glass-panel {
 		background: rgba(255, 255, 255, 0.65);
-		backdrop-filter: blur(25px) saturate(200%);
-		-webkit-backdrop-filter: blur(25px) saturate(200%);
+		/* Slightly reduced blur for performance */
+		backdrop-filter: blur(15px) saturate(200%);
+		-webkit-backdrop-filter: blur(15px) saturate(200%);
 		border: 1px solid rgba(255, 255, 255, 0.5);
+		/* Important: hints to browser to optimize rendering for transition */
+		will-change: transform, opacity;
 	}
 
 	.shadow-glow {
