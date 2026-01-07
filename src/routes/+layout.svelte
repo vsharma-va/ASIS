@@ -1,6 +1,7 @@
 <script>
 	import '../app.css';
-	import {page} from "$app/stores";
+	import { page } from '$app/state';
+	import { tick } from 'svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import PageTransition from '$lib/components/PageTransition.svelte';
 	import ContactForm from '$lib/components/contactForm.svelte';
@@ -9,16 +10,38 @@
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount } from 'svelte';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
-	import { isLoading, componentStates, expectedComponents, startNavigation } from '$lib/stores/loadingStore';
+	import {
+		isLoading,
+		componentStates,
+		expectedComponents,
+		startNavigation,
+		smoother
+	} from '$lib/stores/loadingStore';
 
 	let { children } = $props();
-	let smoother;
+	const currentUrl = $derived(page.url.href);
+	let isWatchesPage = $derived(page.url.pathname.includes('watches'));
 
 	// Debug logging
 	$effect(() => {
 		console.log('Loading state:', $isLoading);
 		console.log('Expected components:', Array.from($expectedComponents));
 		console.log('Component states:', $componentStates);
+		// gallery page needs the bottom navbar to be sticky, therefore I have removed smoothscroll from it
+		if (isWatchesPage) {
+			if ($smoother) {
+				$smoother.kill();
+				$smoother = null;
+			}
+		} else {
+			tick().then(() => {
+				$smoother = ScrollSmoother.create({
+					wrapper: '#smooth-wrapper',
+					content: '#smooth-content',
+					smooth: 2
+				});
+			});
+		}
 	});
 
 	if (typeof window !== 'undefined') {
@@ -34,25 +57,16 @@
 
 	onMount(() => {
 		// Explicitly define the wrapper and content for ScrollSmoother for stability
-		if(!$page.url.pathname.includes('watches')) {
-			smoother = ScrollSmoother.create({
-				wrapper: '#smooth-wrapper',
-				content: '#smooth-content',
-				smooth: 2
-			});
 
-		} else {
-			smoother?.kill();
-		}
 		return () => {
-			smoother?.kill();
+			$smoother?.kill();
 		};
 	});
 
 	afterNavigate(() => {
 		// Reset scroll position after navigation
-		if (smoother) {
-			smoother.scrollTo(0, false);
+		if ($smoother) {
+			$smoother.scrollTo(0, false);
 		}
 		// Fallback for immediate reset
 		window.scrollTo(0, 0);
@@ -82,11 +96,15 @@
 <ContactForm />
 
 <!-- These wrapper and content divs are for GSAP ScrollSmoother -->
-<div id="smooth-wrapper">
-	<div id="smooth-content">
-		{@render children()}
+{#if !currentUrl.includes("watches")}
+	<div id="smooth-wrapper">
+		<div id="smooth-content">
+			{@render children()}
+		</div>
 	</div>
-</div>
+{:else}
+	{@render children()}
+{/if}
 
 <style>
 	.loading-overlay {
