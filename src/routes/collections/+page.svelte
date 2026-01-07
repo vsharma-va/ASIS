@@ -165,7 +165,7 @@
 							</div>
 
 							<div class="py-4 md:py-6 border-t border-stone-800/10">
-								<ul class="flex flex-wrap gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-3 secondary-font text-[9px] md:text-[10px] uppercase tracking-widest text-stone-500">
+								<ul class="flex flex-wrap gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-3 secondary-font text-[12px] md:text-[13px] uppercase tracking-widest text-stone-500">
 									{#each specsList(watch).slice(0, 4) as spec}
 										<li class="flex items-center gap-2">
 											<span class="w-1 h-1 bg-stone-400 rounded-full"></span>

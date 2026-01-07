@@ -119,14 +119,14 @@
           py-4 gap-1 sm:gap-2 text-[#7CD1D3] px-4 sm:px-6 md:px-8 relative">
 
 	<!-- Top Section - Email -->
-	<div class="top-text text-center uppercase leading-none w-full sm:w-3/4 overflow-hidden flex flex-col justify-end items-center mb-4">
-		<div class="transform-3d h-auto w-full text-xs sm:text-sm secondary-font flex justify-center items-end mb-1">
-			e-mail
-		</div>
-		<div class="transform-3d h-auto w-full primary-font font-bold text-lg sm:text-xl md:text-2xl flex justify-center items-end">
-			enquiry@asiswatches.com
-		</div>
-	</div>
+<!--	<div class="top-text text-center uppercase leading-none w-full sm:w-3/4 overflow-hidden flex flex-col justify-end items-center mb-4">-->
+<!--		<div class="transform-3d h-auto w-full text-xs sm:text-sm secondary-font flex justify-center items-end mb-1">-->
+<!--			e-mail-->
+<!--		</div>-->
+<!--		<div class="transform-3d h-auto w-full primary-font font-bold text-lg sm:text-xl md:text-2xl flex justify-center items-end">-->
+<!--			enquiry@asiswatches.com-->
+<!--		</div>-->
+<!--	</div>-->
 
 	<!-- Center Section - Logo Image -->
 	<div class="center-text flex items-center justify-center w-full sm:w-3/4 overflow-hidden my-6">
