@@ -70,7 +70,6 @@
 
 		// 1. If we are ALREADY on the page, just scroll
 		if ($page.url.pathname === targetPage) {
-			await waitForLoadingToFinish();
 			gsap.to(window, { duration: 1, scrollTo: scrollToTarget });
 			return;
 		}
