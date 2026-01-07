@@ -94,6 +94,9 @@
 	<Footer />
 </div>
 
+<div>
+</div>
+<div></div>
 <style>
 	/* Global performance optimizations */
 	* {
