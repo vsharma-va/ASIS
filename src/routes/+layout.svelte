@@ -30,10 +30,9 @@
 	});
 
 	let { children } = $props();
-	const currentUrl = $derived(page.url.href);
+
 	let isWatchesPage = $derived(page.url.pathname.includes('watches'));
 
-	// Debug logging
 	$effect(() => {
 		console.log('Loading state:', $isLoading);
 		console.log('Expected components:', Array.from($expectedComponents));
@@ -46,19 +45,16 @@
 
 	if (typeof window !== 'undefined') {
 		beforeNavigate(() => {
-			// mark navigation in progress (starts loader + timer)
 			startNavigation();
 		});
 	}
 
 	onMount(() => {
-		console.log("IS WATCH PAGE"+isWatchesPage);
-
-		// Initialize ScrollSmoother only if not on watches page
 		const initSmoother = async () => {
 			await tick();
 
-			// Wait for next animation frame to ensure DOM is fully rendered
+			if (isWatchesPage) return;
+
 			requestAnimationFrame(() => {
 				const wrapper = document.querySelector('#smooth-wrapper');
 				const content = document.querySelector('#smooth-content');
@@ -88,17 +84,20 @@
 	});
 
 	afterNavigate(async () => {
-		// Reinitialize smoother
 		await tick();
 
 		requestAnimationFrame(() => {
 			const wrapper = document.querySelector('#smooth-wrapper');
 			const content = document.querySelector('#smooth-content');
 
-			// Kill existing smoother before creating new one
 			if ($smoother) {
 				$smoother.kill();
 				$smoother = null;
+			}
+
+			if (isWatchesPage) {
+				window.scrollTo(0, 0);
+				return;
 			}
 
 			if (wrapper && content) {
@@ -117,12 +116,8 @@
 				window.scrollTo(0, 0);
 			}
 		});
-		// Note: we *do not* call completeNavigation() here. setComponentReady() will call completeNavigation()
-		// once components mark themselves ready. For pages with no expected components, setComponentReady()
-		// logic will also call completeNavigation() automatically.
 	});
 </script>
-
 <!-- Page Transition Overlay - Slides in/out, sits below loader -->
 <PageTransition />
 
