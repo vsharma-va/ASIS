@@ -141,15 +141,11 @@
 <ContactForm />
 
 <!-- These wrapper and content divs are for GSAP ScrollSmoother -->
-{#if !currentUrl.includes("watches")}
-	<div id="smooth-wrapper">
-		<div id="smooth-content">
-			{@render children()}
-		</div>
+<div id="smooth-wrapper">
+	<div id="smooth-content">
+		{@render children()}
 	</div>
-{:else}
-	{@render children()}
-{/if}
+</div>
 
 <style>
 	.loading-overlay {
