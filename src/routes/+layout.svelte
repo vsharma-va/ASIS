@@ -38,21 +38,6 @@
 		console.log('Loading state:', $isLoading);
 		console.log('Expected components:', Array.from($expectedComponents));
 		console.log('Component states:', $componentStates);
-		// gallery page needs the bottom navbar to be sticky, therefore I have removed smoothscroll from it
-		if (isWatchesPage) {
-			if ($smoother) {
-				$smoother.kill();
-				$smoother = null;
-			}
-		} else {
-			tick().then(() => {
-				$smoother = ScrollSmoother.create({
-					wrapper: '#smooth-wrapper',
-					content: '#smooth-content',
-					smooth: 2
-				});
-			});
-		}
 	});
 
 	if (typeof window !== 'undefined') {
@@ -67,20 +52,82 @@
 	}
 
 	onMount(() => {
-		// Explicitly define the wrapper and content for ScrollSmoother for stability
+		// Initialize ScrollSmoother only if not on watches page
+		const initSmoother = async () => {
+			await tick();
+
+			// Check if we're on watches page
+			if (page.url.pathname.includes('watches')) {
+				return;
+			}
+
+			// Wait for next animation frame to ensure DOM is fully rendered
+			requestAnimationFrame(() => {
+				const wrapper = document.querySelector('#smooth-wrapper');
+				const content = document.querySelector('#smooth-content');
+
+				if (wrapper && content && !$smoother) {
+					try {
+						$smoother = ScrollSmoother.create({
+							wrapper: '#smooth-wrapper',
+							content: '#smooth-content',
+							smooth: 2
+						});
+						console.log('ScrollSmoother initialized successfully');
+					} catch (error) {
+						console.error('Failed to initialize ScrollSmoother:', error);
+					}
+				}
+			});
+		};
+
+		initSmoother();
 
 		return () => {
 			$smoother?.kill();
 		};
 	});
 
-	afterNavigate(() => {
-		// Reset scroll position after navigation
-		if ($smoother) {
-			$smoother.scrollTo(0, false);
+	afterNavigate(async () => {
+		// Kill existing smoother if switching to watches page
+		if (page.url.pathname.includes('watches')) {
+			if ($smoother) {
+				$smoother.kill();
+				$smoother = null;
+			}
+			window.scrollTo(0, 0);
+		} else {
+			// Reinitialize smoother for non-watches pages
+			await tick();
+
+			requestAnimationFrame(() => {
+				const wrapper = document.querySelector('#smooth-wrapper');
+				const content = document.querySelector('#smooth-content');
+
+				// Kill existing smoother before creating new one
+				if ($smoother) {
+					$smoother.kill();
+					$smoother = null;
+				}
+
+				if (wrapper && content) {
+					try {
+						$smoother = ScrollSmoother.create({
+							wrapper: '#smooth-wrapper',
+							content: '#smooth-content',
+							smooth: 2
+						});
+						$smoother.scrollTo(0, false);
+					} catch (error) {
+						console.error('Failed to reinitialize ScrollSmoother:', error);
+						window.scrollTo(0, 0);
+					}
+				} else {
+					window.scrollTo(0, 0);
+				}
+			});
 		}
-		// Fallback for immediate reset
-		window.scrollTo(0, 0);
+
 		// Note: we *do not* call completeNavigation() here. setComponentReady() will call completeNavigation()
 		// once components mark themselves ready. For pages with no expected components, setComponentReady()
 		// logic will also call completeNavigation() automatically.
