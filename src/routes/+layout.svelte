@@ -52,6 +52,8 @@
 	}
 
 	onMount(() => {
+		console.log("IS WATCH PAGE"+isWatchesPage);
+
 		// Initialize ScrollSmoother only if not on watches page
 		const initSmoother = async () => {
 			await tick();
