@@ -71,7 +71,9 @@
 						$smoother = ScrollSmoother.create({
 							wrapper: '#smooth-wrapper',
 							content: '#smooth-content',
-							smooth: 2
+							ease: 'power2.inOut',
+							smooth: 2,
+							normalizeScroll: true
 						});
 						console.log('ScrollSmoother initialized successfully');
 					} catch (error) {
