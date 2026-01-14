@@ -216,42 +216,11 @@
 	}
 </script>
 
-<div class="bg-gradient w-full min-h-screen text-zinc-900 overflow-x-hidden selection:bg-zinc-800 selection:text-white">
+<div class="bg-gradient w-full min-h-screen text-zinc-900 selection:bg-zinc-800 selection:text-white">
 	<main class="grid grid-cols-1 lg:grid-cols-12 min-h-screen">
 
-		<div class="lg:col-span-7 relative h-[55vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden flex flex-col">
-
-			<div class="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay"
-				 style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiMwMDAiLz48L3N2Zz4=');">
-			</div>
-
-			<div class="absolute top-6 left-6 lg:top-8 lg:left-8 z-20 pointer-events-none ui-fade-up">
-				<span class="secondary-font text-[9px] sm:text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">Exhibit A</span>
-			</div>
-
-			<div class="flex-1 relative w-full h-full flex items-center justify-center p-6 lg:p-0">
-				<div
-					class="main-image-wrapper relative w-full h-full max-w-4xl max-h-[45vh] lg:max-h-[80vh] flex items-center justify-center z-10"
-					style="contain: layout paint;"
-					on:mousemove={handleImageMouseMove}
-					on:click={toggleZoom}
-					role="button"
-					tabindex="0"
-					on:keydown={(e) => e.key === 'Enter' && toggleZoom()}
-				>
-					{#key currentVariant.images[selectedImageIndex]}
-						<img
-							bind:this={mainImageEl}
-							src={currentVariant.images[selectedImageIndex]}
-							alt={`${galleryData.title} - ${currentVariant.name}`}
-							class="w-full h-full object-contain will-change-transform relative z-10 {isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}"
-							decoding="async"
-						/>
-					{/key}
-				</div>
-			</div>
-
-			<div class="absolute bottom-6 lg:bottom-8 w-full flex justify-center z-20 px-4 ui-fade-up">
+		<div class="lg:col-span-7 relative h-[55vh] lg:h-screen lg:sticky lg:top-0 flex flex-col sticky top-0">
+			<div class="absolute bottom-6 lg:bottom-28 xl:bottom-28 w-full flex justify-center z-20 px-4 ui-fade-up">
 				<div class="flex items-center gap-4 lg:gap-6 px-4 lg:px-6 py-2 lg:py-3 bg-white/30 backdrop-blur-xl border border-white/40 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.05)]">
 
 					<div class="flex gap-2">
@@ -284,6 +253,38 @@
 
 				</div>
 			</div>
+
+			<div class="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay"
+				 style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiMwMDAiLz48L3N2Zz4=');">
+			</div>
+
+			<div class="absolute top-6 left-6 lg:top-8 lg:left-8 z-20 pointer-events-none ui-fade-up">
+				<span class="secondary-font text-[9px] sm:text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">Exhibit A</span>
+			</div>
+
+			<div class="flex-1 relative w-full h-full flex items-center justify-center p-6 lg:p-0">
+				<div
+					class="main-image-wrapper relative w-full h-full max-w-4xl max-h-[45vh] lg:max-h-[80vh] flex items-center justify-center z-10"
+					style="contain: layout paint;"
+					on:mousemove={handleImageMouseMove}
+					on:click={toggleZoom}
+					role="button"
+					tabindex="0"
+					on:keydown={(e) => e.key === 'Enter' && toggleZoom()}
+				>
+					{#key currentVariant.images[selectedImageIndex]}
+						<img
+							bind:this={mainImageEl}
+							src={currentVariant.images[selectedImageIndex]}
+							alt={`${galleryData.title} - ${currentVariant.name}`}
+							class="w-full h-full object-contain will-change-transform relative z-10 {isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}"
+							decoding="async"
+						/>
+					{/key}
+				</div>
+			</div>
+
+
 		</div>
 
 		<div class="lg:col-span-5 relative z-20 bg-white/10 backdrop-blur-[2px] lg:border-l border-white/20 min-h-full">

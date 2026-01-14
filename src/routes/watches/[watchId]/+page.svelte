@@ -381,16 +381,16 @@
 
 	.glass-dock {
 		background: rgba(255, 255, 255, 0.4);
-		backdrop-filter: blur(20px) saturate(180%);
-		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		backdrop-filter: blur(100px) saturate(180%);
+		-webkit-backdrop-filter: blur(100px) saturate(180%);
 		border: 1px solid rgba(255, 255, 255, 0.4);
 	}
 
 	.glass-panel {
 		background: rgba(255, 255, 255, 0.65);
 		/* Slightly reduced blur for performance */
-		backdrop-filter: blur(15px) saturate(200%);
-		-webkit-backdrop-filter: blur(15px) saturate(200%);
+		backdrop-filter: blur(100px) saturate(200%);
+		-webkit-backdrop-filter: blur(100px) saturate(200%);
 		border: 1px solid rgba(255, 255, 255, 0.5);
 		/* Important: hints to browser to optimize rendering for transition */
 		will-change: transform, opacity;

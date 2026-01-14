@@ -18,17 +18,6 @@
 		smoother
 	} from '$lib/stores/loadingStore';
 
-	onNavigate((navigation) => {
-		if (!document.startViewTransition) return;
-
-		return new Promise((resolve) => {
-			document.startViewTransition(async () => {
-				resolve();
-				await navigation.complete;
-			});
-		});
-	});
-
 	let { children } = $props();
 	const currentUrl = $derived(page.url.href);
 	let isWatchesPage = $derived(page.url.pathname.includes('watches'));
