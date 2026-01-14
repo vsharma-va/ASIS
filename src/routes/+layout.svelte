@@ -19,29 +19,13 @@
 	} from '$lib/stores/loadingStore';
 
 	let { children } = $props();
-	const currentUrl = $derived(page.url.href);
+
 	let isWatchesPage = $derived(page.url.pathname.includes('watches'));
 
-	// Debug logging
 	$effect(() => {
 		console.log('Loading state:', $isLoading);
 		console.log('Expected components:', Array.from($expectedComponents));
 		console.log('Component states:', $componentStates);
-		// gallery page needs the bottom navbar to be sticky, therefore I have removed smoothscroll from it
-		if (isWatchesPage) {
-			if ($smoother) {
-				$smoother.kill();
-				$smoother = null;
-			}
-		} else {
-			tick().then(() => {
-				$smoother = ScrollSmoother.create({
-					wrapper: '#smooth-wrapper',
-					content: '#smooth-content',
-					smooth: 2
-				});
-			});
-		}
 	});
 
 	if (typeof window !== 'undefined') {
@@ -50,32 +34,79 @@
 
 	if (typeof window !== 'undefined') {
 		beforeNavigate(() => {
-			// mark navigation in progress (starts loader + timer)
 			startNavigation();
 		});
 	}
 
 	onMount(() => {
-		// Explicitly define the wrapper and content for ScrollSmoother for stability
+		const initSmoother = async () => {
+			await tick();
+
+			if (isWatchesPage) return;
+
+			requestAnimationFrame(() => {
+				const wrapper = document.querySelector('#smooth-wrapper');
+				const content = document.querySelector('#smooth-content');
+
+				if (wrapper && content && !$smoother) {
+					try {
+						$smoother = ScrollSmoother.create({
+							wrapper: '#smooth-wrapper',
+							content: '#smooth-content',
+							ease: 'power2.inOut',
+							smooth: 2,
+							normalizeScroll: true
+						});
+						console.log('ScrollSmoother initialized successfully');
+					} catch (error) {
+						console.error('Failed to initialize ScrollSmoother:', error);
+					}
+				}
+			});
+		};
+
+		initSmoother();
 
 		return () => {
 			$smoother?.kill();
 		};
 	});
 
-	afterNavigate(() => {
-		// Reset scroll position after navigation
-		if ($smoother) {
-			$smoother.scrollTo(0, false);
-		}
-		// Fallback for immediate reset
-		window.scrollTo(0, 0);
-		// Note: we *do not* call completeNavigation() here. setComponentReady() will call completeNavigation()
-		// once components mark themselves ready. For pages with no expected components, setComponentReady()
-		// logic will also call completeNavigation() automatically.
+	afterNavigate(async () => {
+		await tick();
+
+		requestAnimationFrame(() => {
+			const wrapper = document.querySelector('#smooth-wrapper');
+			const content = document.querySelector('#smooth-content');
+
+			if ($smoother) {
+				$smoother.kill();
+				$smoother = null;
+			}
+
+			if (isWatchesPage) {
+				window.scrollTo(0, 0);
+				return;
+			}
+
+			if (wrapper && content) {
+				try {
+					$smoother = ScrollSmoother.create({
+						wrapper: '#smooth-wrapper',
+						content: '#smooth-content',
+						smooth: 2
+					});
+					$smoother.scrollTo(0, false);
+				} catch (error) {
+					console.error('Failed to reinitialize ScrollSmoother:', error);
+					window.scrollTo(0, 0);
+				}
+			} else {
+				window.scrollTo(0, 0);
+			}
+		});
 	});
 </script>
-
 <!-- Page Transition Overlay - Slides in/out, sits below loader -->
 <PageTransition />
 
@@ -96,15 +127,11 @@
 <ContactForm />
 
 <!-- These wrapper and content divs are for GSAP ScrollSmoother -->
-{#if !currentUrl.includes("watches")}
-	<div id="smooth-wrapper">
-		<div id="smooth-content">
-			{@render children()}
-		</div>
+<div id="smooth-wrapper">
+	<div id="smooth-content">
+		{@render children()}
 	</div>
-{:else}
-	{@render children()}
-{/if}
+</div>
 
 <style>
 	.loading-overlay {

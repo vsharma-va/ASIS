@@ -314,10 +314,10 @@
 			</div>
 			<div
 				class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-[22%] -translate-y-1/2 items-center detail-set-1">
-				<div class="detail-line h-px bg-black origin-right w-12 -mt-[9.5rem] -translate-x-[25px]"></div>
+				<div class="detail-line h-px bg-black origin-right w-12 -mt-[7.5rem] -translate-x-[25px]"></div>
 				<div class="detail-text ml-2 w-1/2 secondary-font">
 					<div class="detail-heading text-2xl uppercase font-light tracking-wider">Movement</div>
-					<div class="detail-desc text-xs uppercase font-bold tracking-wide">Swiss Automatic</div>
+					<div class="detail-desc text-xs uppercase font-bold tracking-wide">Swiss Quartz</div>
 					<div
 						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
 						<img src="{movementImg}" alt="Movement detail"
@@ -326,14 +326,14 @@
 				</div>
 			</div>
 			<div
-				class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-[78%] -translate-y-1/2 items-center detail-set-1">
+				class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-[68%] -translate-y-1/2 items-center detail-set-1">
 				<div class="detail-line h-px bg-black origin-right w-12 -mb-[7.5rem] -translate-x-[25px]"></div>
-				<div class="detail-text ml-2 w-1/2 secondary-font">
-					<div
-						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-						<img src="{WatchDetailImage}" alt="Metal detail" class="detail-image w-full h-full object-cover"
-							 loading="eager">
-					</div>
+				<div class="detail-text ml-2 w-1/2 secondary-font -mb-[7.5rem]">
+<!--					<div-->
+<!--						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">-->
+<!--						<img src="{WatchDetailImage}" alt="Metal detail" class="detail-image w-full h-full object-cover"-->
+<!--							 loading="eager">-->
+<!--					</div>-->
 					<div class="detail-heading text-lg uppercase font-light tracking-wider">Metal</div>
 					<div class="detail-desc text-xs uppercase font-bold tracking wide">High Grade Steel</div>
 				</div>
@@ -361,25 +361,25 @@
 			<div
 				class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-[25%] -translate-y-1/2 items-center detail-set-2">
 				<div class="detail-line-second h-px bg-black origin-right w-12 -mt-[9.5rem] -translate-x-[25px]"></div>
-				<div class="detail-text-second ml-2 w-1/2 secondary-font">
+				<div class="detail-text-second ml-2 w-1/2 secondary-font -mt-[8.3rem]">
 					<div class="detail-heading text-2xl uppercase font-light tracking-wider">GLASS</div>
 					<div class="detail-desc text-xs uppercase font-bold tracking-wide">Sapphire Crystal</div>
-					<div
-						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-						<img src="{WatchDetailImage2}" alt="Watch craftsmanship detail"
-							 class="detail-image-second w-full h-full object-cover" loading="eager">
-					</div>
+<!--					<div-->
+<!--						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">-->
+<!--						<img src="{WatchDetailImage2}" alt="Watch craftsmanship detail"-->
+<!--							 class="detail-image-second w-full h-full object-cover" loading="eager">-->
+<!--					</div>-->
 				</div>
 			</div>
 			<div
 				class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-[75%] -translate-y-1/2 items-center detail-set-2">
 				<div class="detail-line-second h-px bg-black origin-right w-12 -mb-[7.5rem] -translate-x-[25px]"></div>
-				<div class="detail-text-second ml-2 w-1/2 secondary-font">
-					<div
-						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
-						<img src="{certificationImg}" alt="Watch craftsmanship detail"
-							 class="detail-image-second w-full h-full object-cover" loading="eager">
-					</div>
+				<div class="detail-text-second ml-2 w-1/2 secondary-font -mb-[7.5rem]">
+<!--					<div-->
+<!--						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">-->
+<!--						<img src="{certificationImg}" alt="Watch craftsmanship detail"-->
+<!--							 class="detail-image-second w-full h-full object-cover" loading="eager">-->
+<!--					</div>-->
 					<div class="detail-heading text-lg uppercase font-light tracking-wider">WARRANTY</div>
 					<div class="detail-desc text-xs uppercase font-bold tracking wide">2 Year International Warranty
 					</div>
@@ -393,7 +393,8 @@
 						<div class="detail-heading text-2xl uppercase font-light tracking-wide secondary-font">
 							cabochon
 						</div>
-						<div class="detail-desc text-xs uppercase tracking-wide font-bold secondary-font">some text
+						<div class="detail-desc text-xs uppercase tracking-wide font-bold secondary-font">
+							inlaid gemstone
 						</div>
 						<div
 							class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
@@ -402,7 +403,7 @@
 						</div>
 					</div>
 					<div
-						class="detail-line-third h-px bg-black origin-left w-12 -mt-[16.5rem] translate-x-[25px]"></div>
+						class="detail-line-third h-px bg-black origin-left w-12 -mt-[15rem] translate-x-[25px]"></div>
 				</div>
 			</div>
 			<div
@@ -410,7 +411,7 @@
 				<div class="detail-line-third h-px bg-black origin-right w-12 -mt-[9.5rem] -translate-x-[25px]"></div>
 				<div class="detail-text-third ml-2 w-1/2 secondary-font">
 					<div class="detail-heading text-2xl uppercase font-light tracking-wider">Buckle</div>
-					<div class="detail-desc text-xs uppercase font-bold tracking-wide">some text</div>
+					<div class="detail-desc text-xs uppercase font-bold tracking-wide">premium metals and inlaid gemstones</div>
 					<div
 						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
 						<img src="{buckleImg}" alt="Watch buckle detail"
@@ -421,14 +422,14 @@
 			<div
 				class="hidden lg:flex absolute w-[250px] xl:w-[300px] right-[12.5%] top-[75%] -translate-y-1/2 items-center detail-set-3">
 				<div class="detail-line-third h-px bg-black origin-right w-12 -mb-[7.5rem] -translate-x-[25px]"></div>
-				<div class="detail-text-third ml-2 w-1/2 secondary-font">
+				<div class="detail-text-third ml-2 w-1/2 secondary-font -mb-[7.5rem]" >
 					<div
 						class="mt-2 flex justify-end items-center border-2 border-[#2d6f71] rounded-full overflow-hidden">
 						<img src="{certificationImg}" alt="Watch warranty detail"
 							 class="detail-image-third w-full h-full object-cover" loading="eager">
 					</div>
-					<div class="detail-heading text-lg uppercase font-light tracking-wider">warranty</div>
-					<div class="detail-desc text-xs uppercase font-bold tracking wide">some text</div>
+					<div class="detail-heading text-lg uppercase font-light tracking-wider">certification</div>
+					<div class="detail-desc text-xs uppercase font-bold tracking wide">Upon request</div>
 				</div>
 			</div>
 

@@ -206,7 +206,8 @@
 						class="flex items-center gap-4 p-2 rounded-xl hover:bg-white/20 transition-all duration-200 w-full text-left group"
 						class:bg-white-20={watch.id === watchData.id}
 					>
-						<div class="w-12 h-12 bg-white/50 rounded-lg overflow-hidden shrink-0 border border-white/30 shadow-sm group-hover:scale-105 transition-transform">
+						<div
+							class="w-12 h-12 bg-white/50 rounded-lg overflow-hidden shrink-0 border border-white/30 shadow-sm group-hover:scale-105 transition-transform">
 							{#if watch.thumb}
 								<img
 									src={watch.thumb}
@@ -221,10 +222,12 @@
 						</div>
 
 						<div class="flex flex-col">
-                      <span class="font-serif text-zinc-800 text-lg leading-none group-hover:text-black transition-colors">
+                      <span
+						  class="font-serif text-zinc-800 text-lg leading-none group-hover:text-black transition-colors">
                          {watch.collection}
                       </span>
-							<span class="text-[10px] uppercase tracking-widest text-zinc-500 mt-1 group-hover:text-zinc-700">
+							<span
+								class="text-[10px] uppercase tracking-widest text-zinc-500 mt-1 group-hover:text-zinc-700">
                          {watch.subCollection}
                       </span>
 						</div>
@@ -238,23 +241,27 @@
 		{/if}
 
 		{#if watchData}
-			<div class="glass-dock px-2 py-2 rounded-full flex items-center gap-2 sm:gap-6 transition-transform duration-300 pointer-events-auto shadow-[0_8px_32px_0_rgba(0,0,0,0.1)]">
+			<div
+				class="glass-dock px-2 py-2 rounded-full flex items-center gap-2 sm:gap-6 transition-transform duration-300 pointer-events-auto shadow-[0_8px_32px_0_rgba(0,0,0,0.1)]">
 				<button
 					on:click={() => navigate('prev')}
 					class="group flex items-center gap-4 pl-1 pr-4 py-1 rounded-full hover:bg-white/20 transition-all duration-300"
 				>
-					<div class="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+					<div
+						class="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
 						<span class="text-lg pb-1 leading-none font-light">←</span>
 					</div>
 					<div class="hidden sm:flex flex-col items-start text-left">
 						<span class="text-[0.5rem] uppercase tracking-widest text-zinc-500 font-bold mb-0.5">Prev</span>
-						<span class="text-xs font-serif text-zinc-800 whitespace-nowrap min-w-[60px] max-w-[100px] truncate">
+						<span
+							class="text-xs font-serif text-zinc-800 whitespace-nowrap min-w-[60px] max-w-[100px] truncate">
                       {prevCollectionName || 'Back'}
                    </span>
 					</div>
 				</button>
 
-				<div class="w-[1px] h-8 bg-gradient-to-b from-transparent via-zinc-400/50 to-transparent hidden sm:block"></div>
+				<div
+					class="w-[1px] h-8 bg-gradient-to-b from-transparent via-zinc-400/50 to-transparent hidden sm:block"></div>
 
 				<button
 					on:click={toggleMenu}
@@ -262,12 +269,14 @@
 					aria-label="View All Watches"
 				>
 					{#if isMenuOpen}
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-zinc-800">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+							 stroke-width="1.5" class="text-zinc-800">
 							<line x1="18" y1="6" x2="6" y2="18"></line>
 							<line x1="6" y1="6" x2="18" y2="18"></line>
 						</svg>
 					{:else}
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-zinc-800 opacity-80">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+							 class="text-zinc-800 opacity-80">
 							<rect x="3" y="3" width="7" height="7" rx="1"></rect>
 							<rect x="14" y="3" width="7" height="7" rx="1"></rect>
 							<rect x="14" y="14" width="7" height="7" rx="1"></rect>
@@ -276,7 +285,8 @@
 					{/if}
 				</button>
 
-				<div class="w-[1px] h-8 bg-gradient-to-b from-transparent via-zinc-400/50 to-transparent hidden sm:block"></div>
+				<div
+					class="w-[1px] h-8 bg-gradient-to-b from-transparent via-zinc-400/50 to-transparent hidden sm:block"></div>
 
 				<button
 					on:click={() => navigate('next')}
@@ -284,11 +294,13 @@
 				>
 					<div class="hidden sm:flex flex-col items-end text-right">
 						<span class="text-[0.5rem] uppercase tracking-widest text-zinc-500 font-bold mb-0.5">Next</span>
-						<span class="text-xs font-serif text-zinc-800 whitespace-nowrap min-w-[60px] max-w-[100px] truncate">
+						<span
+							class="text-xs font-serif text-zinc-800 whitespace-nowrap min-w-[60px] max-w-[100px] truncate">
                       {nextCollectionName || 'Next'}
                    </span>
 					</div>
-					<div class="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+					<div
+						class="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
 						<span class="text-lg pb-1 leading-none font-light">→</span>
 					</div>
 				</button>
@@ -300,15 +312,17 @@
 {#if watchData}
 	{#key watchData.id}
 		<div class="w-full pt-[120px] pb-10 flex justify-center pointer-events-none z-[40]">
-			<div class="hero-wrapper relative w-fit max-w-[94vw] mx-auto px-6 py-8 md:px-10 md:py-10 mix-blend-multiply dark:mix-blend-normal">
+			<div
+				class="hero-wrapper relative w-fit max-w-[94vw] mx-auto px-6 py-8 md:px-10 md:py-10 mix-blend-multiply dark:mix-blend-normal">
 				<div class="corner-label absolute top-0 left-0 pt-2 pl-2">
-                    <span class="block text-[0.6rem] sm:text-xs md:text-sm font-bold tracking-[0.25em] uppercase text-zinc-500 font-sans">
+                    <span
+						class="block text-[0.6rem] sm:text-xs md:text-sm font-bold tracking-[0.25em] uppercase text-zinc-500 font-sans">
                         Meet
                     </span>
 				</div>
 
 				<div class="text-center z-10">
-					<div class="overflow-hidden px-1 pb-2">
+					<div class="overflow-hidden px-1 pb-4 sm:pb-6">
 						<h1 class="reveal-text text-[13vw] sm:text-[10vw] md:text-[6rem] lg:text-[7rem] leading-[0.8] font-serif font-medium text-zinc-900 tracking-tighter capitalize text-balance break-words">
 							{watchData.collection}
 						</h1>
@@ -322,7 +336,8 @@
 				</div>
 
 				<div class="corner-label absolute bottom-0 right-0 pb-2 pr-2 flex items-center gap-2 sm:gap-3">
-					<span class="text-[0.6rem] sm:text-xs md:text-sm tracking-widest text-zinc-500 font-semibold uppercase">By</span>
+					<span
+						class="text-[0.6rem] sm:text-xs md:text-sm tracking-widest text-zinc-500 font-semibold uppercase">By</span>
 					<img src="{logoImg}" alt="ASIS" class="h-3 sm:h-4 md:h-5 w-auto opacity-70" />
 				</div>
 			</div>
@@ -375,8 +390,12 @@
 	}
 
 	@keyframes fadeInDock {
-		from { opacity: 0; }
-		to { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	.glass-dock {
@@ -397,17 +416,19 @@
 	}
 
 	.shadow-glow {
-		box-shadow: 0 0 10px rgba(0,0,0,0.2);
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	}
 
 	.glass-panel::-webkit-scrollbar {
 		width: 4px;
 	}
+
 	.glass-panel::-webkit-scrollbar-track {
 		background: transparent;
 	}
+
 	.glass-panel::-webkit-scrollbar-thumb {
-		background: rgba(0,0,0,0.1);
+		background: rgba(0, 0, 0, 0.1);
 		border-radius: 4px;
 	}
 </style>

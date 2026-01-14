@@ -24,7 +24,10 @@
 	function normalizeName(s) {
 		return (s || '').toString().trim().toLowerCase().replace(/[^\w\s]/g, '').replace(/\bpremium\b/g, '').replace(/\s+/g, ' ').trim();
 	}
-	function tokensOf(s) { return normalizeName(s).split(' ').filter(Boolean); }
+
+	function tokensOf(s) {
+		return normalizeName(s).split(' ').filter(Boolean);
+	}
 
 	function findVariantIndexByGemstone(gemstone) {
 		if (!galleryData || !galleryData.variants) return undefined;
@@ -62,7 +65,10 @@
 	}
 
 	$: gemstoneToIndex = galleryData && galleryData.gemstones
-		? galleryData.gemstones.reduce((acc, g) => { acc[g] = findVariantIndexByGemstone(g); return acc; }, {})
+		? galleryData.gemstones.reduce((acc, g) => {
+			acc[g] = findVariantIndexByGemstone(g);
+			return acc;
+		}, {})
 		: {};
 
 	// --- OPTIMIZED ANIMATION ---
@@ -72,8 +78,8 @@
 
 		// Setup QuickTo for performant mouse movement
 		if (mainImageEl) {
-			xTo = gsap.quickTo(mainImageEl, "x", {duration: 0.6, ease: "power1.out"});
-			yTo = gsap.quickTo(mainImageEl, "y", {duration: 0.6, ease: "power1.out"});
+			xTo = gsap.quickTo(mainImageEl, 'x', { duration: 0.6, ease: 'power1.out' });
+			yTo = gsap.quickTo(mainImageEl, 'y', { duration: 0.6, ease: 'power1.out' });
 		}
 
 		const tl = gsap.timeline({
@@ -125,10 +131,10 @@
 
 				// Reset transforms immediately before animating in
 				if (mainImageEl) {
-					gsap.set(mainImageEl, { clearProps: "all" });
+					gsap.set(mainImageEl, { clearProps: 'all' });
 					// Re-init quickTo on new element if necessary (Svelte usually recycles, but safe to check)
-					xTo = gsap.quickTo(mainImageEl, "x", {duration: 0.6, ease: "power1.out"});
-					yTo = gsap.quickTo(mainImageEl, "y", {duration: 0.6, ease: "power1.out"});
+					xTo = gsap.quickTo(mainImageEl, 'x', { duration: 0.6, ease: 'power1.out' });
+					yTo = gsap.quickTo(mainImageEl, 'y', { duration: 0.6, ease: 'power1.out' });
 				}
 
 				// Animate back in
@@ -229,7 +235,8 @@
 								class="relative w-8 h-8 lg:w-10 lg:h-10 rounded-full overflow-hidden transition-all duration-300 group focus:outline-none"
 								on:click|stopPropagation={() => selectImage(index)}
 							>
-								<div class="absolute inset-0 bg-zinc-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+								<div
+									class="absolute inset-0 bg-zinc-900/10 group-hover:bg-transparent transition-colors z-10"></div>
 								<img
 									src={image}
 									alt="thumb"
@@ -239,7 +246,8 @@
 									loading="lazy"
 								/>
 								{#if selectedImageIndex === index}
-									<div class="absolute inset-0 ring-[1.5px] ring-inset ring-zinc-800 rounded-full z-20"></div>
+									<div
+										class="absolute inset-0 ring-[1.5px] ring-inset ring-zinc-800 rounded-full z-20"></div>
 								{/if}
 							</button>
 						{/each}
@@ -247,7 +255,8 @@
 
 					<div class="h-4 w-px bg-zinc-400/30"></div>
 
-					<span class="secondary-font text-[9px] lg:text-[10px] font-bold tracking-widest text-zinc-700 min-w-[3ch] text-center">
+					<span
+						class="secondary-font text-[9px] lg:text-[10px] font-bold tracking-widest text-zinc-700 min-w-[3ch] text-center">
                     {selectedImageIndex + 1}/{currentVariant.images.length}
                 </span>
 
@@ -290,7 +299,8 @@
 		<div class="lg:col-span-5 relative z-20 bg-white/10 backdrop-blur-[2px] lg:border-l border-white/20 min-h-full">
 			<div use:preloadImages={galleryData.variants.flatMap(v => v.images)} class="hidden"></div>
 
-			<div class="flex flex-col justify-center min-h-[50vh] lg:min-h-screen px-6 py-10 sm:px-12 lg:px-16 xl:px-20 space-y-12 lg:space-y-16">
+			<div
+				class="flex flex-col justify-center min-h-[50vh] lg:min-h-screen px-6 py-10 sm:px-12 lg:px-16 xl:px-20 space-y-12 lg:space-y-16">
 
 				<header class="relative space-y-6 lg:space-y-8">
 					<div class="flex items-center gap-3 ui-fade-up overflow-hidden">
@@ -316,7 +326,8 @@
 				<section class="space-y-8 lg:space-y-10">
 					<div class="content-block space-y-5">
 						<div class="flex justify-between items-baseline border-b border-zinc-400/20 pb-2">
-							<h3 class="secondary-font text-[14px] sm:text-sm font-bold text-zinc-900 tracking-widest uppercase">VARIANT</h3>
+							<h3 class="secondary-font text-[14px] sm:text-sm font-bold text-zinc-900 tracking-widest uppercase">
+								VARIANT</h3>
 							<span class="secondary-font text-sm text-zinc-700 italic">{currentVariant.name}</span>
 						</div>
 
@@ -352,7 +363,8 @@
 					</div>
 
 					<div class="content-block space-y-5">
-						<h3 class="secondary-font text-[14px] sm:text-sm font-bold text-zinc-900 tracking-widest uppercase">Gemstones</h3>
+						<h3 class="secondary-font text-[14px] sm:text-sm font-bold text-zinc-900 tracking-widest uppercase">
+							Gemstones</h3>
 
 						<div class="flex flex-col items-start gap-3">
 							{#each galleryData.gemstones as gemstone}
@@ -366,15 +378,17 @@
 										class:border-zinc-300={selectedVariantIndex !== gemstoneToIndex[gemstone]}
 										class:hover:border-zinc-500={selectedVariantIndex !== gemstoneToIndex[gemstone]}
 									>
-										<div class="absolute inset-0 bg-zinc-800 transition-transform duration-300 origin-left"
-											 class:scale-x-100={selectedVariantIndex === gemstoneToIndex[gemstone]}
-											 class:scale-x-0={selectedVariantIndex !== gemstoneToIndex[gemstone]}>
+										<div
+											class="absolute inset-0 bg-zinc-800 transition-transform duration-300 origin-left"
+											class:scale-x-100={selectedVariantIndex === gemstoneToIndex[gemstone]}
+											class:scale-x-0={selectedVariantIndex !== gemstoneToIndex[gemstone]}>
 										</div>
 
 										<span class="relative z-10">{gemstone}</span>
 									</button>
 								{:else}
-                            <span class="px-3 py-2 sm:px-4 sm:py-2.5 text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-bold border border-transparent text-zinc-400/50 bg-black/5 cursor-not-allowed secondary-font w-full sm:w-auto text-left">
+                            <span
+								class="px-3 py-2 sm:px-4 sm:py-2.5 text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-bold border border-transparent text-zinc-400/50 bg-black/5 cursor-not-allowed secondary-font w-full sm:w-auto text-left">
                                {gemstone}
                             </span>
 								{/if}
@@ -384,7 +398,8 @@
 				</section>
 
 				<section class="content-block pt-8 lg:pt-12 mt-auto">
-					<div class="grid grid-cols-2 gap-x-6 gap-y-8 lg:gap-x-8 lg:gap-y-10 border-t border-zinc-800/10 pt-8 lg:pt-10">
+					<div
+						class="grid grid-cols-2 gap-x-6 gap-y-8 lg:gap-x-8 lg:gap-y-10 border-t border-zinc-800/10 pt-8 lg:pt-10">
 						{#each galleryData.specs as spec}
 							<div class="group">
 								<dt class="secondary-font text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1 lg:mb-2 group-hover:text-zinc-800 transition-colors">
